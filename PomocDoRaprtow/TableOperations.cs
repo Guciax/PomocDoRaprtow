@@ -196,6 +196,38 @@ namespace PomocDoRaprtow
             return sorted_2;
         }
 
+        public static DataTable Lot_module_short(DataTable input, int LOT_index, int module_index)
+        {
+            DataTable result = new DataTable();
+            result.Columns.Add("LOT");
+            result.Columns.Add("Model");
+            List<string> checkList_LOT = new List<string>();
+
+            foreach (DataRow row in input.Rows)
+            {
+                if (!checkList_LOT.Contains(row[LOT_index].ToString()))
+                {
+                    result.Rows.Add(row[LOT_index].ToString(), row[module_index].ToString());
+                    checkList_LOT.Add(row[LOT_index].ToString());
+                }
+            }
+
+            return result;
+        }
+
+        public static DataTable Table_plus_model(DataTable input, int LOT_index)
+        {
+            DataTable result = input.Copy();
+            result.Columns.Add("Model");
+
+            foreach (DataRow row in result.Rows)
+            {
+                row["Model"] = Form1.LOT_to_Model(row[LOT_index].ToString());
+            }
+
+            return result;
+        }
+
         
     }
 }

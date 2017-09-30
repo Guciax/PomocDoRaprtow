@@ -30,6 +30,7 @@ namespace PomocDoRaprtow
         DataTable Odpady_table = new DataTable();
         DataTable Tester_table = new DataTable();
         static DataTable LOT_Module_Table = new DataTable(); //Nr_Zlecenia_Produkcyjnego NC12_wyrobu RankA RankB MRM
+        static DataTable LOT_Module_Short = new DataTable();
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -42,11 +43,11 @@ namespace PomocDoRaprtow
         public static string LOT_to_Model(string LOT)
         {
             string result = "";
-            foreach (DataRow row in LOT_Module_Table.Rows)
+            foreach (DataRow row in LOT_Module_Short.Rows)
             {
-                if (row["Nr_Zlecenia_Produkcyjnego"].ToString() == LOT)
+                if (row[0].ToString() == LOT)
                 {
-                    result = row["NC12_wyrobu"].ToString();
+                    result = row[1].ToString();
                     break;
                 }
             }
@@ -71,14 +72,24 @@ namespace PomocDoRaprtow
         {
             Odpady_table = LodFiles.Odpad_Table();
             Tester_table = LodFiles.tester_Table();
-            LOT_Module_Table = LodFiles.LOT_Module_Table();
+            //LOT_Module_Table = LodFiles.LOT_Module_Table();
+            LOT_Module_Short = TableOperations.Lot_module_short(LodFiles.LOT_Module_Table(), 0, 1);
+            Odpady_table = TableOperations.Table_plus_model(Odpady_table, 2);
+            Tester_table = TableOperations.Table_plus_model(Tester_table, 4);
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tab.SelectedTab.Name == "tab_odpad")
+            if (Tab.SelectedTab.Name == "tab_Waste")
             {
                 Draw_waste_histogram();
+            }
+            if (Tab.SelectedTab.Name=="tab_Capacity")
+            {
+                DataTable shifts = TableOperations.Tester_IloscNaZmiane(Tester_table);
+                dataGridView_Capacity_Test.DataSource = shifts;
+                dataGridView_Capacity_Test.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                Charting.Shift_Line_chart(chart_Capacity_Test, shifts, 0, 1, 2);
             }
         }
 
@@ -97,6 +108,16 @@ namespace PomocDoRaprtow
         private void dateTimePicker_odpad_do_ValueChanged(object sender, EventArgs e)
         {
             Draw_waste_histogram();
+        }
+
+        private void checkedListBox1_MouseEnter(object sender, EventArgs e)
+        {
+            checkedListBox1.Height = 200;
+        }
+
+        private void checkedListBox1_MouseLeave(object sender, EventArgs e)
+        {
+            checkedListBox1.Height = 50;
         }
     }
 }
