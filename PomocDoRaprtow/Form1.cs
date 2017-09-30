@@ -44,7 +44,7 @@ namespace PomocDoRaprtow
                 if (row["Nr_Zlecenia_Produkcyjnego"].ToString() == LOT)
                 {
                     result = row["NC12_wyrobu"].ToString();
-                    break;
+                    break;//
                 }
             }
 
