@@ -10,23 +10,24 @@ namespace PomocDoRaprtow
 {
     class Charting
     {
-        public static void BarChart(Chart Bar_chart_control, DataTable chart_data, int x_name_column_index, int x_value_columns_index)
+        public static void BarChart(Chart barChartControl, DataTable chartData, int xNameColumnIndex,
+            int xValueColumnsIndex)
         {
-            List<string> x_names = new List<string>();
-            List<double> x_values = new List<double>();
+            List<string> xNames = new List<string>();
+            List<double> xValues = new List<double>();
 
-            foreach (DataRow row in chart_data.Rows)
+            foreach (DataRow row in chartData.Rows)
             {
                 double val = 0;
-                if (double.TryParse(row[x_value_columns_index].ToString(), out val))
+                if (double.TryParse(row[xValueColumnsIndex].ToString(), out val))
                 {
-                    x_names.Add(row[x_name_column_index].ToString());
-                    x_values.Add(val);
+                    xNames.Add(row[xNameColumnIndex].ToString());
+                    xValues.Add(val);
                 }
             }
 
-            Bar_chart_control.Series.Clear();
-            Bar_chart_control.ChartAreas.Clear();
+            barChartControl.Series.Clear();
+            barChartControl.ChartAreas.Clear();
 
             Series ser = new Series();
             ser.IsVisibleInLegend = false;
@@ -39,22 +40,20 @@ namespace PomocDoRaprtow
             area.AxisX.LabelStyle.Enabled = true;
             area.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 12);
 
-            Bar_chart_control.Series.Add(ser);
-            Bar_chart_control.ChartAreas.Add(area);
+            barChartControl.Series.Add(ser);
+            barChartControl.ChartAreas.Add(area);
 
-            for (int i = 0; i < x_values.Count; i++)
+            for (int i = 0; i < xValues.Count; i++)
             {
-                Bar_chart_control.Series[0].Points.AddXY(x_names[i], x_values[i]);
+                barChartControl.Series[0].Points.AddXY(xNames[i], xValues[i]);
             }
-
-
-
         }
 
-        public static void Shift_Line_chart(Chart Line_chart_control,DataTable chart_data,int date_col_index, int shift_col_index, int quantity_col_index)
+        public static void ShiftLineChart(Chart lineChartControl, DataTable chartData, int dateColIndex,
+            int shiftColIndex, int quantityColIndex)
         {
-            Line_chart_control.Series.Clear();
-            Line_chart_control.ChartAreas.Clear();
+            lineChartControl.Series.Clear();
+            lineChartControl.ChartAreas.Clear();
 
             Series ser1 = new Series();
             ser1.IsVisibleInLegend = false;
@@ -89,19 +88,23 @@ namespace PomocDoRaprtow
             area.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
 
 
-            Line_chart_control.Series.Add(ser1);
-            Line_chart_control.Series.Add(ser2);
-            Line_chart_control.Series.Add(ser3);
-            Line_chart_control.ChartAreas.Add(area);
+            lineChartControl.Series.Add(ser1);
+            lineChartControl.Series.Add(ser2);
+            lineChartControl.Series.Add(ser3);
+            lineChartControl.ChartAreas.Add(area);
 
-            foreach (DataRow row in chart_data.Rows)
+            foreach (DataRow row in chartData.Rows)
             {
-                if (row[shift_col_index].ToString() == "1") Line_chart_control.Series[0].Points.AddXY(row[date_col_index].ToString(), row[quantity_col_index].ToString());
-                if (row[shift_col_index].ToString() == "2") Line_chart_control.Series[1].Points.AddXY(row[date_col_index].ToString(), row[quantity_col_index].ToString());
-                if (row[shift_col_index].ToString() == "3") Line_chart_control.Series[2].Points.AddXY(row[date_col_index].ToString(), row[quantity_col_index].ToString());
+                if (row[shiftColIndex].ToString() == "1")
+                    lineChartControl.Series[0].Points
+                        .AddXY(row[dateColIndex].ToString(), row[quantityColIndex].ToString());
+                if (row[shiftColIndex].ToString() == "2")
+                    lineChartControl.Series[1].Points
+                        .AddXY(row[dateColIndex].ToString(), row[quantityColIndex].ToString());
+                if (row[shiftColIndex].ToString() == "3")
+                    lineChartControl.Series[2].Points
+                        .AddXY(row[dateColIndex].ToString(), row[quantityColIndex].ToString());
             }
-
-            
         }
     }
 }

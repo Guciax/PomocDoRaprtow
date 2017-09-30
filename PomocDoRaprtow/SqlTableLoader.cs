@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace PomocDoRaprtow
 {
-    class Load_SQL_tables
+    class SqlTableLoader
     {
-        public static DataTable Load_tester_karta_pracy()
+        public static DataTable LoadTesterWorkCard()
         {
             DataTable result = new DataTable();
 
@@ -19,7 +19,8 @@ namespace PomocDoRaprtow
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
-            command.CommandText = @"SELECT serial_no, inspection_time, tester_id, wip_entity_name, result, ng_type, STATUS FROM dbo.v_tester_measurements_ZlecenieGlowne";
+            command.CommandText =
+                @"SELECT serial_no, inspection_time, tester_id, wip_entity_name, result, ng_type, STATUS FROM dbo.v_tester_measurements_ZlecenieGlowne";
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);
@@ -31,7 +32,7 @@ namespace PomocDoRaprtow
             return result;
         }
 
-        public static DataTable Load_odpad_table()
+        public static DataTable LoadWasteTable()
         {
             DataTable result = new DataTable();
 
@@ -40,7 +41,8 @@ namespace PomocDoRaprtow
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
-            command.CommandText = @"SELECT id,Nr_Planu_Produkcji,Nr_Zlecenia_Produkcyjnego,BrakLutowia,BrakKomponentu,ZabrudzonaDioda,UszkodzonaDioda,UszkodzonePCB,PrzesuniecieDiody,ZanieczyszczenieZpieca,Inne FROM dbo.tb_Zlecenia_produkcyjne_Karta_Pracy";
+            command.CommandText =
+                @"SELECT id,Nr_Planu_Produkcji,Nr_Zlecenia_Produkcyjnego,BrakLutowia,BrakKomponentu,ZabrudzonaDioda,UszkodzonaDioda,UszkodzonePCB,PrzesuniecieDiody,ZanieczyszczenieZpieca,Inne FROM dbo.tb_Zlecenia_produkcyjne_Karta_Pracy";
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);
