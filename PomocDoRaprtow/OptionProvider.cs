@@ -6,9 +6,7 @@ using System.Threading.Tasks;
 
 namespace PomocDoRaprtow
 {
-
-
-    class OptionProvider
+    internal class OptionProvider
     {
         private readonly Form1 form;
 
@@ -17,8 +15,7 @@ namespace PomocDoRaprtow
             this.form = form;
         }
 
-        public DateTime OdpadBegin => form.OdpadBegin.Value;
-        public DateTime OdpadEnd =>  form.OdpadEnd.Value;
-        
+        public DateTime WasteSince => form.WasteSinceTimePicker.Value;
+        public DateTime WasteTo => form.WasteToTimePicker.Value;
     }
 }

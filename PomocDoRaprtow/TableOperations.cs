@@ -29,7 +29,7 @@ namespace PomocDoRaprtow
                     int value = 0;
                     Int32.TryParse(row[valueColumn[i]].ToString(), out value);
                     DateTime czas = DateTime.ParseExact(row["DataCzas"].ToString(), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
-                    if (czas > optProv.OdpadBegin && czas < optProv.OdpadEnd) 
+                    if (czas > optProv.WasteSince && czas < optProv.WasteTo) 
                         resultTable.Rows[i][1] = (Int16)resultTable.Rows[i][1] + value;
                     
                 }
