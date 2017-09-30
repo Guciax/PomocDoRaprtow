@@ -10,7 +10,7 @@ namespace PomocDoRaprtow
 {
     class TableOperations
     {
-        public static DataTable HistogramTable(DataTable inputTable, int[] valueColumn)
+        public static DataTable HistogramTable(DataTable inputTable, int[] valueColumn, OptionProvider optProv)
         {
             DataTable resultTable = new DataTable();
             resultTable.Columns.Add("Name");
@@ -29,9 +29,9 @@ namespace PomocDoRaprtow
                     int value = 0;
                     Int32.TryParse(row[valueColumn[i]].ToString(), out value);
                     DateTime czas = DateTime.ParseExact(row["DataCzas"].ToString(), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
-                    //if czas....
-                    resultTable.Rows[i][1] = (Int16)resultTable.Rows[i][1] + value;
-
+                    if (czas > optProv.OdpadBegin && czas < optProv.OdpadEnd) 
+                        resultTable.Rows[i][1] = (Int16)resultTable.Rows[i][1] + value;
+                    
                 }
             }
             DataView dv = resultTable.DefaultView;

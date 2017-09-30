@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="Load SQL tables.cs" />
     <Compile Include="LodFiles.cs" />
+    <Compile Include="OptionProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TableOperations.cs" />

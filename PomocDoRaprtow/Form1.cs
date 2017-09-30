@@ -14,10 +14,14 @@ namespace PomocDoRaprtow
             InitializeComponent();
             dateTimePicker_odpad_do.Format = DateTimePickerFormat.Custom;
             dateTimePicker_odpad_od.Format = DateTimePickerFormat.Custom;
-            dateTimePicker_odpad_do.CustomFormat = "dd-MM-yyyy hh:mm:ss";
-            dateTimePicker_odpad_od.CustomFormat = "dd-MM-yyyy hh:mm:ss";
+
+            dateTimePicker_odpad_do.CustomFormat = "dd-MM-yyyy HH:mm:ss";
+            dateTimePicker_odpad_od.CustomFormat = "dd-MM-yyyy HH:mm:ss";
         }
-            
+
+        public DateTimePicker OdpadBegin => this.dateTimePicker_odpad_od;
+        public DateTimePicker OdpadEnd => this.dateTimePicker_odpad_do;
+        
 
         private void Form1_Load(object sender, EventArgs e)
         { 
@@ -25,29 +29,27 @@ namespace PomocDoRaprtow
         }
         DataTable Odpady_table = new DataTable();
         DataTable Tester_table = new DataTable();
-        DataTable LOT_Module_Table = new DataTable(); //Nr_Zlecenia_Produkcyjnego NC12_wyrobu RankA RankB MRM
+        static DataTable LOT_Module_Table = new DataTable(); //Nr_Zlecenia_Produkcyjnego NC12_wyrobu RankA RankB MRM
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DataTable hist = TableOperations.HistogramTable(Odpady_table, new int[] { 3, 4, 5, 6, 7, 8, 9, 10 });
+            DataTable hist = TableOperations.HistogramTable(Odpady_table, new int[] { 3, 4, 5, 6, 7, 8, 9, 10 }, new OptionProvider(this));
             dataGridView1.DataSource = hist;
-            
             Charting.BarChart(chart1, hist, 0, 1);
         }
 
-        public string LOT_to_Model(string LOT)
+        
+        public static string LOT_to_Model(string LOT)
         {
-            string result="";
-
+            string result = "";
             foreach (DataRow row in LOT_Module_Table.Rows)
             {
                 if (row["Nr_Zlecenia_Produkcyjnego"].ToString() == LOT)
                 {
                     result = row["NC12_wyrobu"].ToString();
-                    break;//
+                    break;
                 }
             }
-
             return result;
         }
 
@@ -76,16 +78,25 @@ namespace PomocDoRaprtow
         {
             if (Tab.SelectedTab.Name == "tab_odpad")
             {
-                DataTable hist = TableOperations.HistogramTable(Odpady_table, new int[] { 3, 4, 5, 6, 7, 8, 9, 10 });
-                dataGridView_odpad.DataSource = hist;
-                Charting.BarChart(chart_odpad, hist, 0, 1);
-                
+                Draw_waste_histogram();
             }
+        }
+
+        private void Draw_waste_histogram()
+        {
+            DataTable hist = TableOperations.HistogramTable(Odpady_table, new int[] { 3, 4, 5, 6, 7, 8, 9, 10 }, new OptionProvider(this));
+            dataGridView_odpad.DataSource = hist;
+            Charting.BarChart(chart_odpad, hist, 0, 1);
         }
 
         private void dateTimePicker_odpad_od_ValueChanged(object sender, EventArgs e)
         {
-            
+            Draw_waste_histogram();
+        }
+
+        private void dateTimePicker_odpad_do_ValueChanged(object sender, EventArgs e)
+        {
+            Draw_waste_histogram();
         }
     }
 }
