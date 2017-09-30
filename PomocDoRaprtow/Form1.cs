@@ -63,7 +63,6 @@ namespace PomocDoRaprtow
         {
             Odpady_table = Load_SQL_tables.Load_odpad_table();
             Tester_table = Load_SQL_tables.Load_tester_karta_pracy();
-            
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -80,6 +79,7 @@ namespace PomocDoRaprtow
                 DataTable hist = TableOperations.HistogramTable(Odpady_table, new int[] { 3, 4, 5, 6, 7, 8, 9, 10 });
                 dataGridView_odpad.DataSource = hist;
                 Charting.BarChart(chart_odpad, hist, 0, 1);
+                
             }
         }
 
