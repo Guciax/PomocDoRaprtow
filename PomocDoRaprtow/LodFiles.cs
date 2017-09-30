@@ -12,7 +12,7 @@ namespace PomocDoRaprtow
         public static DataTable Odpad_Table()
         {
             DataTable resultTable = new DataTable();
-            string[] plikArray = System.IO.File.ReadAllLines(@"D:\Google Drive\Praca\DB\Odpad new.txt");
+            string[] plikArray = System.IO.File.ReadAllLines(@"DB\Odpad new.txt");
             foreach (var item in plikArray[0].Split(';'))
             {
                 resultTable.Columns.Add(item);
@@ -29,7 +29,7 @@ namespace PomocDoRaprtow
         public static DataTable tester_Table()
         {
             DataTable resultTable = new DataTable();
-            string[] plikArray = System.IO.File.ReadAllLines(@"D:\Google Drive\Praca\DB\tester.csv");
+            string[] plikArray = System.IO.File.ReadAllLines(@"DB\tester.csv");
             foreach (var item in plikArray[0].Split(';'))
             {
                 resultTable.Columns.Add(item);
@@ -46,7 +46,7 @@ namespace PomocDoRaprtow
         public static DataTable LOT_Module_Table()
         {
             DataTable result = new DataTable();
-            string[] plikArray = System.IO.File.ReadAllLines(@"D:\Google Drive\Praca\DB\Zlecenia_produkcyjne.txt");
+            string[] plikArray = System.IO.File.ReadAllLines(@"DB\Zlecenia_produkcyjne.txt");
             result.Columns.Add("Nr_Zlecenia_Produkcyjnego");
             result.Columns.Add("NC12_wyrobu");
             result.Columns.Add("RankA");
