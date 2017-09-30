@@ -19,7 +19,7 @@ namespace PomocDoRaprtow
             return LoadCsvIntoDataTable(@"DB\tester.csv");
         }
         
-        public static List<Led> LoadTesterWorkCard2()
+        public static List<LedModules> LoadTesterWorkCard2()
         {
             return null;
         }
@@ -67,6 +67,42 @@ namespace PomocDoRaprtow
             }
 
             return resultTable;
+        }
+        private static List<LedModules> CsvToLedModules(string FilePath)
+        {
+            List<LedModules> result = new List<LedModules>();
+
+            string[] FileArray = System.IO.File.ReadAllLines(FilePath);
+            foreach (var item in FileArray)
+            {
+                LedModules LedToAdd = new LedModules();
+                LedToAdd.ProductionOrderId = item.Split(';')[2];
+                LedToAdd.
+            }
+                return result;
+        }
+
+        private static List<TesterData> CsvTesterFileToTesterData(string FilePath)
+        {
+            List<TesterData> LedModulesList = new List<TesterData>();
+            string[] FileArray = System.IO.File.ReadAllLines(FilePath);
+            foreach (var item in FileArray)
+            {
+                TesterData LedToAdd = new TesterData();
+                LedToAdd.TimeOfTest = DateTime.ParseExact(item.Split(';')[1],"yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+                LedToAdd.TesterId = item.Split(';')[2];
+                if (item.Split(';')[6] == "OK")
+                    LedToAdd.TestResult = true;
+                else
+                {
+                    LedToAdd.TestResult = true;
+                    LedToAdd.FailureReason = item.Split(';')[7];
+                }
+
+                LedModulesList.Add(LedToAdd);
+            }
+
+            return LedModulesList;
         }
     }
 }
