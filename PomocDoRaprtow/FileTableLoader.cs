@@ -18,6 +18,11 @@ namespace PomocDoRaprtow
         {
             return LoadCsvIntoDataTable(@"DB\tester.csv");
         }
+        
+        public static List<Led> LoadTesterWorkCard2()
+        {
+            return null;
+        }
 
         public static DataTable LOT_Module_Table()
         {
