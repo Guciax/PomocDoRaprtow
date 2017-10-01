@@ -24,6 +24,12 @@ namespace PomocDoRaprtow
             return null;
         }
 
+        public static List<LedModules> LoadTesterCsvToList()
+        {
+            return CsvToLedModules(@"DB\tester.csv");
+        }
+
+
         public static DataTable LOT_Module_Table()
         {
             DataTable result = new DataTable();
@@ -73,11 +79,30 @@ namespace PomocDoRaprtow
             List<LedModules> result = new List<LedModules>();
 
             string[] FileArray = System.IO.File.ReadAllLines(FilePath);
-            foreach (var item in FileArray)
+            List<string> HeaderList = new List<string>();
+
+            foreach (var header in FileArray[0].Split(';'))
+            {
+                HeaderList.Add(header);
+            }
+
+            for (int i = 1; i < FileArray.Length; i++) 
             {
                 LedModules LedToAdd = new LedModules();
-                LedToAdd.ProductionOrderId = item.Split(';')[2];
-                LedToAdd.
+                for (int j = 0; j < HeaderList.Count; j++) 
+                {
+                    if (HeaderList[j] == "serial_no") { LedToAdd.SerialNumber = FileArray[i].Split(';')[j]; continue; }
+                    if (HeaderList[j] == "wip_entity_name") { LedToAdd.ProductionOrderId = FileArray[i].Split(';')[j]; LedToAdd.ModelName = Form1.LOT_to_Model(FileArray[i].Split(';')[j]); continue; }
+                    if (HeaderList[j] == "DataCzasWydruku") { LedToAdd.KittingDateTime = FileArray[i].Split(';')[j]; continue; }
+                    if (HeaderList[j] == "Ilosc_wyrobu_zlecona") { LedToAdd.KittingOrderQuantity = Int32.Parse(FileArray[i].Split(';')[j]); continue; }
+                    if (HeaderList[j] == "LiniaProdukcyjna") { LedToAdd.KittingLineNumber = FileArray[i].Split(';')[j]; continue; }
+                    if (HeaderList[j] == "tester_id") { LedToAdd.TesterId = FileArray[i].Split(';')[j]; continue; }
+                    if (HeaderList[j] == "inspection_time") { LedToAdd.TesterTimeOfTest = DateTime.ParseExact(FileArray[i].Split(';')[j], "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);  continue; }
+                    if (HeaderList[j] == "result") { if (FileArray[i].Split(';')[j] == "OK") LedToAdd.TestResult = true; else LedToAdd.TestResult = false; ; continue; }
+                    if (HeaderList[j] == "ng_type") { LedToAdd.TesterFailureReason = FileArray[i].Split(';')[j]; continue; }
+                    //...
+                }
+                result.Add(LedToAdd);
             }
                 return result;
         }

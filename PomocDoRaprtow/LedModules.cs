@@ -4,11 +4,11 @@ namespace PomocDoRaprtow
 {
     public class LedModules
     {
-        public string SerialNumber { get; set; }        //tester.csv [0]
-        public string ProductionOrderId{ get; set; }    //tester.csv [4]
+        public string SerialNumber { get; set; }        //x tester.csv serial_no [0] 
+        public string ProductionOrderId{ get; set; }    //x tester.csv wip_entity_name [4]
         public string ModelName { get; set; }           //zlecenia_produkcyjne [3]
 
-        public string KittingDateTime { get; set; }     //zlecenia_produkcyjne DataCzasWydruku [15]
+        public string KittingDateTime { get; set; }     //x zlecenia_produkcyjne DataCzasWydruku [15]
         public int KittingOrderQuantity { get; set; }   //zlecenia_produkcyjne Ilosc_wyrobu_zlecona [4]
         public string KittingLineNumber { get; set; }   //zlecenia_produkcyjne LiniaProdukcyjna [27]
         

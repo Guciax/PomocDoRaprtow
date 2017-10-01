@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Data;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace PomocDoRaprtow
 {
@@ -22,7 +24,7 @@ namespace PomocDoRaprtow
 
         public DateTimePicker WasteSinceTimePicker => dateTimePicker_odpad_od;
         public DateTimePicker WasteToTimePicker => dateTimePicker_odpad_do;
-
+        List<LedModules> BigFuckingLedList = new List<LedModules>();
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -48,7 +50,9 @@ namespace PomocDoRaprtow
             {
                 if (row[0].ToString() == lot)
                 {
+                    //Debug.WriteLine(row[1]);
                     return row[1].ToString();
+                    
                 }
             }
             return "";
@@ -70,13 +74,14 @@ namespace PomocDoRaprtow
 
         private void button5_Click(object sender, EventArgs e)
         {
-            Odpady_table = FileTableLoader.LoadWasteTable();
-            Tester_table = FileTableLoader.LoadTesterWorkCard();
-
-            //LOT_Module_Table = LodFiles.LOT_Module_Table();
+            //Odpady_table = FileTableLoader.LoadWasteTable();
+            //Tester_table = FileTableLoader.LoadTesterWorkCard();
+            LOT_Module_Table = FileTableLoader.LOT_Module_Table();
             LOT_Module_Short = TableOperations.Lot_module_short(FileTableLoader.LOT_Module_Table(), 0, 1);
-            Odpady_table = TableOperations.Table_plus_model(Odpady_table, 2);
-            Tester_table = TableOperations.Table_plus_model(Tester_table, 4);
+            List<LedModules> BigFuckingLedList = FileTableLoader.LoadTesterCsvToList();
+
+            //Odpady_table = TableOperations.Table_plus_model(Odpady_table, 2);
+            //Tester_table = TableOperations.Table_plus_model(Tester_table, 4);
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
