@@ -10,6 +10,7 @@ namespace PomocDoRaprtow
     public partial class Form1 : Form
     {
         private readonly OptionProvider optionProvider;
+        private LedStorage leds;
 
         public Form1()
         {
@@ -25,7 +26,6 @@ namespace PomocDoRaprtow
 
         public DateTimePicker WasteSinceTimePicker => dateTimePicker_odpad_od;
         public DateTimePicker WasteToTimePicker => dateTimePicker_odpad_do;
-        List<LedModules> BigFuckingLedList = new List<LedModules>();
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -33,7 +33,6 @@ namespace PomocDoRaprtow
 
         DataTable Odpady_table = new DataTable();
         DataTable Tester_table = new DataTable();
-        static DataTable LOT_Module_Table = new DataTable(); //Nr_Zlecenia_Produkcyjnego NC12_wyrobu RankA RankB MRM
         static DataTable LOT_Module_Short = new DataTable();
 
         private void button1_Click(object sender, EventArgs e)
@@ -53,7 +52,6 @@ namespace PomocDoRaprtow
                 {
                     //Debug.WriteLine(row[1]);
                     return row[1].ToString();
-                    
                 }
             }
             return "";
@@ -75,59 +73,51 @@ namespace PomocDoRaprtow
 
         private void button5_Click(object sender, EventArgs e)
         {
-            //Odpady_table = FileTableLoader.LoadWasteTable();
-            //Tester_table = FileTableLoader.LoadTesterWorkCard();
-            LOT_Module_Table = FileTableLoader.LOT_Module_Table();
-            LOT_Module_Short = TableOperations.Lot_module_short(FileTableLoader.LOT_Module_Table(), 0, 1);
-            BigFuckingLedList = FileTableLoader.LoadTesterCsvToList();
-
-            //Odpady_table = TableOperations.Table_plus_model(Odpady_table, 2);
-            //Tester_table = TableOperations.Table_plus_model(Tester_table, 4);
-        }
-
-        private string DateToShiftNumber(DateTime inputDate)
-        {
-            if (inputDate.Hour >= 22) return inputDate.Day + 1 + "-" + inputDate.Month + " 3";
-            if (inputDate.Hour >= 14) return inputDate.Day + "-" + inputDate.Month + " 2";
-            if (inputDate.Hour >= 6) return inputDate.Day + "-" + inputDate.Month + " 1";
-            return inputDate.Day + "-" + inputDate.Month + " 3";
+            leds = new LedStorageLoader().BuildStorage();
         }
 
         private void DrawCapaChart(Chart DestinationChart, DataGridView DestinationGrid)
         {
             DataTable GridSource = new DataTable();
             GridSource.Columns.Add("Day");
-            GridSource.Columns.Add("Shift III", typeof (int));
+            GridSource.Columns.Add("Shift III", typeof(int));
             GridSource.Columns.Add("Shift I", typeof(int));
             GridSource.Columns.Add("Shift II", typeof(int));
 
-            List<string> DayCheckList = new List<string>();
+            List<int> initializedDays = new List<int>();
 
-            foreach (var LedRecord in BigFuckingLedList)
+            foreach (var led in leds.SerialNumbersToLed.Values)
             {
-                if (LedRecord.TesterTimeOfTest > dateTimePicker_wyd_od.Value && LedRecord.TesterTimeOfTest < dateTimePicker_wyd_do.Value)
+                if (led.TesterData.TimeOfTest > dateTimePicker_wyd_od.Value &&
+                    led.TesterData.TimeOfTest < dateTimePicker_wyd_do.Value)
                 {
-                    string DayShift = DateToShiftNumber(LedRecord.TesterTimeOfTest);
-                    if (!DayCheckList.Contains(DayShift.Split(' ')[0]))
+                    DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(led.TesterData.TimeOfTest);
+                    if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
                     {
-                        DayCheckList.Add(DayShift.Split(' ')[0]);
-                        GridSource.Rows.Add(DayShift.Split(' ')[0], 0, 0, 0);
+                        initializedDays.Add(shiftInfo.DayOfTheMonth);
+                        GridSource.Rows.Add(shiftInfo.DayOfTheMonth, 0, 0, 0);
                     }
-                    switch (DayShift.Split(' ')[1])
-                    {
-                        case "3":
-                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][1] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][1] + 1;
-                            break;
-                        case "1":
-                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][2] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][2] + 1;
-                            break;
-                        case "2":
-                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][3] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][3] + 1;
-                            break;
 
+                    int gridColumn = 1;
+                    switch (shiftInfo.ShiftNo)
+                    {
+                        case 3:
+                            gridColumn = 1;
+                            break;
+                        case 1:
+                            gridColumn = 2;
+                            break;
+                        case 2:
+                            gridColumn = 3;
+                            break;
                     }
+
+                    var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
+                    GridSource.Rows[indexInInitializedDays][gridColumn] =
+                        (int) GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
                 }
             }
+
             dataGridView_Capacity_Test.DataSource = GridSource;
             foreach (DataGridViewColumn col in dataGridView_Capacity_Test.Columns)
             {
@@ -177,29 +167,25 @@ namespace PomocDoRaprtow
 
             foreach (DataRow row in GridSource.Rows)
             {
-
                 DestinationChart.Series[0].Points
-                        .AddXY(row[0].ToString(), (int)row[1]);
+                    .AddXY(row[0].ToString(), (int) row[1]);
 
                 DestinationChart.Series[1].Points
-                        .AddXY(row[0].ToString(), (int)row[2]);
+                    .AddXY(row[0].ToString(), (int) row[2]);
 
                 DestinationChart.Series[2].Points
-                        .AddXY(row[0].ToString(), (int)row[3]);
+                    .AddXY(row[0].ToString(), (int) row[3]);
             }
-
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (Tab.SelectedTab.Name == "tab_Waste")
             {
-
             }
             if (Tab.SelectedTab.Name == "tab_Capacity")
             {
                 DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
-                
             }
         }
 
