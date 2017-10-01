@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Data;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace PomocDoRaprtow
 {
@@ -78,24 +79,73 @@ namespace PomocDoRaprtow
             //Tester_table = FileTableLoader.LoadTesterWorkCard();
             LOT_Module_Table = FileTableLoader.LOT_Module_Table();
             LOT_Module_Short = TableOperations.Lot_module_short(FileTableLoader.LOT_Module_Table(), 0, 1);
-            List<LedModules> BigFuckingLedList = FileTableLoader.LoadTesterCsvToList();
+            BigFuckingLedList = FileTableLoader.LoadTesterCsvToList();
 
             //Odpady_table = TableOperations.Table_plus_model(Odpady_table, 2);
             //Tester_table = TableOperations.Table_plus_model(Tester_table, 4);
+        }
+
+        private string DateToShiftNumber(DateTime inputDate)
+        {
+            if (inputDate.Hour >= 22) return inputDate.Day + 1 + "-" + inputDate.Month + " 3";
+            if (inputDate.Hour >= 14) return inputDate.Day + "-" + inputDate.Month + " 2";
+            if (inputDate.Hour >= 6) return inputDate.Day + "-" + inputDate.Month + " 1";
+            return inputDate.Day + "-" + inputDate.Month + " 3";
+        }
+
+        private void DrawCapaChart(Chart DestinationChart, DataGridView DestinationGrid)
+        {
+            DataTable GridSource = new DataTable();
+            GridSource.Columns.Add("Day");
+            GridSource.Columns.Add("Shift III", typeof (int));
+            GridSource.Columns.Add("Shift I", typeof(int));
+            GridSource.Columns.Add("Shift II", typeof(int));
+
+            List<string> DayCheckList = new List<string>();
+
+            foreach (var LedRecord in BigFuckingLedList)
+            {
+                if (LedRecord.TesterTimeOfTest > dateTimePicker_wyd_od.Value && LedRecord.TesterTimeOfTest < dateTimePicker_wyd_do.Value)
+                {
+                    string DayShift = DateToShiftNumber(LedRecord.TesterTimeOfTest);
+                    if (!DayCheckList.Contains(DayShift.Split(' ')[0]))
+                    {
+                        DayCheckList.Add(DayShift.Split(' ')[0]);
+                        GridSource.Rows.Add(DayShift.Split(' ')[0], 0, 0, 0);
+                    }
+                    switch (DayShift.Split(' ')[1])
+                    {
+                        case "3":
+                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][1] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][1] + 1;
+                            break;
+                        case "1":
+                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][2] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][2] + 1;
+                            break;
+                        case "2":
+                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][3] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][3] + 1;
+                            break;
+
+                    }
+                }
+            }
+            dataGridView_Capacity_Test.DataSource = GridSource;
+            foreach (DataGridViewColumn col in dataGridView_Capacity_Test.Columns)
+            {
+                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
+            
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (Tab.SelectedTab.Name == "tab_Waste")
             {
-                DrawWasteHistogram();
+
             }
             if (Tab.SelectedTab.Name == "tab_Capacity")
             {
-                DataTable shifts = TableOperations.Tester_IloscNaZmiane(Tester_table);
-                dataGridView_Capacity_Test.DataSource = shifts;
-                dataGridView_Capacity_Test.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                Charting.ShiftLineChart(chart_Capacity_Test, shifts, 0, 1, 2);
+                DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+                chart_Capacity_Test.DataSource = dataGridView_Capacity_Test;
             }
         }
 
