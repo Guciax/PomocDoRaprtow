@@ -133,7 +133,61 @@ namespace PomocDoRaprtow
             {
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
-            
+
+            DestinationChart.Series.Clear();
+            DestinationChart.ChartAreas.Clear();
+
+            Series ser1 = new Series();
+            ser1.IsVisibleInLegend = false;
+            ser1.IsValueShownAsLabel = false;
+            ser1.ChartType = SeriesChartType.FastLine;
+            ser1.Color = System.Drawing.Color.BlueViolet;
+            ser1.LegendText = "1";
+            ser1.BorderWidth = 2;
+
+            Series ser2 = new Series();
+            ser2.IsVisibleInLegend = false;
+            ser2.IsValueShownAsLabel = false;
+            ser2.ChartType = SeriesChartType.Line;
+            ser2.Color = System.Drawing.Color.Chocolate;
+            ser2.LegendText = "2";
+
+            Series ser3 = new Series();
+            ser3.IsVisibleInLegend = false;
+            ser3.IsValueShownAsLabel = false;
+            ser3.ChartType = SeriesChartType.Line;
+            ser3.Color = System.Drawing.Color.Lime;
+            ser3.LegendText = "3";
+
+            ChartArea area = new ChartArea();
+            area.AxisX.IsLabelAutoFit = true;
+            area.AxisX.LabelAutoFitStyle = LabelAutoFitStyles.LabelsAngleStep45;
+            area.AxisX.LabelStyle.Enabled = true;
+            area.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 12);
+            area.AxisX.Interval = 1;
+            area.AxisY.Interval = 500;
+            area.AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            area.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+
+
+            DestinationChart.Series.Add(ser1);
+            DestinationChart.Series.Add(ser2);
+            DestinationChart.Series.Add(ser3);
+            DestinationChart.ChartAreas.Add(area);
+
+            foreach (DataRow row in GridSource.Rows)
+            {
+
+                DestinationChart.Series[0].Points
+                        .AddXY(row[0].ToString(), (int)row[1]);
+
+                DestinationChart.Series[1].Points
+                        .AddXY(row[0].ToString(), (int)row[2]);
+
+                DestinationChart.Series[2].Points
+                        .AddXY(row[0].ToString(), (int)row[3]);
+            }
+
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -145,7 +199,7 @@ namespace PomocDoRaprtow
             if (Tab.SelectedTab.Name == "tab_Capacity")
             {
                 DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
-                chart_Capacity_Test.DataSource = dataGridView_Capacity_Test;
+                
             }
         }
 
