@@ -95,7 +95,7 @@ namespace PomocDoRaprtow
                     if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
                     {
                         initializedDays.Add(shiftInfo.DayOfTheMonth);
-                        GridSource.Rows.Add(shiftInfo.DayOfTheMonth, 0, 0, 0);
+                        GridSource.Rows.Add(shiftInfo.Month.ToString("d2")+"-"+ shiftInfo.DayOfTheMonth.ToString("d2"), 0, 0, 0);
                     }
 
                     int gridColumn = 1;
@@ -118,11 +118,17 @@ namespace PomocDoRaprtow
                 }
             }
 
+            DataView dv = GridSource.DefaultView;
+            dv.Sort = "Day asc";
+            GridSource = dv.ToTable();
+
             dataGridView_Capacity_Test.DataSource = GridSource;
             foreach (DataGridViewColumn col in dataGridView_Capacity_Test.Columns)
             {
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
+
+            
 
             DestinationChart.Series.Clear();
             DestinationChart.ChartAreas.Clear();
