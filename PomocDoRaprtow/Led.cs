@@ -1,4 +1,6 @@
-﻿namespace PomocDoRaprtow
+﻿using System.Collections.Generic;
+
+namespace PomocDoRaprtow
 {
     public class Led
     {
@@ -12,5 +14,6 @@
         public string SerialNumber { get; }
         public Lot Lot { get; }
         public TesterData TesterData { get; }
+        
     }
 }

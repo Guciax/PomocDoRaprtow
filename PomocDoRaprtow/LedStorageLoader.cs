@@ -10,6 +10,7 @@ namespace PomocDoRaprtow
         private Dictionary<String, Lot> Lots { get; set; }
         private Dictionary<String, WasteInfo> LotIdToWasteInfo { get; set; }
         private Dictionary<String, Led> SerialNumbersToLed { get; set; }
+        private HashSet<string> models { get; set; }
 
         public const String LotPath = @"DB\Zlecenia_produkcyjne.txt";
         public const String WastePath = @"DB\Odpad new.txt";
@@ -22,16 +23,17 @@ namespace PomocDoRaprtow
             LoadWasteTable(wastePath);
             LoadLotTable(lotPath);
             LoadLedTable(testerPath);
-            return new LedStorage(Lots, LotIdToWasteInfo, SerialNumbersToLed);
+            return new LedStorage(Lots, LotIdToWasteInfo, SerialNumbersToLed, models);
         }
 
         private void LoadLotTable(String path = LotPath)
         {
             Lots = new Dictionary<string, Lot>();
+            models = new HashSet<string>();
             string[] fileLines = System.IO.File.ReadAllLines(path);
             string[] header = fileLines[0].Split(';');
             int indexLotId = Array.IndexOf(header, "Nr_Zlecenia_Produkcyjnego");
-            int indexNc12 = Array.IndexOf(header, "NC12_wyrobu");
+            int indexModel = Array.IndexOf(header, "NC12_wyrobu");
             int indexRankA = Array.IndexOf(header, "RankA");
             int indexRankB = Array.IndexOf(header, "RankB");
             int indexMrm = Array.IndexOf(header, "MRM");
@@ -41,18 +43,20 @@ namespace PomocDoRaprtow
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
-
+                var model = splitLine[indexModel];
                 WasteInfo info;
                 LotIdToWasteInfo.TryGetValue(lotId, out info);
 
                 var lot = new Lot(splitLine[indexLotId],
-                    splitLine[indexNc12],
+                    model,
                     splitLine[indexRankA],
                     splitLine[indexRankB],
                     splitLine[indexMrm], info);
 
                 Lots.Add(lot.LotId, lot);
+                models.Add(model);
             }
+
         }
 
         private void LoadWasteTable(String path = WastePath)
@@ -96,6 +100,11 @@ namespace PomocDoRaprtow
 
                 Lot lot;
                 Lots.TryGetValue(lotId, out lot);
+
+                if(lot == null)
+                {
+                    continue;
+                }
 
                 var timeOfTest = DateTime.ParseExact(splitLine[indexTestTime],"yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
                 var testResult = splitLine[indexResult] == "OK";

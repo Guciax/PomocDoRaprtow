@@ -4,6 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Linq;
 
 namespace PomocDoRaprtow
 {
@@ -74,6 +75,12 @@ namespace PomocDoRaprtow
         private void button5_Click(object sender, EventArgs e)
         {
             leds = new LedStorageLoader().BuildStorage();
+            ModelcheckedListBox.Items.Clear();
+            foreach (var model in leds.Models)
+            {
+                ModelcheckedListBox.Items.Add(model);
+                ModelcheckedListBox.SetItemChecked(ModelcheckedListBox.Items.Count - 1, true);
+            }
         }
 
         private void DrawCapaChart(Chart DestinationChart, DataGridView DestinationGrid)
@@ -86,7 +93,7 @@ namespace PomocDoRaprtow
 
             List<int> initializedDays = new List<int>();
 
-            foreach (var led in leds.SerialNumbersToLed.Values)
+            foreach (var led in FilterLeds())
             {
                 if (led.TesterData.TimeOfTest > dateTimePicker_wyd_od.Value &&
                     led.TesterData.TimeOfTest < dateTimePicker_wyd_do.Value)
@@ -184,6 +191,21 @@ namespace PomocDoRaprtow
             }
         }
 
+        private HashSet<String> enabledModels = new HashSet<string>();
+        private bool PassesFilter(Led led)
+        {
+            return enabledModels.Contains(led.Lot.Model);
+        }
+        private IEnumerable<Led> FilterLeds()
+        {
+            enabledModels.Clear();
+            foreach(var model in ModelcheckedListBox.CheckedItems)
+            {
+                enabledModels.Add(model as String);
+            }
+            return leds.SerialNumbersToLed.Values.Where(PassesFilter);
+        }
+
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (Tab.SelectedTab.Name == "tab_Waste")
@@ -216,12 +238,27 @@ namespace PomocDoRaprtow
 
         private void checkedListBox1_MouseEnter(object sender, EventArgs e)
         {
-            checkedListBox1.Height = 200;
+            ModelcheckedListBox.Height = 200;
         }
 
         private void checkedListBox1_MouseLeave(object sender, EventArgs e)
         {
-            checkedListBox1.Height = 50;
+            ModelcheckedListBox.Height = 50;
+        }
+
+        private void ModelcheckedListBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+        }
+
+        private void dateTimePicker_wyd_od_ValueChanged(object sender, EventArgs e)
+        {
+            DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+        }
+
+        private void dateTimePicker_wyd_do_ValueChanged(object sender, EventArgs e)
+        {
+            DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
         }
     }
 }
