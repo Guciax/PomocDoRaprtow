@@ -1,8 +1,24 @@
-﻿namespace PomocDoRaprtow
+﻿using System.Collections.Generic;
+
+namespace PomocDoRaprtow
 {
     public class Led
     {
-        public string SerialNumber { get; set; }
-        public string ProductionOrderId{ get; set; }
+        public Led(string serialNumber, Lot lot, TesterData testerData)
+        {
+            SerialNumber = serialNumber;
+            Lot = lot;
+            TesterData = new List<TesterData>();
+            TesterData.Add(testerData);
+        }
+
+        public string SerialNumber { get; }
+        public Lot Lot { get; }
+        public List<TesterData> TesterData { get; }
+        
+        public void AddTesterData(TesterData testerData)
+        {
+            TesterData.Add(testerData);
+        }
     }
 }
