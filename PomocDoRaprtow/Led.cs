@@ -8,12 +8,17 @@ namespace PomocDoRaprtow
         {
             SerialNumber = serialNumber;
             Lot = lot;
-            TesterData = testerData;
+            TesterData = new List<TesterData>();
+            TesterData.Add(testerData);
         }
 
         public string SerialNumber { get; }
         public Lot Lot { get; }
-        public TesterData TesterData { get; }
+        public List<TesterData> TesterData { get; }
         
+        public void AddTesterData(TesterData testerData)
+        {
+            TesterData.Add(testerData);
+        }
     }
 }

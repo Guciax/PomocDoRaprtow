@@ -1,2 +1,3 @@
-powi¹zanie #LOT-model
-odpad(karta pracy) data/czas
+dowiedziec sie co to jest SCR
+dowiedziec sie dlaczego sa tester id == 0.
+przemyslec czy odfiltrowywac te dane powyzej. Jezeli tak to trzeba sie zastanowic co w koncu odfiltrowywac

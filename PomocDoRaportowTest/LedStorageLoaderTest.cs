@@ -32,7 +32,7 @@ namespace PomocDoRaportowTest
             Assert.True(loader.Lots.ContainsKey("1210991"));
 
             var someLot = loader.Lots["1210991"];
-            Assert.AreEqual("LLFMLK2-11L403A", someLot.Nc12);
+            Assert.AreEqual("LLFMLK2-11L403A", someLot.Model);
             Assert.AreEqual("U2-J5-2", someLot.RankA);
             Assert.AreEqual("U1-J5-2", someLot.RankB);
             Assert.AreEqual("JEEU2U1A22", someLot.Mrm);
@@ -57,7 +57,7 @@ namespace PomocDoRaportowTest
             Assert.True(loader.SerialNumbersToLed.ContainsKey("M7907J-D-GR5R518B8B800002"));
             Assert.AreEqual("7094754", loader.SerialNumbersToLed["M7907J-H-IR5R529A9A800001"].Lot.LotId);
 
-            var someTesterData = loader.SerialNumbersToLed["M7907J-D-GR5R518B8B800001"].TesterData;
+            var someTesterData = loader.SerialNumbersToLed["M7907J-D-GR5R518B8B800001"].TesterData.First();
             Assert.AreEqual("1", someTesterData.TesterId);
             Assert.AreEqual(true, someTesterData.TestResult);
             Assert.AreEqual("", someTesterData.FailureReason);

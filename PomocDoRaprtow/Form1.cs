@@ -92,39 +92,44 @@ namespace PomocDoRaprtow
             GridSource.Columns.Add("Shift II", typeof(int));
 
             List<int> initializedDays = new List<int>();
-
+            Dictionary<int, int> occurences = new Dictionary<int, int>();
             foreach (var led in FilterLeds())
             {
-                if (led.TesterData.TimeOfTest > dateTimePicker_wyd_od.Value &&
-                    led.TesterData.TimeOfTest < dateTimePicker_wyd_do.Value)
+                int count = 0;
+                occurences.TryGetValue(led.TesterData.Count, out count);
+                occurences[led.TesterData.Count] = count;
+                foreach (var testerData in led.TesterData)
                 {
-                    DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(led.TesterData.TimeOfTest);
-                    if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
+                    if (testerData.TimeOfTest > dateTimePicker_wyd_od.Value &&
+                        testerData.TimeOfTest < dateTimePicker_wyd_do.Value)
                     {
-                        initializedDays.Add(shiftInfo.DayOfTheMonth);
-                        GridSource.Rows.Add(shiftInfo.Month.ToString("d2")+"-"+ shiftInfo.DayOfTheMonth.ToString("d2"), 0, 0, 0);
-                    }
+                        DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(testerData.TimeOfTest);
+                        if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
+                        {
+                            initializedDays.Add(shiftInfo.DayOfTheMonth);
+                            GridSource.Rows.Add(shiftInfo.Month.ToString("d2") + "-" + shiftInfo.DayOfTheMonth.ToString("d2"), 0, 0, 0);
+                        }
 
-                    int gridColumn = 1;
-                    switch (shiftInfo.ShiftNo)
-                    {
-                        case 3:
-                            gridColumn = 1;
-                            break;
-                        case 1:
-                            gridColumn = 2;
-                            break;
-                        case 2:
-                            gridColumn = 3;
-                            break;
-                    }
+                        int gridColumn = 1;
+                        switch (shiftInfo.ShiftNo)
+                        {
+                            case 3:
+                                gridColumn = 1;
+                                break;
+                            case 1:
+                                gridColumn = 2;
+                                break;
+                            case 2:
+                                gridColumn = 3;
+                                break;
+                        }
 
-                    var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
-                    GridSource.Rows[indexInInitializedDays][gridColumn] =
-                        (int) GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
+                        var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
+                        GridSource.Rows[indexInInitializedDays][gridColumn] =
+                            (int)GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
+                    }
                 }
             }
-
             DataView dv = GridSource.DefaultView;
             dv.Sort = "Day asc";
             GridSource = dv.ToTable();

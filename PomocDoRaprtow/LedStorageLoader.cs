@@ -97,7 +97,7 @@ namespace PomocDoRaprtow
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
-
+                var ledId = splitLine[indexSerialNr];
                 Lot lot;
                 Lots.TryGetValue(lotId, out lot);
 
@@ -111,10 +111,15 @@ namespace PomocDoRaprtow
                 var testerData = new TesterData(splitLine[indexTesterId],timeOfTest, testResult, splitLine[indexFailReason]);
                 var led = new Led(splitLine[indexSerialNr], lot, testerData);
 
-                //TODO WHY there can are duplicates here?
+                
                 if (!SerialNumbersToLed.ContainsKey(led.SerialNumber))
                 {
                     SerialNumbersToLed.Add(led.SerialNumber, led);
+                }
+                else
+                {
+                    Led previousLed = SerialNumbersToLed[led.SerialNumber];
+                    previousLed.AddTesterData(testerData);
                 }
             }
         }
