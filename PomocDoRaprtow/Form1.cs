@@ -4,12 +4,14 @@ using System.Data;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Linq;
 
 namespace PomocDoRaprtow
 {
     public partial class Form1 : Form
     {
         private readonly OptionProvider optionProvider;
+        private LedStorage leds;
 
         public Form1()
         {
@@ -25,7 +27,6 @@ namespace PomocDoRaprtow
 
         public DateTimePicker WasteSinceTimePicker => dateTimePicker_odpad_od;
         public DateTimePicker WasteToTimePicker => dateTimePicker_odpad_do;
-        List<LedModules> BigFuckingLedList = new List<LedModules>();
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -33,7 +34,6 @@ namespace PomocDoRaprtow
 
         DataTable Odpady_table = new DataTable();
         DataTable Tester_table = new DataTable();
-        static DataTable LOT_Module_Table = new DataTable(); //Nr_Zlecenia_Produkcyjnego NC12_wyrobu RankA RankB MRM
         static DataTable LOT_Module_Short = new DataTable();
 
         private void button1_Click(object sender, EventArgs e)
@@ -53,7 +53,6 @@ namespace PomocDoRaprtow
                 {
                     //Debug.WriteLine(row[1]);
                     return row[1].ToString();
-                    
                 }
             }
             return "";
@@ -75,64 +74,73 @@ namespace PomocDoRaprtow
 
         private void button5_Click(object sender, EventArgs e)
         {
-            //Odpady_table = FileTableLoader.LoadWasteTable();
-            //Tester_table = FileTableLoader.LoadTesterWorkCard();
-            LOT_Module_Table = FileTableLoader.LOT_Module_Table();
-            LOT_Module_Short = TableOperations.Lot_module_short(FileTableLoader.LOT_Module_Table(), 0, 1);
-            BigFuckingLedList = FileTableLoader.LoadTesterCsvToList();
-
-            //Odpady_table = TableOperations.Table_plus_model(Odpady_table, 2);
-            //Tester_table = TableOperations.Table_plus_model(Tester_table, 4);
-        }
-
-        private string DateToShiftNumber(DateTime inputDate)
-        {
-            if (inputDate.Hour >= 22) return inputDate.Day + 1 + "-" + inputDate.Month + " 3";
-            if (inputDate.Hour >= 14) return inputDate.Day + "-" + inputDate.Month + " 2";
-            if (inputDate.Hour >= 6) return inputDate.Day + "-" + inputDate.Month + " 1";
-            return inputDate.Day + "-" + inputDate.Month + " 3";
+            leds = new LedStorageLoader().BuildStorage();
+            ModelcheckedListBox.Items.Clear();
+            foreach (var model in leds.Models)
+            {
+                ModelcheckedListBox.Items.Add(model);
+                ModelcheckedListBox.SetItemChecked(ModelcheckedListBox.Items.Count - 1, true);
+            }
         }
 
         private void DrawCapaChart(Chart DestinationChart, DataGridView DestinationGrid)
         {
             DataTable GridSource = new DataTable();
             GridSource.Columns.Add("Day");
-            GridSource.Columns.Add("Shift III", typeof (int));
+            GridSource.Columns.Add("Shift III", typeof(int));
             GridSource.Columns.Add("Shift I", typeof(int));
             GridSource.Columns.Add("Shift II", typeof(int));
 
-            List<string> DayCheckList = new List<string>();
-
-            foreach (var LedRecord in BigFuckingLedList)
+            List<int> initializedDays = new List<int>();
+            Dictionary<int, int> occurences = new Dictionary<int, int>();
+            foreach (var led in FilterLeds())
             {
-                if (LedRecord.TesterTimeOfTest > dateTimePicker_wyd_od.Value && LedRecord.TesterTimeOfTest < dateTimePicker_wyd_do.Value)
+                int count = 0;
+                occurences.TryGetValue(led.TesterData.Count, out count);
+                occurences[led.TesterData.Count] = count;
+                foreach (var testerData in led.TesterData)
                 {
-                    string DayShift = DateToShiftNumber(LedRecord.TesterTimeOfTest);
-                    if (!DayCheckList.Contains(DayShift.Split(' ')[0]))
+                    if (testerData.TimeOfTest > dateTimePicker_wyd_od.Value &&
+                        testerData.TimeOfTest < dateTimePicker_wyd_do.Value)
                     {
-                        DayCheckList.Add(DayShift.Split(' ')[0]);
-                        GridSource.Rows.Add(DayShift.Split(' ')[0], 0, 0, 0);
-                    }
-                    switch (DayShift.Split(' ')[1])
-                    {
-                        case "3":
-                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][1] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][1] + 1;
-                            break;
-                        case "1":
-                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][2] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][2] + 1;
-                            break;
-                        case "2":
-                            GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][3] = (int)GridSource.Rows[DayCheckList.IndexOf(DayShift.Split(' ')[0])][3] + 1;
-                            break;
+                        DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(testerData.TimeOfTest);
+                        if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
+                        {
+                            initializedDays.Add(shiftInfo.DayOfTheMonth);
+                            GridSource.Rows.Add(shiftInfo.Month.ToString("d2") + "-" + shiftInfo.DayOfTheMonth.ToString("d2"), 0, 0, 0);
+                        }
 
+                        int gridColumn = 1;
+                        switch (shiftInfo.ShiftNo)
+                        {
+                            case 3:
+                                gridColumn = 1;
+                                break;
+                            case 1:
+                                gridColumn = 2;
+                                break;
+                            case 2:
+                                gridColumn = 3;
+                                break;
+                        }
+
+                        var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
+                        GridSource.Rows[indexInInitializedDays][gridColumn] =
+                            (int)GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
                     }
                 }
             }
+            DataView dv = GridSource.DefaultView;
+            dv.Sort = "Day asc";
+            GridSource = dv.ToTable();
+
             dataGridView_Capacity_Test.DataSource = GridSource;
             foreach (DataGridViewColumn col in dataGridView_Capacity_Test.Columns)
             {
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
+
+            
 
             DestinationChart.Series.Clear();
             DestinationChart.ChartAreas.Clear();
@@ -177,29 +185,40 @@ namespace PomocDoRaprtow
 
             foreach (DataRow row in GridSource.Rows)
             {
-
                 DestinationChart.Series[0].Points
-                        .AddXY(row[0].ToString(), (int)row[1]);
+                    .AddXY(row[0].ToString(), (int) row[1]);
 
                 DestinationChart.Series[1].Points
-                        .AddXY(row[0].ToString(), (int)row[2]);
+                    .AddXY(row[0].ToString(), (int) row[2]);
 
                 DestinationChart.Series[2].Points
-                        .AddXY(row[0].ToString(), (int)row[3]);
+                    .AddXY(row[0].ToString(), (int) row[3]);
             }
+        }
 
+        private HashSet<String> enabledModels = new HashSet<string>();
+        private bool PassesFilter(Led led)
+        {
+            return enabledModels.Contains(led.Lot.Model);
+        }
+        private IEnumerable<Led> FilterLeds()
+        {
+            enabledModels.Clear();
+            foreach(var model in ModelcheckedListBox.CheckedItems)
+            {
+                enabledModels.Add(model as String);
+            }
+            return leds.SerialNumbersToLed.Values.Where(PassesFilter);
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (Tab.SelectedTab.Name == "tab_Waste")
             {
-
             }
             if (Tab.SelectedTab.Name == "tab_Capacity")
             {
                 DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
-                
             }
         }
 
@@ -224,12 +243,27 @@ namespace PomocDoRaprtow
 
         private void checkedListBox1_MouseEnter(object sender, EventArgs e)
         {
-            checkedListBox1.Height = 200;
+            ModelcheckedListBox.Height = 200;
         }
 
         private void checkedListBox1_MouseLeave(object sender, EventArgs e)
         {
-            checkedListBox1.Height = 50;
+            ModelcheckedListBox.Height = 50;
+        }
+
+        private void ModelcheckedListBox_SelectedValueChanged(object sender, EventArgs e)
+        {
+            DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+        }
+
+        private void dateTimePicker_wyd_od_ValueChanged(object sender, EventArgs e)
+        {
+            DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+        }
+
+        private void dateTimePicker_wyd_do_ValueChanged(object sender, EventArgs e)
+        {
+            DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
         }
     }
 }

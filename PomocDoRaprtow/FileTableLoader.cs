@@ -109,25 +109,7 @@ namespace PomocDoRaprtow
 
         private static List<TesterData> CsvTesterFileToTesterData(string FilePath)
         {
-            List<TesterData> LedModulesList = new List<TesterData>();
-            string[] FileArray = System.IO.File.ReadAllLines(FilePath);
-            foreach (var item in FileArray)
-            {
-                TesterData LedToAdd = new TesterData();
-                LedToAdd.TimeOfTest = DateTime.ParseExact(item.Split(';')[1],"yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
-                LedToAdd.TesterId = item.Split(';')[2];
-                if (item.Split(';')[6] == "OK")
-                    LedToAdd.TestResult = true;
-                else
-                {
-                    LedToAdd.TestResult = true;
-                    LedToAdd.FailureReason = item.Split(';')[7];
-                }
-
-                LedModulesList.Add(LedToAdd);
-            }
-
-            return LedModulesList;
+            return null;
         }
     }
 }
