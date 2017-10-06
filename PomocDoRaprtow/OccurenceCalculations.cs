@@ -8,7 +8,10 @@ namespace PomocDoRaprtow
 {
     class OccurenceCalculations
     {
-        private Dictionary<String, int> occurences = new Dictionary<string, int>();
+        private Dictionary<int, int> occurences = new Dictionary<int, int>();
+        private Dictionary<int, Dictionary<String, int>> modelOccurences =
+            new Dictionary<int, Dictionary<string, int>>();
+
         public OccurenceCalculations(List<Led> leds)
         {
             foreach (var led in leds)
@@ -16,15 +19,15 @@ namespace PomocDoRaprtow
                 var model = led.Lot.Model;
                 foreach (var testerData in led.TesterData)
                 {
-                    var idForModel = IdForModel(model, testerData.ShiftNo, testerData.FixedDateTime); 
-                    var idForShift = IdForShift(testerData.ShiftNo, testerData.FixedDateTime); 
-                    var idForDay = IdForDay(testerData.FixedDateTime); 
+                    var idForModel = IdForModel(model, testerData.ShiftNo, testerData.FixedDateTime);
+                    var idForShift = IdForShift(testerData.ShiftNo, testerData.FixedDateTime);
+                    var idForDay = IdForDay(testerData.FixedDateTime);
                     var idForWeek = IdForWeek(testerData.FixedDateTime);
-                    
-                    increment(idForModel);
-                    increment(idForShift);
-                    increment(idForDay);
-                    increment(idForWeek);
+
+                    IncrementModel(idForModel.Item1, idForModel.Item2);
+                    Increment(idForShift);
+                    Increment(idForDay);
+                    Increment(idForWeek);
                 }
             }
         }
@@ -32,7 +35,7 @@ namespace PomocDoRaprtow
         public int GetOccurenceForModel(Led led, TesterData testerData)
         {
             var id = IdForModel(led.Lot.Model, testerData.ShiftNo, testerData.FixedDateTime);
-            return occurences[id];
+            return modelOccurences[id.Item1][id.Item2];
         }
 
         public int GetOccurenceForShift(TesterData testerData)
@@ -53,37 +56,53 @@ namespace PomocDoRaprtow
             return occurences[id];
         }
 
-        private string IdForModel(String model, int shiftNo, DateTime fixedDate)
+        private Tuple<int, string> IdForModel(String model, int shiftNo, DateTime fixedDate)
         {
-            //return IdForShift(shiftNo, fixedDate) * 10 + model_to_int;
+            var shiftId = IdForShift(shiftNo, fixedDate);
+            return Tuple.Create(shiftId, model);
             //zeby zrobic model to int to moze .. kazdy znaczek na int * 100?
-            return model + IdForShift(shiftNo, fixedDate);
+//            return model + IdForShift(shiftNo, fixedDate);
         }
 
-        private string IdForShift(int shiftNo, DateTime fixedDate)
+        private int IdForShift(int shiftNo, DateTime fixedDate)
         {
-            //return IdForDay(fixedDate) * 1000 + shiftNo
-
-            return fixedDate.Year.ToString() + fixedDate.Day + shiftNo;
+            return IdForDay(fixedDate) * 1000 + shiftNo;
+//            return fixedDate.Year.ToString() + fixedDate.Day + shiftNo;
         }
 
-        private string IdForDay(DateTime fixedDate)
+        private int IdForDay(DateTime fixedDate)
         {
-            //return IdForWeek(fixedDate) * 1000 + fixedDate.Day
-            return fixedDate.Year.ToString() + fixedDate.Day;
+            return IdForWeek(fixedDate) * 1000 + fixedDate.Day;
+            //return fixedDate.Year.ToString() + fixedDate.Day;
         }
 
-        private string IdForWeek(DateTime fixedDate)
+        private int IdForWeek(DateTime fixedDate)
         {
-            //retun DateUtilities.GetRealWeekOfYear(fixedDate);
-            return DateUtilities.GetRealWeekOfYear(fixedDate).ToString();
+            return DateUtilities.GetRealWeekOfYear(fixedDate);
+//            return DateUtilities.GetRealWeekOfYear(fixedDate).ToString();
         }
 
-        private void increment(String id)
+        private void Increment(int id)
         {
             int val = 0;
             occurences.TryGetValue(id, out val);
             occurences[id] = val + 1;
+        }
+
+        private void IncrementModel(int shiftId, String model)
+        {
+            Dictionary<String, int> modelToOccurence;
+            modelOccurences.TryGetValue(shiftId, out modelToOccurence);
+
+            if (modelToOccurence == null)
+            {
+                modelToOccurence = new Dictionary<string, int>();
+                modelOccurences.Add(shiftId, modelToOccurence);
+            }
+
+            int val = 0;
+            modelToOccurence.TryGetValue(model, out val);
+            modelToOccurence[model] = val + 1;
         }
     }
 }

@@ -139,7 +139,7 @@ namespace PomocDoRaprtow
 
                         
                         //treeview
-                        string weekNo = DateUtilities.GetRealWeekOfYear(DateUtilities.FixedShiftDate(testerData.TimeOfTest));
+                        string weekNo = DateUtilities.GetRealWeekOfYear(DateUtilities.FixedShiftDate(testerData.TimeOfTest)).ToString("d2");
 
                         if (!treeView1.Nodes.ContainsKey(weekNo))
                         {

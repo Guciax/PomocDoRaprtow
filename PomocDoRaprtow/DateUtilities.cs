@@ -18,14 +18,14 @@ namespace PomocDoRaprtow
             public int Month { get; }
             public int DayOfTheMonth { get; }
         }
-        public static string GetRealWeekOfYear(DateTime time)
+        public static int GetRealWeekOfYear(DateTime time)
         {
             DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
             if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
             {
                 time = time.AddDays(3);
             }
-            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday).ToString("d2");
+            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
 
         public static DateTime FixedShiftDate(DateTime inputDate)
