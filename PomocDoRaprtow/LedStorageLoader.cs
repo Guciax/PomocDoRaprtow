@@ -106,12 +106,19 @@ namespace PomocDoRaprtow
                     continue;
                 }
 
-                var timeOfTest = DateTime.ParseExact(splitLine[indexTestTime],"yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
-                var testResult = splitLine[indexResult] == "OK";
-                var testerData = new TesterData(splitLine[indexTesterId],timeOfTest, testResult, splitLine[indexFailReason]);
-                var led = new Led(splitLine[indexSerialNr], lot, testerData);
+                string testResult = splitLine[indexResult];
+                if (testResult != "OK" && testResult != "NG")
+                {
+                    continue;
+                }
 
-                
+                var timeOfTest = DateTime.ParseExact(splitLine[indexTestTime],"yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+                var wasTestSuccesful = splitLine[indexResult] == "OK";
+                var fixedDateTime = DateUtilities.FixedShiftDate(timeOfTest);
+                var shiftNo = DateUtilities.DateToShiftInfo(timeOfTest).ShiftNo;
+                var testerData = new TesterData(splitLine[indexTesterId],timeOfTest, fixedDateTime, shiftNo, wasTestSuccesful, splitLine[indexFailReason]);
+                var led = new Led(splitLine[indexSerialNr], lot, testerData);
+                                
                 if (!SerialNumbersToLed.ContainsKey(led.SerialNumber))
                 {
                     SerialNumbersToLed.Add(led.SerialNumber, led);

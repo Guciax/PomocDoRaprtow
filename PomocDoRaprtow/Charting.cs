@@ -86,8 +86,7 @@ namespace PomocDoRaprtow
             area.AxisY.Interval = 500;
             area.AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
             area.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
-
-
+            
             lineChartControl.Series.Add(ser1);
             lineChartControl.Series.Add(ser2);
             lineChartControl.Series.Add(ser3);

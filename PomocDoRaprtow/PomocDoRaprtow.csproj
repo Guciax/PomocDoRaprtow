@@ -74,6 +74,7 @@
     <Compile Include="LedStorage.cs" />
     <Compile Include="LedStorageLoader.cs" />
     <Compile Include="Lot.cs" />
+    <Compile Include="OccurenceCalculations.cs" />
     <Compile Include="OptionProvider.cs" />
     <Compile Include="SqlTableLoader.cs" />
     <Compile Include="FileTableLoader.cs" />
