@@ -55,21 +55,27 @@ namespace PomocDoRaprtow
 
         private string IdForModel(String model, int shiftNo, DateTime fixedDate)
         {
+            //return IdForShift(shiftNo, fixedDate) * 10 + model_to_int;
+            //zeby zrobic model to int to moze .. kazdy znaczek na int * 100?
             return model + IdForShift(shiftNo, fixedDate);
         }
 
         private string IdForShift(int shiftNo, DateTime fixedDate)
         {
+            //return IdForDay(fixedDate) * 1000 + shiftNo
+
             return fixedDate.Year.ToString() + fixedDate.Day + shiftNo;
         }
 
         private string IdForDay(DateTime fixedDate)
         {
+            //return IdForWeek(fixedDate) * 1000 + fixedDate.Day
             return fixedDate.Year.ToString() + fixedDate.Day;
         }
 
         private string IdForWeek(DateTime fixedDate)
         {
+            //retun DateUtilities.GetRealWeekOfYear(fixedDate);
             return DateUtilities.GetRealWeekOfYear(fixedDate).ToString();
         }
 

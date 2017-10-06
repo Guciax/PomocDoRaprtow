@@ -67,17 +67,19 @@ namespace PomocDoRaprtow
 
             var indices = WasteInfo.WasteFieldNames.Select(wasteName => Array.IndexOf(header, wasteName)).ToList();
             var lotIdIndex = Array.IndexOf(header, "Nr_Zlecenia_Produkcyjnego");
+            var splittingTimeIndex = Array.IndexOf(header, "DataCzas");
 
             foreach (var line in fileLines.Skip(1))
             {
                 List<int> counts = new List<int>();
                 var splitLine = line.Split(';');
                 String lotId = splitLine[lotIdIndex];
+                var splittingTime = DateUtilities.ParseExact(splitLine[splittingTimeIndex]);
                 foreach (var index in indices)
                 {
                     counts.Add(int.Parse(splitLine[index]));
                 }
-                LotIdToWasteInfo.Add(lotId, new WasteInfo(counts));
+                LotIdToWasteInfo.Add(lotId, new WasteInfo(counts,splittingTime));
             }
         }
 
@@ -112,7 +114,7 @@ namespace PomocDoRaprtow
                     continue;
                 }
 
-                var timeOfTest = DateTime.ParseExact(splitLine[indexTestTime],"yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+                var timeOfTest = DateUtilities.ParseExact(splitLine[indexTestTime]);
                 var wasTestSuccesful = splitLine[indexResult] == "OK";
                 var fixedDateTime = DateUtilities.FixedShiftDate(timeOfTest);
                 var shiftNo = DateUtilities.DateToShiftInfo(timeOfTest).ShiftNo;

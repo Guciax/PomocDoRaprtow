@@ -104,7 +104,7 @@ namespace PomocDoRaprtow
             {
                 int count = 0;
                 occurences.TryGetValue(led.TesterData.Count, out count);
-                occurences[led.TesterData.Count] = count;
+                occurences[led.TesterData.Count] = count+1;
                                 
                 foreach (var testerData in led.TesterData)
                 {

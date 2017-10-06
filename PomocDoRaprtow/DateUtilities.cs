@@ -49,5 +49,10 @@ namespace PomocDoRaprtow
             if (inputDate.Hour >= 6) return new ShiftInfo(1, inputDate.Month, inputDate.Day);
             return new ShiftInfo(3, inputDate.Month, inputDate.Day);
         }
+
+        public static DateTime ParseExact(String date)
+        {
+            return DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+        }
     }
 }

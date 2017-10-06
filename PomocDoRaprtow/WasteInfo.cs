@@ -13,11 +13,13 @@ namespace PomocDoRaprtow
         };
 
         //indicies correspond exactly to wasteifeld names
-        public WasteInfo(List<int> wasteCounts)
+        public WasteInfo(List<int> wasteCounts, DateTime splittingDate)
         {
             WasteCounts = wasteCounts;
+            SplittingDate = splittingDate;
         }
 
         public List<int> WasteCounts { get; }
+        public DateTime SplittingDate { get; }
     }
 }
