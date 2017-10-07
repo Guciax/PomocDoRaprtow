@@ -10,37 +10,7 @@ namespace PomocDoRaprtow
 {
     class TableOperations
     {
-        public static DataTable HistogramTable(DataTable inputTable, int[] valueColumn, OptionProvider optProv)
-        {
-            DataTable resultTable = new DataTable();
-            resultTable.Columns.Add("Name");
-            resultTable.Columns.Add("Sum", typeof (Int16));
-            resultTable.Columns.Add("Date", typeof(DateTime));
-
-            foreach (var col in valueColumn)
-            {
-                resultTable.Rows.Add(inputTable.Columns[col].ColumnName, 0);
-            }
-
-            foreach (DataRow row in inputTable.Rows)
-            {
-                for (int i=0;i<valueColumn.Length;i++) 
-                {
-                    int value = 0;
-                    Int32.TryParse(row[valueColumn[i]].ToString(), out value);
-                    DateTime czas = DateTime.ParseExact(row["DataCzas"].ToString(), "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
-                    if (czas > optProv.WasteSince && czas < optProv.WasteTo) 
-                        resultTable.Rows[i][1] = (Int16)resultTable.Rows[i][1] + value;
-                    
-                }
-            }
-            DataView dv = resultTable.DefaultView;
-            dv.Sort = "Sum desc";
-            resultTable = dv.ToTable();
-
-
-            return resultTable;
-        }
+        
 
         public static DataTable Tester_IloscNaZmiane(DataTable inputTable)
         {

@@ -17,17 +17,11 @@ namespace PomocDoRaprtow
         public Form1()
         {
             InitializeComponent();
-            dateTimePicker_odpad_do.Format = DateTimePickerFormat.Custom;
-            dateTimePicker_odpad_od.Format = DateTimePickerFormat.Custom;
 
-            dateTimePicker_odpad_do.CustomFormat = "dd-MM-yyyy HH:mm:ss";
-            dateTimePicker_odpad_od.CustomFormat = "dd-MM-yyyy HH:mm:ss";
 
             optionProvider = new OptionProvider(this);
         }
 
-        public DateTimePicker WasteSinceTimePicker => dateTimePicker_odpad_od;
-        public DateTimePicker WasteToTimePicker => dateTimePicker_odpad_do;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -39,10 +33,7 @@ namespace PomocDoRaprtow
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DataTable hist = TableOperations.HistogramTable(Odpady_table, new[] {3, 4, 5, 6, 7, 8, 9, 10},
-                optionProvider);
-            dataGridView1.DataSource = hist;
-            Charting.BarChart(chart1, hist, 0, 1);
+
         }
 
 
@@ -76,11 +67,11 @@ namespace PomocDoRaprtow
         private void button5_Click(object sender, EventArgs e)
         {
             leds = new LedStorageLoader().BuildStorage();
-            ModelcheckedListBox.Items.Clear();
+            CapaModelcheckedListBox.Items.Clear();
             foreach (var model in leds.Models)
             {
-                ModelcheckedListBox.Items.Add(model);
-                ModelcheckedListBox.SetItemChecked(ModelcheckedListBox.Items.Count - 1, true);
+                CapaModelcheckedListBox.Items.Add(model);
+                CapaModelcheckedListBox.SetItemChecked(CapaModelcheckedListBox.Items.Count - 1, true);
             }
         }
 
@@ -96,20 +87,22 @@ namespace PomocDoRaprtow
             
             List<int> initializedDays = new List<int>();
             Dictionary<int, int> occurences = new Dictionary<int, int>();
-            treeView1.Nodes.Clear();
+            treeViewCapa.Nodes.Clear();
 
             var leds = FilterLeds().ToList();
             var occurenceCalculations = new OccurenceCalculations(leds);
+            treeViewCapa.BeginUpdate();
             foreach (var led in leds)
             {
+                
                 int count = 0;
                 occurences.TryGetValue(led.TesterData.Count, out count);
                 occurences[led.TesterData.Count] = count+1;
                                 
                 foreach (var testerData in led.TesterData)
                 {
-                    if (testerData.TimeOfTest > dateTimePicker_wyd_od.Value &&
-                        testerData.TimeOfTest < dateTimePicker_wyd_do.Value)
+                    if (testerData.TimeOfTest > dateTimePickerBegin.Value &&
+                        testerData.TimeOfTest < dateTimePickerEnd.Value)
                     {
                         DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(testerData.TimeOfTest);
                         string dayMonth = shiftInfo.DayOfTheMonth.ToString("d2") + "-" + shiftInfo.Month.ToString("d2") ;
@@ -141,36 +134,38 @@ namespace PomocDoRaprtow
                         //treeview
                         string weekNo = DateUtilities.GetRealWeekOfYear(DateUtilities.FixedShiftDate(testerData.TimeOfTest)).ToString("d2");
 
-                        if (!treeView1.Nodes.ContainsKey(weekNo))
+                        
+                        if (!treeViewCapa.Nodes.ContainsKey(weekNo))
                         {
                             TreeNode weekNode = new TreeNode(weekNo +"-"+ occurenceCalculations.GetOccurenceForWeek(testerData));
                             weekNode.Name = weekNo;
-                            treeView1.Nodes.Add(weekNode);
+                            treeViewCapa.Nodes.Add(weekNode);
                         }  
-                        if(!treeView1.Nodes[weekNo].Nodes.ContainsKey(dayMonth))
+                        if(!treeViewCapa.Nodes[weekNo].Nodes.ContainsKey(dayMonth))
                         {
                             TreeNode dayNode = new TreeNode(dayMonth + "-" + occurenceCalculations.GetOccurenceForDay(testerData));
                             dayNode.Name = dayMonth;
-                            treeView1.Nodes[weekNo].Nodes.Add(dayNode);
+                            treeViewCapa.Nodes[weekNo].Nodes.Add(dayNode);
                         }
-                        if(!treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes.ContainsKey(shiftInfo.ShiftNo.ToString()))
+                        if(!treeViewCapa.Nodes[weekNo].Nodes[dayMonth].Nodes.ContainsKey(shiftInfo.ShiftNo.ToString()))
                         {
                             TreeNode shiftNode = new TreeNode(shiftInfo.ShiftNo.ToString() + "-" + occurenceCalculations.GetOccurenceForShift(testerData));
                             shiftNode.Name = shiftInfo.ShiftNo.ToString();
-                            treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes.Add(shiftNode);
+                            treeViewCapa.Nodes[weekNo].Nodes[dayMonth].Nodes.Add(shiftNode);
                         }
-                        if(!treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes[shiftInfo.ShiftNo.ToString()].Nodes.ContainsKey(led.Lot.Model))
+                        if(!treeViewCapa.Nodes[weekNo].Nodes[dayMonth].Nodes[shiftInfo.ShiftNo.ToString()].Nodes.ContainsKey(led.Lot.Model))
                         {
                             TreeNode modelNode = new TreeNode(led.Lot.Model + "-" + occurenceCalculations.GetOccurenceForModel(led, testerData));
                             modelNode.Name = led.Lot.Model;
-                            treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes[shiftInfo.ShiftNo.ToString()].Nodes.Add(modelNode);
+                            treeViewCapa.Nodes[weekNo].Nodes[dayMonth].Nodes[shiftInfo.ShiftNo.ToString()].Nodes.Add(modelNode);
                         }
+                        
 
                     }
                 }
-                
+                treeViewCapa.EndUpdate();
             }
-            treeView1.Sort();
+            treeViewCapa.Sort();
             DataView dv = GridSource.DefaultView;
             dv.Sort = "Day asc";
             GridSource = dv.ToTable();
@@ -250,10 +245,11 @@ namespace PomocDoRaprtow
         {
             return enabledModels.Contains(led.Lot.Model);
         }
+        
         private IEnumerable<Led> FilterLeds()
         {
             enabledModels.Clear();
-            foreach(var model in ModelcheckedListBox.CheckedItems)
+            foreach(var model in CapaModelcheckedListBox.CheckedItems)
             {
                 enabledModels.Add(model as String);
             }
@@ -262,57 +258,145 @@ namespace PomocDoRaprtow
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tab.SelectedTab.Name == "tab_Waste")
+           /*if (Tab.SelectedTab.Name == "tab_Waste")
             {
+                DrawWasteHistogram();
             }
             if (Tab.SelectedTab.Name == "tab_Capacity")
             {
                 DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+            }*/
+        }
+        Dictionary<string, int[]> wastePerModel = new Dictionary<string, int[]>();
+        private void buildWastePerModelDict()
+        {
+            wastePerModel.Clear();
+            wastePerModel.Add("Total", new int[WasteInfo.WasteFieldNames.Length]);
+
+
+            foreach (var lot in leds.Lots)
+            {
+                if (lot.Value.WasteInfo != null)
+                {
+                    if (lot.Value.WasteInfo.SplittingDate >= dateTimePickerBegin.Value && lot.Value.WasteInfo.SplittingDate <= dateTimePickerEnd.Value)
+                    {
+                        string model = lot.Value.Model;
+                        if (!wastePerModel.ContainsKey(lot.Value.Model))
+                        {
+                            wastePerModel.Add(model, new int[WasteInfo.WasteFieldNames.Length]);
+                        }
+
+                        for (int i = 0; i < lot.Value.WasteInfo.WasteCounts.Count; i++)
+                        {
+
+                            int wasteCount = lot.Value.WasteInfo.WasteCounts[i];
+                            wastePerModel[model][i] = wastePerModel[model][i] + wasteCount;
+                            wastePerModel["Total"][i] = wastePerModel["Total"][i] + wasteCount;
+
+                        }
+                    }
+                }
             }
+            
+        }
+
+        private void refreshTreeViewWasteNodes()
+        {
+            treeViewWaste.BeginUpdate();
+            List<TreeNode> wasteNodes = new List<TreeNode>();
+            TreeNode totalNode = new TreeNode("Total" + " " + wastePerModel["Total"].Sum(x => Convert.ToInt32(x)));
+            totalNode.Name = "Total";
+            treeViewWaste.Nodes.Add(totalNode);
+            
+            foreach (var model in wastePerModel.Keys.Skip(1))
+            {
+                int total = wastePerModel[model].Sum(x => Convert.ToInt32(x));
+                TreeNode modelNode = new TreeNode(model + " " + total);
+                modelNode.Name = model;
+                treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
+            }
+
+            treeViewWaste.ExpandAll();
+            treeViewWaste.EndUpdate();
+            treeViewWaste.SelectedNode = treeViewWaste.Nodes["Total"];
         }
 
         private void DrawWasteHistogram()
         {
-            DataTable hist = TableOperations.HistogramTable(Odpady_table, new[] {3, 4, 5, 6, 7, 8, 9, 10},
-                optionProvider);
+            DataTable hist = new DataTable();
+            hist.Columns.Add("Name");
+            hist.Columns.Add("Count", typeof(int));
 
-            dataGridView_odpad.DataSource = hist;
-            Charting.BarChart(chart_odpad, hist, 0, 1);
+            foreach (var wasteHeader in WasteInfo.WasteFieldNames)
+            {
+                hist.Rows.Add(wasteHeader, 0);
+            }
+
+
+            foreach (var model in wastePerModel.Keys)
+            {
+                if (model == treeViewWaste.SelectedNode.Name)
+                {
+                    for (int i = 0; i < wastePerModel[model].Length; i++) 
+                    {
+                        hist.Rows[i][1] = (int)wastePerModel[model][i];
+                    }
+                }
+            }
+           
+            DataView dv = hist.DefaultView;
+            dv.Sort = "Count desc";
+            hist = dv.ToTable();
+
+            dataGridViewWaste.DataSource = hist;
+            Charting.BarChart (chart_odpad, hist, 0, 1);
         }
 
         private void dateTimePicker_odpad_od_ValueChanged(object sender, EventArgs e)
         {
-            DrawWasteHistogram();
+            
         }
 
         private void dateTimePicker_odpad_do_ValueChanged(object sender, EventArgs e)
         {
-            DrawWasteHistogram();
+            
         }
 
         private void checkedListBox1_MouseEnter(object sender, EventArgs e)
         {
-            ModelcheckedListBox.Height = 200;
+            CapaModelcheckedListBox.Height = 200;
         }
 
         private void checkedListBox1_MouseLeave(object sender, EventArgs e)
         {
-            ModelcheckedListBox.Height = 50;
+            CapaModelcheckedListBox.Height = 50;
         }
 
         private void ModelcheckedListBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+            
         }
 
         private void dateTimePicker_wyd_od_ValueChanged(object sender, EventArgs e)
         {
-            DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+            
         }
 
         private void dateTimePicker_wyd_do_ValueChanged(object sender, EventArgs e)
         {
+            
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
             DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+            buildWastePerModelDict();
+            refreshTreeViewWasteNodes();
+        }
+
+        private void treeViewWaste_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            DrawWasteHistogram();
         }
     }
 }

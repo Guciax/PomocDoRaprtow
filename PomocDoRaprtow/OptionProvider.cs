@@ -15,7 +15,6 @@ namespace PomocDoRaprtow
             this.form = form;
         }
 
-        public DateTime WasteSince => form.WasteSinceTimePicker.Value;
-        public DateTime WasteTo => form.WasteToTimePicker.Value;
+
     }
 }

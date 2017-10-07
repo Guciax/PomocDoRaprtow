@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -13,7 +14,7 @@ namespace PomocDoRaprtow
         private HashSet<string> models { get; set; }
 
         public const String LotPath = @"DB\Zlecenia_produkcyjne.txt";
-        public const String WastePath = @"DB\Odpad new.txt";
+        public const String WastePath = @"DB\Odpady.csv";
         public const String TesterPath = @"DB\tester.csv";
 
 
@@ -43,7 +44,7 @@ namespace PomocDoRaprtow
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
-                var model = splitLine[indexModel];
+                var model = splitLine[indexModel].Replace("LLFML","");
                 WasteInfo info;
                 LotIdToWasteInfo.TryGetValue(lotId, out info);
 
@@ -51,7 +52,7 @@ namespace PomocDoRaprtow
                     model,
                     splitLine[indexRankA],
                     splitLine[indexRankB],
-                    splitLine[indexMrm], info);
+                    splitLine[indexMrm], info, 0);
 
                 Lots.Add(lot.LotId, lot);
                 models.Add(model);
@@ -81,6 +82,7 @@ namespace PomocDoRaprtow
                 }
                 LotIdToWasteInfo.Add(lotId, new WasteInfo(counts,splittingTime));
             }
+            
         }
 
         private void LoadLedTable(String path = TesterPath)
@@ -94,12 +96,20 @@ namespace PomocDoRaprtow
             int indexTestTime = Array.IndexOf(header, "inspection_time");
             int indexResult = Array.IndexOf(header, "result");
             int indexFailReason = Array.IndexOf(header, "ng_type");
+            Dictionary<string, HashSet<string>> serialsInLot = new Dictionary<string, HashSet<string>>();
 
             foreach (var line in fileLines.Skip(1))
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
                 var ledId = splitLine[indexSerialNr];
+
+                if (!serialsInLot.ContainsKey(lotId))
+                {
+                    serialsInLot.Add(lotId, new HashSet<string>());
+                }
+                serialsInLot[lotId].Add(ledId);
+
                 Lot lot;
                 Lots.TryGetValue(lotId, out lot);
 
@@ -130,6 +140,13 @@ namespace PomocDoRaprtow
                     Led previousLed = SerialNumbersToLed[led.SerialNumber];
                     previousLed.AddTesterData(testerData);
                 }
+            }
+
+            foreach (var lot in serialsInLot.Keys)
+            {
+                if (!Lots.Keys.Contains(lot)) continue;
+                int count = lot.Length;
+                Lots[lot].TestedQuantity = count;
             }
         }
     }
