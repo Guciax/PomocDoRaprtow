@@ -17,25 +17,28 @@ namespace PomocDoRaprtow
         public string ModelName { get; }
         public List<Lot> Lots { get; } = new List<Lot>();
 
-        public List<int> WasteInModel;
 
-        public void CalculateWaste()
+        private bool TakeAllWaste(WasteInfo w) => true;
+
+        public List<int> CalculateWaste(Predicate<WasteInfo> wasteInfoFilter)
         {
-            WasteInModel = new List<int>();
+            var wasteInModel = new List<int>();
             foreach (var ignored in WasteInfo.WasteFieldNames)
             {
-                WasteInModel.Add(0);
+                wasteInModel.Add(0);
             }
             foreach (var lot in Lots)
             {
-                if (lot.WasteInfo != null)
+                if (lot.WasteInfo != null && wasteInfoFilter(lot.WasteInfo))
                 {
                     for (int i = 0; i < lot.WasteInfo.WasteCounts.Count; ++i)
                     {
-                        WasteInModel[i] += lot.WasteInfo.WasteCounts[i];
+                        wasteInModel[i] += lot.WasteInfo.WasteCounts[i];
                     }
                 }
             }
+
+            return wasteInModel;
         }
     }
 }

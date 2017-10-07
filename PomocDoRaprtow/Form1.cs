@@ -118,7 +118,7 @@ namespace PomocDoRaprtow
             richTextBox1.Text = "";
             foreach (KeyValuePair<int, int> kvp in occurencesCalculations.CountOccurences)
             {
-                richTextBox1.AppendText($"Key = {kvp.Key}, Value = {kvp.Value}" + "\r");
+                richTextBox1.AppendText($"{kvp.Key} test: {kvp.Value} modułów - " + "\r");
             }
 
             dataGridView_Capacity_Test.DataSource = GridSource;
@@ -223,6 +223,16 @@ namespace PomocDoRaprtow
             return ModelSelected(led.Lot.Model);
         }
 
+        private bool WasteInfoBySplittingTime(WasteInfo wasteInfo)
+        {
+            return wasteInfo != null && wasteInfo.SplittingDate > dateTimePickerBegin.Value &&
+            wasteInfo.SplittingDate < dateTimePickerEnd.Value;
+        }
+
+        private bool LotBySplittingTime(Lot lot)
+        {
+            return WasteInfoBySplittingTime(lot.WasteInfo);
+        }
         private bool ModelSelected(Model model)
         {
             return enabledModels.Contains(model.ModelName);
@@ -256,16 +266,20 @@ namespace PomocDoRaprtow
             treeViewWaste.BeginUpdate();
             treeViewWaste.Nodes.Clear();
             var models = ledStorage.Models.Values.Where(ModelSelected).ToList();
-            var total = models.Sum(m => m.WasteInModel.Sum());
+            var totalWaste = models.Sum(m => m.CalculateWaste(WasteInfoBySplittingTime).Sum());
+            var totalProduced = models.SelectMany(m => m.Lots.Where(LotBySplittingTime)).Sum(l => l.TestedQuantity);
+            
             List<TreeNode> wasteNodes = new List<TreeNode>();
-            TreeNode totalNode = new TreeNode("Total" + " " + total);
+            TreeNode totalNode = new TreeNode("Total" + " " + totalWaste + " Total Produced " + MathUtilities.CalculatePercentage(totalProduced,totalWaste));
             totalNode.Name = "Total";
             treeViewWaste.Nodes.Add(totalNode);
-
+           
             foreach (var model in models)
             {
-                int totalInModel = model.WasteInModel.Sum();
-                TreeNode modelNode = new TreeNode(model.ModelName + " " + totalInModel);
+                int totalWasteInModel = model.CalculateWaste(WasteInfoBySplittingTime).Sum();
+                int totalProducedInModel = model.Lots.Where(LotBySplittingTime).Sum(l => l.TestedQuantity);
+                if (totalProducedInModel == 0) continue;
+                TreeNode modelNode = new TreeNode($"{model.ModelName} {totalWasteInModel} - {MathUtilities.CalculatePercentage(totalProducedInModel,totalWasteInModel)}");
                 modelNode.Name = model.ModelName;
                 treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
             }
@@ -292,7 +306,7 @@ namespace PomocDoRaprtow
             {
                 for (int i = 0; i < WasteInfo.WasteFieldNames.Length; ++i)
                 {
-                    hist.Rows[i][1] = models.Sum(m => m.WasteInModel[i]);
+                    hist.Rows[i][1] = models.Sum(m => m.CalculateWaste(WasteInfoBySplittingTime)[i]);
                 }
             }
 
@@ -300,9 +314,10 @@ namespace PomocDoRaprtow
             {
                 if (model.ModelName == treeViewWaste.SelectedNode.Name)
                 {
-                    for (int i = 0; i < model.WasteInModel.Count; i++)
+                    for (int i = 0; i < model.CalculateWaste(WasteInfoBySplittingTime).Count; i++)
                     {
-                        hist.Rows[i][1] = model.WasteInModel[i];
+                        var waste = model.CalculateWaste(WasteInfoBySplittingTime)[i];
+                        hist.Rows[i][1] = waste;
                     }
                 }
             }
@@ -334,11 +349,11 @@ namespace PomocDoRaprtow
         {
             CapaModelcheckedListBox.Height = 50;
         }
-
-        private void ModelcheckedListBox_SelectedValueChanged(object sender, EventArgs e)
+        private void CapaModelcheckedListBox_SelectedValueChanged(object sender, EventArgs e)
         {
             RebuildEnabledModelsSet();
         }
+
 
         private void RebuildEnabledModelsSet()
         {
@@ -369,5 +384,7 @@ namespace PomocDoRaprtow
         {
             DrawWasteHistogram();
         }
+
+        
     }
 }

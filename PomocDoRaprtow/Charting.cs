@@ -15,6 +15,7 @@ namespace PomocDoRaprtow
         {
             List<string> xNames = new List<string>();
             List<double> xValues = new List<double>();
+            List<double> xPercentage = new List<double>();
 
             foreach (DataRow row in chartData.Rows)
             {
@@ -25,27 +26,45 @@ namespace PomocDoRaprtow
                     xValues.Add(val);
                 }
             }
+            var valuesSum = xValues.Sum();
+
+            foreach (var val in xValues)
+            {
+                xPercentage.Add( val / valuesSum);
+            }
+
 
             barChartControl.Series.Clear();
             barChartControl.ChartAreas.Clear();
 
-            Series ser = new Series();
-            ser.IsVisibleInLegend = false;
-            ser.IsValueShownAsLabel = false;
-            ser.ChartType = SeriesChartType.Column;
+            Series serColumn = new Series();
+            serColumn.IsVisibleInLegend = false;
+            serColumn.IsValueShownAsLabel = false;
+            serColumn.ChartType = SeriesChartType.Column;
+            serColumn.Color = System.Drawing.Color.DarkBlue;
+
+            Series serLine = new Series();
+            serLine.ChartType = SeriesChartType.Line;
+            serLine.YAxisType = AxisType.Secondary;
 
             ChartArea area = new ChartArea();
             area.AxisX.IsLabelAutoFit = true;
             area.AxisX.LabelAutoFitStyle = LabelAutoFitStyles.LabelsAngleStep45;
             area.AxisX.LabelStyle.Enabled = true;
             area.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 12);
+            area.AxisX.MajorGrid.LineColor = System.Drawing.Color.Silver;
+            area.AxisY.MajorGrid.LineColor = System.Drawing.Color.Silver;
+            area.AxisY2.Enabled = AxisEnabled.Auto;
+            
 
-            barChartControl.Series.Add(ser);
+            barChartControl.Series.Add(serColumn);
+            //barChartControl.Series.Add(serLine);
             barChartControl.ChartAreas.Add(area);
 
             for (int i = 0; i < xValues.Count; i++)
             {
                 barChartControl.Series[0].Points.AddXY(xNames[i], xValues[i]);
+                //barChartControl.Series[1].Points.AddXY(xNames[i], xPercentage[i]);
             }
         }
 

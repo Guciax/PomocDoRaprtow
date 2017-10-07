@@ -66,11 +66,6 @@ namespace PomocDoRaprtow
 
                 model.Lots.Add(lot);
             }
-
-            foreach (var model in models.Values)
-            {
-                model.CalculateWaste();
-            }
         }
 
         private void LoadWasteTable(String path = WastePath)
@@ -155,11 +150,11 @@ namespace PomocDoRaprtow
                 }
             }
 
-            foreach (var lot in serialsInLot.Keys)
+            foreach (var entry in serialsInLot)
             {
-                if (!Lots.Keys.Contains(lot)) continue;
-                int count = lot.Length;
-                Lots[lot].TestedQuantity = count;
+                if (!Lots.Keys.Contains(entry.Key)) continue;
+                int count = entry.Value.Count;
+                Lots[entry.Key].TestedQuantity = count;
             }
         }
     }
