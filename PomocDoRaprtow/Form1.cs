@@ -84,7 +84,6 @@ namespace PomocDoRaprtow
             }
         }
 
-        
 
         private void DrawCapaChart(Chart DestinationChart, DataGridView DestinationGrid)
         {
@@ -93,26 +92,21 @@ namespace PomocDoRaprtow
             GridSource.Columns.Add("Shift III", typeof(int));
             GridSource.Columns.Add("Shift I", typeof(int));
             GridSource.Columns.Add("Shift II", typeof(int));
-            
+
             List<int> initializedDays = new List<int>();
-            Dictionary<int, int> occurences = new Dictionary<int, int>();
             treeView1.Nodes.Clear();
 
             var leds = FilterLeds().ToList();
-            var occurenceCalculations = new OccurenceCalculations(leds);
+            var occurencesCalculations = new OccurenceCalculations(leds);
             foreach (var led in leds)
             {
-                int count = 0;
-                occurences.TryGetValue(led.TesterData.Count, out count);
-                occurences[led.TesterData.Count] = count+1;
-                                
                 foreach (var testerData in led.TesterData)
                 {
                     if (testerData.TimeOfTest > dateTimePicker_wyd_od.Value &&
                         testerData.TimeOfTest < dateTimePicker_wyd_do.Value)
                     {
                         DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(testerData.TimeOfTest);
-                        string dayMonth = shiftInfo.DayOfTheMonth.ToString("d2") + "-" + shiftInfo.Month.ToString("d2") ;
+                        string dayMonth = shiftInfo.DayOfTheMonth.ToString("d2") + "-" + shiftInfo.Month.ToString("d2");
                         if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
                         {
                             initializedDays.Add(shiftInfo.DayOfTheMonth);
@@ -135,50 +129,24 @@ namespace PomocDoRaprtow
 
                         var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
                         GridSource.Rows[indexInInitializedDays][gridColumn] =
-                            (int)GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
+                            (int) GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
 
-                        
+
                         //treeview
-                        string weekNo = DateUtilities.GetRealWeekOfYear(DateUtilities.FixedShiftDate(testerData.TimeOfTest)).ToString("d2");
-
-                        if (!treeView1.Nodes.ContainsKey(weekNo))
-                        {
-                            TreeNode weekNode = new TreeNode(weekNo +"-"+ occurenceCalculations.GetOccurenceForWeek(testerData));
-                            weekNode.Name = weekNo;
-                            treeView1.Nodes.Add(weekNode);
-                        }  
-                        if(!treeView1.Nodes[weekNo].Nodes.ContainsKey(dayMonth))
-                        {
-                            TreeNode dayNode = new TreeNode(dayMonth + "-" + occurenceCalculations.GetOccurenceForDay(testerData));
-                            dayNode.Name = dayMonth;
-                            treeView1.Nodes[weekNo].Nodes.Add(dayNode);
-                        }
-                        if(!treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes.ContainsKey(shiftInfo.ShiftNo.ToString()))
-                        {
-                            TreeNode shiftNode = new TreeNode(shiftInfo.ShiftNo.ToString() + "-" + occurenceCalculations.GetOccurenceForShift(testerData));
-                            shiftNode.Name = shiftInfo.ShiftNo.ToString();
-                            treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes.Add(shiftNode);
-                        }
-                        if(!treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes[shiftInfo.ShiftNo.ToString()].Nodes.ContainsKey(led.Lot.Model))
-                        {
-                            TreeNode modelNode = new TreeNode(led.Lot.Model + "-" + occurenceCalculations.GetOccurenceForModel(led, testerData));
-                            modelNode.Name = led.Lot.Model;
-                            treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes[shiftInfo.ShiftNo.ToString()].Nodes.Add(modelNode);
-                        }
-
                     }
                 }
-                
             }
-            treeView1.Sort();
+            RebuildOccurenceTreeView(occurencesCalculations);
+
+//            treeView1.Sort();
             DataView dv = GridSource.DefaultView;
             dv.Sort = "Day asc";
             GridSource = dv.ToTable();
 
-            foreach (KeyValuePair<int, int> kvp in occurences)
+            richTextBox1.Text = "";
+            foreach (KeyValuePair<int, int> kvp in occurencesCalculations.CountOccurences)
             {
-
-                richTextBox1.AppendText(string.Format("Key = {0}, Value = {1}", kvp.Key, kvp.Value) + "\r");
+                richTextBox1.AppendText($"Key = {kvp.Key}, Value = {kvp.Value}" + "\r");
             }
 
             dataGridView_Capacity_Test.DataSource = GridSource;
@@ -187,7 +155,6 @@ namespace PomocDoRaprtow
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
 
-            
 
             DestinationChart.Series.Clear();
             DestinationChart.ChartAreas.Clear();
@@ -245,15 +212,72 @@ namespace PomocDoRaprtow
             }
         }
 
+        private string FormatTreeViewNodeName(String mainName, int occurences)
+        {
+            return mainName + " " + occurences;
+        }
+
+        private void RebuildOccurenceTreeView(OccurenceCalculations occurenceCalculations)
+        {
+            treeView1.Nodes.Clear();
+            foreach (var weekTree in occurenceCalculations.Tree.WeekNoToTree.Values)
+            {
+                var weekTreeViewNode =
+                    new TreeNode(FormatTreeViewNodeName(weekTree.Week.ToString(), weekTree.Occurences));
+                treeView1.Nodes.Add(weekTreeViewNode);
+                foreach (var dayTree in weekTree.DayToTree.Values)
+                {
+                    string dayMonth = dayTree.DateTime.Day.ToString("d2") + "-" + dayTree.DateTime.Month.ToString("d2");
+                    var dayTreeViewNode = weekTreeViewNode.Nodes.Add(FormatTreeViewNodeName(dayMonth, dayTree.Occurences));
+                    foreach (var shiftTree in dayTree.ShiftToTree.Values)
+                    {
+                        var shiftTreeViewNode = dayTreeViewNode.Nodes.Add(FormatTreeViewNodeName(shiftTree.ShiftNo.ToString(), shiftTree.Occurences));
+                        foreach (var modelTree in shiftTree.ModelToTree.Values)
+                        {
+                            shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
+                        }
+                    }
+                }
+            }
+            /*if (!addedNodes.Contains(weekNo))
+            {
+                TreeNode weekNode = new TreeNode(weekNo + "-" + occurenceCalculations.GetOccurenceForWeek(testerData));
+                weekNode.Name = weekNo;
+                treeView1.Nodes.Add(weekNode);
+            }
+            if (!addedNodes.Contains(dayMonth))
+            {
+                TreeNode dayNode = new TreeNode(dayMonth + "-" + occurenceCalculations.GetOccurenceForDay(testerData));
+                dayNode.Name = dayMonth;
+                treeView1.Nodes[weekNo].Nodes.Add(dayNode);
+            }
+            if (!addedNodes.Contains(shiftInfo.ShiftNo.ToString()))
+            {
+                TreeNode shiftNode = new TreeNode(shiftInfo.ShiftNo.ToString() + "-" +
+                                                  occurenceCalculations.GetOccurenceForShift(testerData));
+                shiftNode.Name = shiftInfo.ShiftNo.ToString();
+                treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes.Add(shiftNode);
+            }
+            if (!addedNodes.Contains(led.Lot.Model))
+            {
+                TreeNode modelNode =
+                    new TreeNode(led.Lot.Model + "-" + occurenceCalculations.GetOccurenceForModel(led, testerData));
+                modelNode.Name = led.Lot.Model;
+                treeView1.Nodes[weekNo].Nodes[dayMonth].Nodes[shiftInfo.ShiftNo.ToString()].Nodes.Add(modelNode);
+            }*/
+        }
+
         private HashSet<String> enabledModels = new HashSet<string>();
+
         private bool PassesFilter(Led led)
         {
             return enabledModels.Contains(led.Lot.Model);
         }
+
         private IEnumerable<Led> FilterLeds()
         {
             enabledModels.Clear();
-            foreach(var model in ModelcheckedListBox.CheckedItems)
+            foreach (var model in ModelcheckedListBox.CheckedItems)
             {
                 enabledModels.Add(model as String);
             }
