@@ -12,7 +12,7 @@ namespace PomocDoRaprtow
     public partial class Form1 : Form
     {
         private readonly OptionProvider optionProvider;
-        private LedStorage leds;
+        private LedStorage ledStorage;
 
         public Form1()
         {
@@ -66,13 +66,15 @@ namespace PomocDoRaprtow
 
         private void button5_Click(object sender, EventArgs e)
         {
-            leds = new LedStorageLoader().BuildStorage();
+            ledStorage = new LedStorageLoader().BuildStorage();
             CapaModelcheckedListBox.Items.Clear();
-            foreach (var model in leds.Models)
+            foreach (var model in ledStorage.Models.Values)
             {
-                CapaModelcheckedListBox.Items.Add(model);
+                CapaModelcheckedListBox.Items.Add(model.ModelName);
                 CapaModelcheckedListBox.SetItemChecked(CapaModelcheckedListBox.Items.Count - 1, true);
             }
+            
+            RebuildEnabledModelsSet();
         }
 
 
@@ -218,16 +220,16 @@ namespace PomocDoRaprtow
 
         private bool PassesFilter(Led led)
         {
-            return enabledModels.Contains(led.Lot.Model.ModelName);
+            return ModelSelected(led.Lot.Model);
+        }
+
+        private bool ModelSelected(Model model)
+        {
+            return enabledModels.Contains(model.ModelName);
         }
         private IEnumerable<Led> FilterLeds()
         {
-            enabledModels.Clear();
-            foreach (var model in CapaModelcheckedListBox.CheckedItems)
-            {
-                enabledModels.Add(model as String);
-            }
-            return leds.SerialNumbersToLed.Values.Where(PassesFilter);
+            return ledStorage.SerialNumbersToLed.Values.Where(PassesFilter);
         }
 
         private IEnumerable<TesterData> TesterDataFilter(List<TesterData> testerData)
@@ -248,53 +250,23 @@ namespace PomocDoRaprtow
                  DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
              }*/
         }
-        Dictionary<string, int[]> wastePerModel = new Dictionary<string, int[]>();
-        private void buildWastePerModelDict()
-        {
-            wastePerModel.Clear();
-            wastePerModel.Add("Total", new int[WasteInfo.WasteFieldNames.Length]);
 
-
-            foreach (var lot in leds.Lots)
-            {
-                if (lot.Value.WasteInfo != null)
-                {
-                    if (lot.Value.WasteInfo.SplittingDate >= dateTimePickerBegin.Value && lot.Value.WasteInfo.SplittingDate <= dateTimePickerEnd.Value)
-                    {
-                        string model = lot.Value.Model;
-                        if (!wastePerModel.ContainsKey(lot.Value.Model))
-                        {
-                            wastePerModel.Add(model, new int[WasteInfo.WasteFieldNames.Length]);
-                        }
-
-                        for (int i = 0; i < lot.Value.WasteInfo.WasteCounts.Count; i++)
-                        {
-
-                            int wasteCount = lot.Value.WasteInfo.WasteCounts[i];
-                            wastePerModel[model][i] = wastePerModel[model][i] + wasteCount;
-                            wastePerModel["Total"][i] = wastePerModel["Total"][i] + wasteCount;
-
-                        }
-                    }
-                }
-            }
-
-        }
-
-        private void refreshTreeViewWasteNodes()
+        private void RefreshTreeViewWasteNodes()
         {
             treeViewWaste.BeginUpdate();
             treeViewWaste.Nodes.Clear();
+            var models = ledStorage.Models.Values.Where(ModelSelected).ToList();
+            var total = models.Sum(m => m.WasteInModel.Sum());
             List<TreeNode> wasteNodes = new List<TreeNode>();
-            TreeNode totalNode = new TreeNode("Total" + " " + wastePerModel["Total"].Sum(x => Convert.ToInt32(x)));
+            TreeNode totalNode = new TreeNode("Total" + " " + total);
             totalNode.Name = "Total";
             treeViewWaste.Nodes.Add(totalNode);
 
-            foreach (var model in wastePerModel.Keys.Skip(1))
+            foreach (var model in models)
             {
-                int total = wastePerModel[model].Sum(x => Convert.ToInt32(x));
-                TreeNode modelNode = new TreeNode(model + " " + total);
-                modelNode.Name = model;
+                int totalInModel = model.WasteInModel.Sum();
+                TreeNode modelNode = new TreeNode(model.ModelName + " " + totalInModel);
+                modelNode.Name = model.ModelName;
                 treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
             }
 
@@ -314,14 +286,23 @@ namespace PomocDoRaprtow
                 hist.Rows.Add(wasteHeader, 0);
             }
 
+            var models = ledStorage.Models.Values.Where(ModelSelected);
 
-            foreach (var model in wastePerModel.Keys)
+            if (treeViewWaste.SelectedNode.Name == "Total")
             {
-                if (model == treeViewWaste.SelectedNode.Name)
+                for (int i = 0; i < WasteInfo.WasteFieldNames.Length; ++i)
                 {
-                    for (int i = 0; i < wastePerModel[model].Length; i++)
+                    hist.Rows[i][1] = models.Sum(m => m.WasteInModel[i]);
+                }
+            }
+
+            foreach (var model in models)
+            {
+                if (model.ModelName == treeViewWaste.SelectedNode.Name)
+                {
+                    for (int i = 0; i < model.WasteInModel.Count; i++)
                     {
-                        hist.Rows[i][1] = (int)wastePerModel[model][i];
+                        hist.Rows[i][1] = model.WasteInModel[i];
                     }
                 }
             }
@@ -356,7 +337,16 @@ namespace PomocDoRaprtow
 
         private void ModelcheckedListBox_SelectedValueChanged(object sender, EventArgs e)
         {
+            RebuildEnabledModelsSet();
+        }
 
+        private void RebuildEnabledModelsSet()
+        {
+            enabledModels.Clear();
+            foreach (var model in CapaModelcheckedListBox.CheckedItems)
+            {
+                enabledModels.Add(model as String);
+            }   
         }
 
         private void dateTimePicker_wyd_od_ValueChanged(object sender, EventArgs e)
@@ -372,8 +362,7 @@ namespace PomocDoRaprtow
         private void button3_Click(object sender, EventArgs e)
         {
             DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
-            buildWastePerModelDict();
-            refreshTreeViewWasteNodes();
+            RefreshTreeViewWasteNodes();
         }
 
         private void treeViewWaste_AfterSelect(object sender, TreeViewEventArgs e)

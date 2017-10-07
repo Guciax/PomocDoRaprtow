@@ -44,28 +44,33 @@ namespace PomocDoRaprtow
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
-                var modelName = splitLine[indexModel].Replace("LLFML","");
+                var modelName = splitLine[indexModel].Replace("LLFML", "");
                 WasteInfo info;
                 LotIdToWasteInfo.TryGetValue(lotId, out info);
+
+                Model model;
+                models.TryGetValue(modelName, out model);
+                if (model == null)
+                {
+                    model = new Model(modelName);
+                    models.Add(modelName, model);
+                }
 
                 var lot = new Lot(splitLine[indexLotId],
                     splitLine[indexRankA],
                     splitLine[indexRankB],
-                    splitLine[indexMrm], info, 0);
+                    splitLine[indexMrm], model, info, 0);
 
 
                 Lots.Add(lot.LotId, lot);
 
-                Model model;
-                models.TryGetValue(modelName, out model);
-                if(model == null)
-                {
-                    model = new Model(modelName, lot);
-                }
-
-                models.Add(modelName, model);
+                model.Lots.Add(lot);
             }
 
+            foreach (var model in models.Values)
+            {
+                model.CalculateWaste();
+            }
         }
 
         private void LoadWasteTable(String path = WastePath)
@@ -88,9 +93,8 @@ namespace PomocDoRaprtow
                 {
                     counts.Add(int.Parse(splitLine[index]));
                 }
-                LotIdToWasteInfo.Add(lotId, new WasteInfo(counts,splittingTime));
+                LotIdToWasteInfo.Add(lotId, new WasteInfo(counts, splittingTime));
             }
-            
         }
 
         private void LoadLedTable(String path = TesterPath)
@@ -121,7 +125,7 @@ namespace PomocDoRaprtow
                 Lot lot;
                 Lots.TryGetValue(lotId, out lot);
 
-                if(lot == null)
+                if (lot == null)
                 {
                     continue;
                 }
@@ -136,9 +140,10 @@ namespace PomocDoRaprtow
                 var wasTestSuccesful = splitLine[indexResult] == "OK";
                 var fixedDateTime = DateUtilities.FixedShiftDate(timeOfTest);
                 var shiftNo = DateUtilities.DateToShiftInfo(timeOfTest).ShiftNo;
-                var testerData = new TesterData(splitLine[indexTesterId],timeOfTest, fixedDateTime, shiftNo, wasTestSuccesful, splitLine[indexFailReason]);
+                var testerData = new TesterData(splitLine[indexTesterId], timeOfTest, fixedDateTime, shiftNo,
+                    wasTestSuccesful, splitLine[indexFailReason]);
                 var led = new Led(splitLine[indexSerialNr], lot, testerData);
-                                
+
                 if (!SerialNumbersToLed.ContainsKey(led.SerialNumber))
                 {
                     SerialNumbersToLed.Add(led.SerialNumber, led);

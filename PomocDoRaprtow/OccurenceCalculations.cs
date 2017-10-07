@@ -63,7 +63,7 @@ namespace PomocDoRaprtow
                     var weekTree = GetWeekTree(testerData.FixedDateTime);
                     var dayTree = GetDayTree(testerData.FixedDateTime, weekTree);
                     var shiftTree = GetShiftTree(testerData.ShiftNo, dayTree);
-                    var modelTree = GetModeleTree(led.Lot.Model, shiftTree);
+                    var modelTree = GetModelsTree(led.Lot.Model.ModelName, shiftTree);
 
                     weekTree.Occurences++;
                     dayTree.Occurences++;
@@ -100,7 +100,7 @@ namespace PomocDoRaprtow
             return t;
         }
 
-        private OccurenceModel GetModeleTree(String model, OccurenceShift shiftTree)
+        private OccurenceModel GetModelsTree(String model, OccurenceShift shiftTree)
         {
             var t = GetOrAdd(model, shiftTree.ModelToTree);
             t.Model = model;
