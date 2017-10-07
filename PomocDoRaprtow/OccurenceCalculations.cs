@@ -3,106 +3,130 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PomocDoRaprtow
 {
     class OccurenceCalculations
     {
-        private Dictionary<int, int> occurences = new Dictionary<int, int>();
-        private Dictionary<int, Dictionary<String, int>> modelOccurences =
-            new Dictionary<int, Dictionary<string, int>>();
+        public class OccurenceModel
+        {
+            public string Model;
+            public int Occurences = 0;
+        }
+
+        public class OccurenceShift
+        {
+            public SortedDictionary<string, OccurenceModel> ModelToTree { get; } =
+                new SortedDictionary<string, OccurenceModel>();
+
+            public int ShiftNo { get; internal set; }
+            public int Occurences { get; internal set; }
+        }
+
+        public class OccurenceDay
+        {
+            public SortedDictionary<int, OccurenceShift> ShiftToTree { get; } =
+                new SortedDictionary<int, OccurenceShift>();
+
+            public int Day { get; internal set; }
+            public DateTime DateTime { get; internal set; }
+            public int Occurences { get; internal set; }
+        }
+
+        public class OccurenceTreeWeek
+        {
+            public SortedDictionary<int, OccurenceDay> DayToTree { get; } = new SortedDictionary<int, OccurenceDay>();
+            public int Week { get; internal set; }
+            public int Occurences { get; internal set; }
+        }
+
+        public class OccurenceTree
+        {
+            internal SortedDictionary<int, OccurenceTreeWeek> WeekNoToTree { get; } =
+                new SortedDictionary<int, OccurenceTreeWeek>();
+
+            public int Occurences { get; internal set; }
+        }
+
+        public OccurenceTree Tree { get; }= new OccurenceTree();
+        public Dictionary<int, int> CountOccurences { get; } = new Dictionary<int, int>();
 
         public OccurenceCalculations(List<Led> leds)
         {
             foreach (var led in leds)
             {
                 var model = led.Lot.Model;
+                Increment(CountOccurences, led.TesterData.Count);
                 foreach (var testerData in led.TesterData)
                 {
-                    var idForModel = IdForModel(model, testerData.ShiftNo, testerData.FixedDateTime);
-                    var idForShift = IdForShift(testerData.ShiftNo, testerData.FixedDateTime);
-                    var idForDay = IdForDay(testerData.FixedDateTime);
-                    var idForWeek = IdForWeek(testerData.FixedDateTime);
+                    var weekTree = GetWeekTree(testerData.FixedDateTime);
+                    var dayTree = GetDayTree(testerData.FixedDateTime, weekTree);
+                    var shiftTree = GetShiftTree(testerData.ShiftNo, dayTree);
+                    var modelTree = GetModeleTree(led.Lot.Model, shiftTree);
 
-                    IncrementModel(idForModel.Item1, idForModel.Item2);
-                    Increment(idForShift);
-                    Increment(idForDay);
-                    Increment(idForWeek);
+                    weekTree.Occurences++;
+                    dayTree.Occurences++;
+                    shiftTree.Occurences++;
+                    modelTree.Occurences++;
                 }
             }
         }
 
-        public int GetOccurenceForModel(Led led, TesterData testerData)
+        private OccurenceTreeWeek GetWeekTree(DateTime testerDataFixedDateTime)
         {
-            var id = IdForModel(led.Lot.Model, testerData.ShiftNo, testerData.FixedDateTime);
-            return modelOccurences[id.Item1][id.Item2];
+            var week = DateUtilities.GetRealWeekOfYear(testerDataFixedDateTime);
+            var t = GetOrAdd(week, Tree.WeekNoToTree);
+            t.Week = week;
+
+            return t;
         }
 
-        public int GetOccurenceForShift(TesterData testerData)
+        private OccurenceDay GetDayTree(DateTime testerDataFixedDateTime, OccurenceTreeWeek weekTree)
         {
-            var id = IdForShift(testerData.ShiftNo, testerData.FixedDateTime);
-            return occurences[id];
+            var day = testerDataFixedDateTime.Day;
+            var t = GetOrAdd(day, weekTree.DayToTree);
+            t.Day = day;
+            t.DateTime = testerDataFixedDateTime;
+
+            return t;
         }
 
-        public int GetOccurenceForDay(TesterData testerData)
+        private OccurenceShift GetShiftTree(int shiftNo, OccurenceDay dayTree)
         {
-            var id = IdForDay(testerData.FixedDateTime);
-            return occurences[id];
+            var t = GetOrAdd(shiftNo, dayTree.ShiftToTree);
+            t.ShiftNo = shiftNo;
+
+            return t;
         }
 
-        public int GetOccurenceForWeek(TesterData testerData)
+        private OccurenceModel GetModeleTree(String model, OccurenceShift shiftTree)
         {
-            var id = IdForWeek(testerData.FixedDateTime);
-            return occurences[id];
+            var t = GetOrAdd(model, shiftTree.ModelToTree);
+            t.Model = model;
+
+            return t;
         }
 
-        private Tuple<int, string> IdForModel(String model, int shiftNo, DateTime fixedDate)
+        private TTree GetOrAdd<TTree, TKey>(TKey key, SortedDictionary<TKey, TTree> trees) where TTree : new()
         {
-            var shiftId = IdForShift(shiftNo, fixedDate);
-            return Tuple.Create(shiftId, model);
-            //zeby zrobic model to int to moze .. kazdy znaczek na int * 100?
-//            return model + IdForShift(shiftNo, fixedDate);
-        }
+            TTree tree;
+            trees.TryGetValue(key, out tree);
 
-        private int IdForShift(int shiftNo, DateTime fixedDate)
-        {
-            return IdForDay(fixedDate) * 1000 + shiftNo;
-//            return fixedDate.Year.ToString() + fixedDate.Day + shiftNo;
-        }
-
-        private int IdForDay(DateTime fixedDate)
-        {
-            return IdForWeek(fixedDate) * 1000 + fixedDate.Day;
-            //return fixedDate.Year.ToString() + fixedDate.Day;
-        }
-
-        private int IdForWeek(DateTime fixedDate)
-        {
-            return DateUtilities.GetRealWeekOfYear(fixedDate);
-//            return DateUtilities.GetRealWeekOfYear(fixedDate).ToString();
-        }
-
-        private void Increment(int id)
-        {
-            int val = 0;
-            occurences.TryGetValue(id, out val);
-            occurences[id] = val + 1;
-        }
-
-        private void IncrementModel(int shiftId, String model)
-        {
-            Dictionary<String, int> modelToOccurence;
-            modelOccurences.TryGetValue(shiftId, out modelToOccurence);
-
-            if (modelToOccurence == null)
+            if (tree == null)
             {
-                modelToOccurence = new Dictionary<string, int>();
-                modelOccurences.Add(shiftId, modelToOccurence);
+                tree = new TTree();
+                trees.Add(key, tree);
             }
 
+            return tree;
+        }
+
+        private static void Increment(Dictionary<int, int> occurencesToIncrement, int id)
+        {
             int val = 0;
-            modelToOccurence.TryGetValue(model, out val);
-            modelToOccurence[model] = val + 1;
+            occurencesToIncrement.TryGetValue(id, out val);
+            occurencesToIncrement[id] = val + 1;
         }
     }
 }
