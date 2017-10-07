@@ -26,8 +26,8 @@ namespace PomocDoRaprtow
 
         public class OccurenceDay
         {
-            public SortedDictionary<int, OccurenceShift> ShiftToTree { get; } =
-                new SortedDictionary<int, OccurenceShift>();
+            public List<OccurenceShift> ShiftToTree { get; } = 
+                new List<OccurenceShift>() { new OccurenceShift(), new OccurenceShift(), new OccurenceShift() };
 
             public int Day { get; internal set; }
             public DateTime DateTime { get; internal set; }
@@ -52,13 +52,13 @@ namespace PomocDoRaprtow
         public OccurenceTree Tree { get; }= new OccurenceTree();
         public Dictionary<int, int> CountOccurences { get; } = new Dictionary<int, int>();
 
-        public OccurenceCalculations(List<Led> leds)
+        public OccurenceCalculations(List<Led> leds, Func<List<TesterData>, IEnumerable<TesterData>> testerDataFilter)
         {
             foreach (var led in leds)
             {
                 var model = led.Lot.Model;
                 Increment(CountOccurences, led.TesterData.Count);
-                foreach (var testerData in led.TesterData)
+                foreach (var testerData in testerDataFilter(led.TesterData))
                 {
                     var weekTree = GetWeekTree(testerData.FixedDateTime);
                     var dayTree = GetDayTree(testerData.FixedDateTime, weekTree);
@@ -94,7 +94,7 @@ namespace PomocDoRaprtow
 
         private OccurenceShift GetShiftTree(int shiftNo, OccurenceDay dayTree)
         {
-            var t = GetOrAdd(shiftNo, dayTree.ShiftToTree);
+            var t = dayTree.ShiftToTree[ShiftUtilities.ShiftNoToIndex(shiftNo) - 1];
             t.ShiftNo = shiftNo;
 
             return t;

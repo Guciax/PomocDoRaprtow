@@ -4,10 +4,9 @@ namespace PomocDoRaprtow
 {
     public class Lot
     {
-        public Lot(string lotId, string model, string rankA, string rankB, string mrm, WasteInfo wasteInfo, int testedQuantity)
+        public Lot(string lotId, string rankA, string rankB, string mrm, WasteInfo wasteInfo, int testedQuantity)
         {
             LotId = lotId;
-            Model = model;
             RankA = rankA;
             RankB = rankB;
             Mrm = mrm;
@@ -16,7 +15,7 @@ namespace PomocDoRaprtow
         }
 
         public String LotId { get; }
-        public String Model { get; }
+        public Model Model { get; set; }
         public String RankA { get; }
         public String RankB { get; }
         public String Mrm { get; }

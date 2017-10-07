@@ -87,41 +87,25 @@ namespace PomocDoRaprtow
             List<int> initializedDays = new List<int>();
 
             var leds = FilterLeds().ToList();
-            var occurencesCalculations = new OccurenceCalculations(leds);
+            var occurencesCalculations = new OccurenceCalculations(leds,TesterDataFilter);
             foreach (var led in leds)
             {
-                foreach (var testerData in led.TesterData)
+                foreach (var testerData in TesterDataFilter(led.TesterData))
                 {
-                    if (testerData.TimeOfTest > dateTimePickerBegin.Value &&
-                        testerData.TimeOfTest < dateTimePickerEnd.Value)
+                    DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(testerData.TimeOfTest);
+                    string dayMonth = shiftInfo.DayOfTheMonth.ToString("d2") + "-" + shiftInfo.Month.ToString("d2");
+                    if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
                     {
-                        DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(testerData.TimeOfTest);
-                        string dayMonth = shiftInfo.DayOfTheMonth.ToString("d2") + "-" + shiftInfo.Month.ToString("d2");
-                        if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
-                        {
-                            initializedDays.Add(shiftInfo.DayOfTheMonth);
-                            GridSource.Rows.Add(dayMonth, 0, 0, 0);
-                        }
-
-                        int gridColumn = 1;
-                        switch (shiftInfo.ShiftNo)
-                        {
-                            case 3:
-                                gridColumn = 1;
-                                break;
-                            case 1:
-                                gridColumn = 2;
-                                break;
-                            case 2:
-                                gridColumn = 3;
-                                break;
-                        }
-
-                        var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
-                        GridSource.Rows[indexInInitializedDays][gridColumn] =
-                            (int) GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
-
+                        initializedDays.Add(shiftInfo.DayOfTheMonth);
+                        GridSource.Rows.Add(dayMonth, 0, 0, 0);
                     }
+
+                    int gridColumn = ShiftUtilities.ShiftNoToIndex(shiftInfo.ShiftNo);
+
+                    var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
+                    GridSource.Rows[indexInInitializedDays][gridColumn] =
+                        (int)GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
+
                 }
             }
             RebuildOccurenceTreeView(occurencesCalculations);
@@ -188,13 +172,13 @@ namespace PomocDoRaprtow
             foreach (DataRow row in GridSource.Rows)
             {
                 DestinationChart.Series[0].Points
-                    .AddXY(row[0].ToString(), (int) row[1]);
+                    .AddXY(row[0].ToString(), (int)row[1]);
 
                 DestinationChart.Series[1].Points
-                    .AddXY(row[0].ToString(), (int) row[2]);
+                    .AddXY(row[0].ToString(), (int)row[2]);
 
                 DestinationChart.Series[2].Points
-                    .AddXY(row[0].ToString(), (int) row[3]);
+                    .AddXY(row[0].ToString(), (int)row[3]);
             }
         }
 
@@ -216,8 +200,9 @@ namespace PomocDoRaprtow
                 {
                     string dayMonth = dayTree.DateTime.Day.ToString("d2") + "-" + dayTree.DateTime.Month.ToString("d2");
                     var dayTreeViewNode = weekTreeViewNode.Nodes.Add(FormatTreeViewNodeName(dayMonth, dayTree.Occurences));
-                    foreach (var shiftTree in dayTree.ShiftToTree.Values)
+                    foreach (var shiftTree in dayTree.ShiftToTree)
                     {
+                        if (shiftTree.Occurences == 0) continue;
                         var shiftTreeViewNode = dayTreeViewNode.Nodes.Add(FormatTreeViewNodeName(shiftTree.ShiftNo.ToString(), shiftTree.Occurences));
                         foreach (var modelTree in shiftTree.ModelToTree.Values)
                         {
@@ -233,28 +218,35 @@ namespace PomocDoRaprtow
 
         private bool PassesFilter(Led led)
         {
-            return enabledModels.Contains(led.Lot.Model);
+            return enabledModels.Contains(led.Lot.Model.ModelName);
         }
         private IEnumerable<Led> FilterLeds()
         {
             enabledModels.Clear();
-            foreach(var model in CapaModelcheckedListBox.CheckedItems)
+            foreach (var model in CapaModelcheckedListBox.CheckedItems)
             {
                 enabledModels.Add(model as String);
             }
             return leds.SerialNumbersToLed.Values.Where(PassesFilter);
         }
 
+        private IEnumerable<TesterData> TesterDataFilter(List<TesterData> testerData)
+        {
+            return testerData.Where(t =>
+            t.TimeOfTest > dateTimePickerBegin.Value &&
+            t.TimeOfTest < dateTimePickerEnd.Value);
+        }
+
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-           /*if (Tab.SelectedTab.Name == "tab_Waste")
-            {
-                DrawWasteHistogram();
-            }
-            if (Tab.SelectedTab.Name == "tab_Capacity")
-            {
-                DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
-            }*/
+            /*if (Tab.SelectedTab.Name == "tab_Waste")
+             {
+                 DrawWasteHistogram();
+             }
+             if (Tab.SelectedTab.Name == "tab_Capacity")
+             {
+                 DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
+             }*/
         }
         Dictionary<string, int[]> wastePerModel = new Dictionary<string, int[]>();
         private void buildWastePerModelDict()
@@ -286,17 +278,18 @@ namespace PomocDoRaprtow
                     }
                 }
             }
-            
+
         }
 
         private void refreshTreeViewWasteNodes()
         {
             treeViewWaste.BeginUpdate();
+            treeViewWaste.Nodes.Clear();
             List<TreeNode> wasteNodes = new List<TreeNode>();
             TreeNode totalNode = new TreeNode("Total" + " " + wastePerModel["Total"].Sum(x => Convert.ToInt32(x)));
             totalNode.Name = "Total";
             treeViewWaste.Nodes.Add(totalNode);
-            
+
             foreach (var model in wastePerModel.Keys.Skip(1))
             {
                 int total = wastePerModel[model].Sum(x => Convert.ToInt32(x));
@@ -308,7 +301,7 @@ namespace PomocDoRaprtow
             treeViewWaste.ExpandAll();
             treeViewWaste.EndUpdate();
             treeViewWaste.SelectedNode = treeViewWaste.Nodes["Total"];
-        }
+        }   
 
         private void DrawWasteHistogram()
         {
@@ -326,29 +319,29 @@ namespace PomocDoRaprtow
             {
                 if (model == treeViewWaste.SelectedNode.Name)
                 {
-                    for (int i = 0; i < wastePerModel[model].Length; i++) 
+                    for (int i = 0; i < wastePerModel[model].Length; i++)
                     {
                         hist.Rows[i][1] = (int)wastePerModel[model][i];
                     }
                 }
             }
-           
+
             DataView dv = hist.DefaultView;
             dv.Sort = "Count desc";
             hist = dv.ToTable();
 
             dataGridViewWaste.DataSource = hist;
-            Charting.BarChart (chart_odpad, hist, 0, 1);
+            Charting.BarChart(chart_odpad, hist, 0, 1);
         }
 
         private void dateTimePicker_odpad_od_ValueChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private void dateTimePicker_odpad_do_ValueChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private void checkedListBox1_MouseEnter(object sender, EventArgs e)
@@ -363,17 +356,17 @@ namespace PomocDoRaprtow
 
         private void ModelcheckedListBox_SelectedValueChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private void dateTimePicker_wyd_od_ValueChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private void dateTimePicker_wyd_do_ValueChanged(object sender, EventArgs e)
         {
-            
+
         }
 
         private void button3_Click(object sender, EventArgs e)

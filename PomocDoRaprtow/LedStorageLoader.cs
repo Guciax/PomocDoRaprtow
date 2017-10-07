@@ -11,7 +11,7 @@ namespace PomocDoRaprtow
         private Dictionary<String, Lot> Lots { get; set; }
         private Dictionary<String, WasteInfo> LotIdToWasteInfo { get; set; }
         private Dictionary<String, Led> SerialNumbersToLed { get; set; }
-        private HashSet<string> models { get; set; }
+        private Dictionary<string, Model> models { get; set; }
 
         public const String LotPath = @"DB\Zlecenia_produkcyjne.txt";
         public const String WastePath = @"DB\Odpady.csv";
@@ -30,7 +30,7 @@ namespace PomocDoRaprtow
         private void LoadLotTable(String path = LotPath)
         {
             Lots = new Dictionary<string, Lot>();
-            models = new HashSet<string>();
+            models = new Dictionary<string, Model>();
             string[] fileLines = System.IO.File.ReadAllLines(path);
             string[] header = fileLines[0].Split(';');
             int indexLotId = Array.IndexOf(header, "Nr_Zlecenia_Produkcyjnego");
@@ -44,18 +44,26 @@ namespace PomocDoRaprtow
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
-                var model = splitLine[indexModel].Replace("LLFML","");
+                var modelName = splitLine[indexModel].Replace("LLFML","");
                 WasteInfo info;
                 LotIdToWasteInfo.TryGetValue(lotId, out info);
 
                 var lot = new Lot(splitLine[indexLotId],
-                    model,
                     splitLine[indexRankA],
                     splitLine[indexRankB],
                     splitLine[indexMrm], info, 0);
 
+
                 Lots.Add(lot.LotId, lot);
-                models.Add(model);
+
+                Model model;
+                models.TryGetValue(modelName, out model);
+                if(model == null)
+                {
+                    model = new Model(modelName, lot);
+                }
+
+                models.Add(modelName, model);
             }
 
         }
