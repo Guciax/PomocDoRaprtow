@@ -25,10 +25,6 @@ namespace PomocDoRaprtow
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);
 
-            //DataTable IloscNaZmiane_Table = new DataTable();
-            //IloscNaZmiane_Table.Columns.Add("Ilosc", typeof(int));
-            //IloscNaZmiane_Table.Columns.Add("Zmiana", typeof(string));
-
             return result;
         }
 

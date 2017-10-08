@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PomocDoRaprtow
 {
@@ -20,7 +21,8 @@ namespace PomocDoRaprtow
             ReworkQuantity = reworkQuantity;
             ScrapQuantity = scrapQuantity;
             PrintDate = printDate;
-    }
+            
+        }
         
         public String LotId { get; }
         public string PlanId { get; }
@@ -35,5 +37,6 @@ namespace PomocDoRaprtow
         public int ReworkQuantity { get; }
         public int ScrapQuantity { get; }
         public DateTime PrintDate { get; }
+        public List<Led> LedsInLot { get; } = new List<Led>();
     }
 }

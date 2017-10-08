@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoxingUtilities.cs" />
     <Compile Include="Charting.cs" />
     <Compile Include="DataModels\Boxing.cs" />
     <Compile Include="DataModels\Led.cs" />

@@ -15,6 +15,7 @@ namespace PomocDoRaprtow
         private LedStorage ledStorage;
         private WasteOperations wasteOperations;
         private LotInfoOperations lotInfoOperations;
+        private LotsInUseOperations lotInUseOperations;
 
         public Form1()
         {
@@ -22,6 +23,7 @@ namespace PomocDoRaprtow
             
             wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad);
             lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo, dataGridViewLotInfo);
+            lotInUseOperations = new LotsInUseOperations(this, treeViewLotsinUse);
         }
 
 
@@ -69,7 +71,7 @@ namespace PomocDoRaprtow
             ledStorage = new LedStorageLoader().BuildStorage();
             wasteOperations.LedStorage = ledStorage;
             lotInfoOperations.LedStorage = ledStorage;
-            
+            lotInUseOperations.LedStorage = ledStorage;
             CapaModelcheckedListBox.Items.Clear();
             foreach (var model in ledStorage.Models.Values)
             {
@@ -336,7 +338,12 @@ namespace PomocDoRaprtow
 
         private void treeViewLotInfo_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            lotInfoOperations.ShowLotInfo();
+            if (treeViewLotInfo.SelectedNode.Level > 0) lotInfoOperations.ShowLotInfo();
+        }
+
+        private void buttonLotsinUse_Click(object sender, EventArgs e)
+        {
+            lotInUseOperations.GenerateLotsInUseToTree();
         }
     }
 }

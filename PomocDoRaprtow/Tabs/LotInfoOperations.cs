@@ -74,15 +74,21 @@ namespace PomocDoRaprtow.Tabs
             var reworkQty = LedStorage.Lots[selectedLot].ReworkQuantity;
             var scrapQty = LedStorage.Lots[selectedLot].ScrapQuantity;
             var planID = LedStorage.Lots[selectedLot].PlanId;
-            var kittingDate = LedStorage.Lots[selectedLot].PrintDate.ToLongDateString();
+            var kittingDate = LedStorage.Lots[selectedLot].PrintDate.ToString();
             var testedQty = LedStorage.Lots[selectedLot].TestedQuantity;
-            
+            var boxedPercentage = BoxingUtilities.PercentBoxed(LedStorage.Lots[selectedLot]);
+            var palletisedPercentage = BoxingUtilities.PercentPalletised(LedStorage.Lots[selectedLot]);
+            var boxingDate = BoxingUtilities.LotToBoxesDate(LedStorage.Lots[selectedLot]);
+            var boxId = BoxingUtilities.LotToBoxesId(LedStorage.Lots[selectedLot]);
+            var palletisingDate = BoxingUtilities.LotToPalletDate(LedStorage.Lots[selectedLot]);
+            var palletisingId = BoxingUtilities.LotToPalletId(LedStorage.Lots[selectedLot]);
+            var testDate = LedStorage.Lots[selectedLot].LedsInLot[0].TesterData[0].TimeOfTest.ToString();
+
             string splittingDate = "";
             if (LedStorage.Lots[selectedLot].WasteInfo != null)
             {
                 splittingDate = LedStorage.Lots[selectedLot].WasteInfo.SplittingDate.ToString();
             }
-
 
             DataTable gridTable = new DataTable();
             gridTable.Columns.Add("Name");
@@ -99,7 +105,14 @@ namespace PomocDoRaprtow.Tabs
             gridTable.Rows.Add("Rework quantity", reworkQty);
             gridTable.Rows.Add("Scrap quantity", scrapQty);
             gridTable.Rows.Add("Tested quantity", testedQty);
+            gridTable.Rows.Add("Testing date (1st)", testDate);
             gridTable.Rows.Add("Splitting Date", splittingDate);
+            gridTable.Rows.Add("Boxed", boxedPercentage);
+            gridTable.Rows.Add("Boxing date", ListToString(boxingDate));
+            gridTable.Rows.Add("Box ID", ListToString(boxId));
+            gridTable.Rows.Add("Palletised", palletisedPercentage);
+            gridTable.Rows.Add("Palletising date", ListToString(palletisingDate));
+            gridTable.Rows.Add("Pallet ID", ListToString(palletisingId));
 
             dataGridViewLotInfo.DataSource = gridTable;
             foreach (DataGridViewColumn col in dataGridViewLotInfo.Columns)
@@ -107,6 +120,18 @@ namespace PomocDoRaprtow.Tabs
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
 
+        }
+        private string ListToString(List<string> input)
+        {
+            string result = "";
+            foreach (var item in input)
+            {
+                if(item!="")
+                {
+                    result += item+", ";
+                }
+            }
+            return result;
         }
     }
 }
