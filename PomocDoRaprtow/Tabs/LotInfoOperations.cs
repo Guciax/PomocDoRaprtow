@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,26 +14,15 @@ namespace PomocDoRaprtow.Tabs
         private readonly Form1 form;
         private readonly TextBox textBoxFilterLotInfo;
         private readonly TreeView treeViewLotInfo;
-        //Dictionary<string, List<string>> ModelLotDictionary = new Dictionary<string, List<string>>();
+        private readonly DataGridView dataGridViewLotInfo;
 
-        public LotInfoOperations(Form1 form, TreeView treeViewLotInfo, TextBox textBoxFilterLotInfo)
+        public LotInfoOperations(Form1 form, TreeView treeViewLotInfo, TextBox textBoxFilterLotInfo, DataGridView dataGridViewLotInfo)
         {
             this.form = form;
             this.treeViewLotInfo = treeViewLotInfo;
             this.textBoxFilterLotInfo = textBoxFilterLotInfo;
+            this.dataGridViewLotInfo = dataGridViewLotInfo;
         }
-
-        //public void BuildModelLotInfoDictionary()
-        //{
-        //    foreach (var lotId in LedStorage.Lots)
-        //    {
-        //        if (!ModelLotDictionary.ContainsKey(lotId.Value.Model.ModelName))
-        //        {
-        //            ModelLotDictionary.Add(lotId.Value.Model.ModelName, new List<string>());
-        //        }
-        //        ModelLotDictionary[lotId.Value.Model.ModelName].Add(lotId.Key);
-        //    }
-        //}
 
         public void FilterLotInfoTreeView()
         {
@@ -43,7 +33,7 @@ namespace PomocDoRaprtow.Tabs
                 var lots = FilterLots(model.Lots).ToList();
                 if (lots.Count == 0) continue;
 
-                TreeNode modelNode = new TreeNode( model.ModelName);
+                TreeNode modelNode = new TreeNode(model.ModelName);
                 modelNode.Name = model.ModelName;
                 List<TreeNode> lotNodesList = new List<TreeNode>();
 
@@ -59,8 +49,8 @@ namespace PomocDoRaprtow.Tabs
                 {
                     treeViewLotInfo.Nodes[modelNode.Name].Nodes.Add(lotNode);
                 }
-                
-                    
+
+
             }
             if (textBoxFilterLotInfo.Text.Length > 0) treeViewLotInfo.ExpandAll();
             treeViewLotInfo.EndUpdate();
@@ -73,6 +63,49 @@ namespace PomocDoRaprtow.Tabs
 
         public void ShowLotInfo()
         {
+            var selectedLot = treeViewLotInfo.SelectedNode.Name;
+            
+            var modelName = LedStorage.Lots[selectedLot].Model.ModelName;
+            var MRM = LedStorage.Lots[selectedLot].Mrm;
+            var RankA = LedStorage.Lots[selectedLot].RankA;
+            var RangB = LedStorage.Lots[selectedLot].RankB;
+            var orderedQty = LedStorage.Lots[selectedLot].OrderedQuantity;
+            var goodQty = LedStorage.Lots[selectedLot].ManufacturedGoodQuantity;
+            var reworkQty = LedStorage.Lots[selectedLot].ReworkQuantity;
+            var scrapQty = LedStorage.Lots[selectedLot].ScrapQuantity;
+            var planID = LedStorage.Lots[selectedLot].PlanId;
+            var kittingDate = LedStorage.Lots[selectedLot].PrintDate.ToLongDateString();
+            var testedQty = LedStorage.Lots[selectedLot].TestedQuantity;
+            
+            string splittingDate = "";
+            if (LedStorage.Lots[selectedLot].WasteInfo != null)
+            {
+                splittingDate = LedStorage.Lots[selectedLot].WasteInfo.SplittingDate.ToString();
+            }
+
+
+            DataTable gridTable = new DataTable();
+            gridTable.Columns.Add("Name");
+            gridTable.Columns.Add("Value");
+
+            gridTable.Rows.Add("Plan ID", planID);
+            gridTable.Rows.Add("Model Name", modelName);
+            gridTable.Rows.Add("MRM", MRM);
+            gridTable.Rows.Add("Rank A", RankA);
+            gridTable.Rows.Add("Rank B", RangB);
+            gridTable.Rows.Add("Kitting date", kittingDate);
+            gridTable.Rows.Add("Ordered quantity", orderedQty);
+            gridTable.Rows.Add("Good quantity", goodQty);
+            gridTable.Rows.Add("Rework quantity", reworkQty);
+            gridTable.Rows.Add("Scrap quantity", scrapQty);
+            gridTable.Rows.Add("Tested quantity", testedQty);
+            gridTable.Rows.Add("Splitting Date", splittingDate);
+
+            dataGridViewLotInfo.DataSource = gridTable;
+            foreach (DataGridViewColumn col in dataGridViewLotInfo.Columns)
+            {
+                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
 
         }
     }

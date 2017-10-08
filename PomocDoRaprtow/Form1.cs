@@ -21,7 +21,7 @@ namespace PomocDoRaprtow
             InitializeComponent();
             
             wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad);
-            lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo);
+            lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo, dataGridViewLotInfo);
         }
 
 
@@ -332,6 +332,11 @@ namespace PomocDoRaprtow
         private void textBoxFilterLotInfo_TextChanged(object sender, EventArgs e)
         {
             lotInfoOperations.FilterLotInfoTreeView();
+        }
+
+        private void treeViewLotInfo_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            lotInfoOperations.ShowLotInfo();
         }
     }
 }
