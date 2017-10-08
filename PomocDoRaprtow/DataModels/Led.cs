@@ -18,6 +18,7 @@ namespace PomocDoRaprtow
         public Lot Lot { get; }
         public Boxing Boxing { get; } //can be null.
         public List<TesterData> TesterData { get; }
+        public bool TestOk { get; set; }
         
         public void AddTesterData(TesterData testerData)
         {

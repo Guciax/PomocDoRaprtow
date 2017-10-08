@@ -30,6 +30,8 @@ namespace PomocDoRaprtow.Tabs
                 if (lot.LedsInLot.Count == 0 && BoxingUtilities.IsFullyPalletised(lot)) continue;
                 string percentPaletised =  BoxingUtilities.PercentPalletised(lot);
                 string percentBoxed = BoxingUtilities.PercentBoxed(lot);
+
+                TreeViewLotsInUse.Nodes.Add($"Per1 {percentPaletised} Per2 {percentBoxed}");
             }
         }
     }

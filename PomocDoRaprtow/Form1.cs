@@ -115,15 +115,22 @@ namespace PomocDoRaprtow
 
                 }
             }
+
             RebuildOccurenceTreeView(occurencesCalculations);
             DataView dv = GridSource.DefaultView;
             dv.Sort = "Day asc";
             GridSource = dv.ToTable();
 
             richTextBox1.Text = "";
+            int occurencesSum = 0;
             foreach (KeyValuePair<int, int> kvp in occurencesCalculations.CountOccurences)
             {
-                richTextBox1.AppendText($"{kvp.Key} test: {kvp.Value} modułów - " + "\r");
+                occurencesSum += kvp.Value;
+            }
+
+            foreach (KeyValuePair<int, int> kvp in occurencesCalculations.CountOccurences)
+            {
+                richTextBox1.AppendText($"{kvp.Key} test: {kvp.Value} - {MathUtilities.CalculatePercentage(occurencesSum,kvp.Value)}" + "\r");
             }
 
             dataGridView_Capacity_Test.DataSource = GridSource;

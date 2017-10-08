@@ -119,7 +119,7 @@ namespace PomocDoRaprtow
                 Int32.TryParse(splitLine[indexmScrapQty], out scrapQty);
                 if (splitLine[indexPrintDate] != "NULL")
                 {
-                    printDate=  DateUtilities.ParseExactWithFraction(splitLine[indexPrintDate]);
+                    printDate = DateUtilities.ParseExactWithFraction(splitLine[indexPrintDate]);
                 }
 
 
@@ -135,7 +135,7 @@ namespace PomocDoRaprtow
                     manufacturedQty,
                     reworkQty,
                     scrapQty,
-                    printDate); 
+                    printDate);
 
 
                 Lots.Add(lot.LotId, lot);
@@ -203,7 +203,7 @@ namespace PomocDoRaprtow
                 Boxing boxing;
                 if (!serialToBoxing.TryGetValue(ledId, out boxing))
                 {
-                    boxing = new Boxing(null, null, "","");
+                    boxing = new Boxing(null, null, "", "");
                 }
 
                 string testResult = splitLine[indexResult];
@@ -219,8 +219,6 @@ namespace PomocDoRaprtow
                 var testerData = new TesterData(splitLine[indexTesterId], timeOfTest, fixedDateTime, shiftNo,
                     wasTestSuccesful, splitLine[indexFailReason]);
                 var serialNumber = splitLine[indexSerialNr];
-                
-                
 
                 if (!SerialNumbersToLed.ContainsKey(serialNumber))
                 {
@@ -233,14 +231,23 @@ namespace PomocDoRaprtow
                     var led = SerialNumbersToLed[serialNumber];
                     led.AddTesterData(testerData);
                 }
-                
             }
-            
+
+            foreach (var led in SerialNumbersToLed.Values)
+            {
+                led.TestOk = led.TesterData.OrderBy(l => l.TimeOfTest).Last().TestResult;
+            }
+
             foreach (var entry in serialsInLot)
             {
                 if (!Lots.Keys.Contains(entry.Key)) continue;
                 int count = entry.Value.Count;
                 Lots[entry.Key].TestedQuantity = count;
+            }
+
+            foreach(var lot in Lots.Values)
+            {
+                lot.GoodLedsInLot = lot.LedsInLot.Where(l => l.TestOk).ToList();
             }
         }
     }

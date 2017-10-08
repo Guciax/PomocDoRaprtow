@@ -63,6 +63,7 @@
             this.dataGridViewWaste = new System.Windows.Forms.DataGridView();
             this.chart_odpad = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.buttonLotsinUse = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.treeViewLotsinUse = new System.Windows.Forms.TreeView();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
@@ -75,7 +76,6 @@
             this.CapaModelcheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.dateTimePickerBegin = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
-            this.buttonLotsinUse = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.Tab.SuspendLayout();
@@ -326,6 +326,8 @@
             // 
             // dataGridViewWaste
             // 
+            this.dataGridViewWaste.AllowUserToAddRows = false;
+            this.dataGridViewWaste.AllowUserToDeleteRows = false;
             this.dataGridViewWaste.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewWaste.Location = new System.Drawing.Point(673, 58);
             this.dataGridViewWaste.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -363,6 +365,16 @@
             this.tabPage1.TabIndex = 3;
             this.tabPage1.Text = "LOT\'s in use";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // buttonLotsinUse
+            // 
+            this.buttonLotsinUse.Location = new System.Drawing.Point(292, 33);
+            this.buttonLotsinUse.Name = "buttonLotsinUse";
+            this.buttonLotsinUse.Size = new System.Drawing.Size(75, 23);
+            this.buttonLotsinUse.TabIndex = 3;
+            this.buttonLotsinUse.Text = "GO";
+            this.buttonLotsinUse.UseVisualStyleBackColor = true;
+            this.buttonLotsinUse.Click += new System.EventHandler(this.buttonLotsinUse_Click);
             // 
             // label1
             // 
@@ -403,6 +415,8 @@
             // 
             // dataGridViewLotInfo
             // 
+            this.dataGridViewLotInfo.AllowUserToAddRows = false;
+            this.dataGridViewLotInfo.AllowUserToDeleteRows = false;
             this.dataGridViewLotInfo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLotInfo.Location = new System.Drawing.Point(278, 33);
             this.dataGridViewLotInfo.Name = "dataGridViewLotInfo";
@@ -478,16 +492,6 @@
             this.dateTimePickerEnd.Name = "dateTimePickerEnd";
             this.dateTimePickerEnd.Size = new System.Drawing.Size(299, 22);
             this.dateTimePickerEnd.TabIndex = 10;
-            // 
-            // buttonLotsinUse
-            // 
-            this.buttonLotsinUse.Location = new System.Drawing.Point(292, 33);
-            this.buttonLotsinUse.Name = "buttonLotsinUse";
-            this.buttonLotsinUse.Size = new System.Drawing.Size(75, 23);
-            this.buttonLotsinUse.TabIndex = 3;
-            this.buttonLotsinUse.Text = "GO";
-            this.buttonLotsinUse.UseVisualStyleBackColor = true;
-            this.buttonLotsinUse.Click += new System.EventHandler(this.buttonLotsinUse_Click);
             // 
             // Form1
             // 

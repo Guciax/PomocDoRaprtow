@@ -38,5 +38,6 @@ namespace PomocDoRaprtow
         public int ScrapQuantity { get; }
         public DateTime PrintDate { get; }
         public List<Led> LedsInLot { get; } = new List<Led>();
+        public List<Led> GoodLedsInLot { get; set; }
     }
 }

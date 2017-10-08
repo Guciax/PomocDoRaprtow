@@ -64,7 +64,7 @@ namespace PomocDoRaprtow.Tabs
         public void ShowLotInfo()
         {
             var selectedLot = treeViewLotInfo.SelectedNode.Name;
-            
+
             var modelName = LedStorage.Lots[selectedLot].Model.ModelName;
             var MRM = LedStorage.Lots[selectedLot].Mrm;
             var RankA = LedStorage.Lots[selectedLot].RankA;
@@ -82,7 +82,11 @@ namespace PomocDoRaprtow.Tabs
             var boxId = BoxingUtilities.LotToBoxesId(LedStorage.Lots[selectedLot]);
             var palletisingDate = BoxingUtilities.LotToPalletDate(LedStorage.Lots[selectedLot]);
             var palletisingId = BoxingUtilities.LotToPalletId(LedStorage.Lots[selectedLot]);
-            var testDate = LedStorage.Lots[selectedLot].LedsInLot[0].TesterData[0].TimeOfTest.ToString();
+            var testDate = "";
+            if (LedStorage.Lots[selectedLot].LedsInLot.Count > 0)
+            {
+                testDate = LedStorage.Lots[selectedLot].LedsInLot[0].TesterData[0].TimeOfTest.ToString();
+            }
 
             string splittingDate = "";
             if (LedStorage.Lots[selectedLot].WasteInfo != null)
@@ -108,11 +112,11 @@ namespace PomocDoRaprtow.Tabs
             gridTable.Rows.Add("Testing date (1st)", testDate);
             gridTable.Rows.Add("Splitting Date", splittingDate);
             gridTable.Rows.Add("Boxed", boxedPercentage);
-            gridTable.Rows.Add("Boxing date", ListToString(boxingDate));
-            gridTable.Rows.Add("Box ID", ListToString(boxId));
+            gridTable.Rows.Add("Boxing date", String.Join(", ", boxingDate));
+            gridTable.Rows.Add("Box ID", String.Join(", ", boxId));
             gridTable.Rows.Add("Palletised", palletisedPercentage);
-            gridTable.Rows.Add("Palletising date", ListToString(palletisingDate));
-            gridTable.Rows.Add("Pallet ID", ListToString(palletisingId));
+            gridTable.Rows.Add("Palletising date", String.Join(", ", palletisingDate));
+            gridTable.Rows.Add("Pallet ID", String.Join(", ", palletisingId));
 
             dataGridViewLotInfo.DataSource = gridTable;
             foreach (DataGridViewColumn col in dataGridViewLotInfo.Columns)
@@ -121,17 +125,6 @@ namespace PomocDoRaprtow.Tabs
             }
 
         }
-        private string ListToString(List<string> input)
-        {
-            string result = "";
-            foreach (var item in input)
-            {
-                if(item!="")
-                {
-                    result += item+", ";
-                }
-            }
-            return result;
-        }
+
     }
 }

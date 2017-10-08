@@ -11,7 +11,7 @@ namespace PomocDoRaprtow
         
         public static String PercentPalletised(Lot lot)
         {
-            return MathUtilities.CalculatePercentage(lot.LedsInLot.Count, lot.LedsInLot.Count(l => l.Boxing.PalletisingDate.HasValue));
+            return MathUtilities.CalculatePercentage(lot.GoodLedsInLot.Count, lot.GoodLedsInLot.Count(l => l.Boxing.PalletisingDate.HasValue));
         }
 
         public static bool IsFullyPalletised(Lot lot)
@@ -21,7 +21,7 @@ namespace PomocDoRaprtow
 
         public static String PercentBoxed(Lot lot)
         {
-            return MathUtilities.CalculatePercentage(lot.LedsInLot.Count, lot.LedsInLot.Count(l => l.Boxing.BoxingDate.HasValue));
+            return MathUtilities.CalculatePercentage(lot.GoodLedsInLot.Count, lot.GoodLedsInLot.Count(l => l.Boxing.BoxingDate.HasValue));
         }
 
         public static bool IsSplit(Lot lot)
@@ -31,30 +31,22 @@ namespace PomocDoRaprtow
 
         public static List<string> LotToBoxesId (Lot lot)
         {
-            List<string> result = new List<string>();
-            result.AddRange( lot.LedsInLot.Select(l =>  l.Boxing.BoxId).Distinct().ToArray() );
-            return result;
+            return lot.LedsInLot.Select(l => l.Boxing.BoxId).Distinct().ToList();
         }
 
         public static List<string> LotToBoxesDate(Lot lot)
         {
-            List<string> result = new List<string>();
-            result.AddRange(lot.LedsInLot.Select(l => l.Boxing.BoxingDate.ToString()).Distinct().ToArray());
-            return result;
+            return lot.LedsInLot.Select(l => l.Boxing.BoxingDate.ToString()).ToList();
         }
 
         public static List<string> LotToPalletId(Lot lot)
         {
-            List<string> result = new List<string>();
-            result.AddRange(lot.LedsInLot.Select(l => l.Boxing.PalletId).Distinct().ToArray());
-            return result;
+            return lot.LedsInLot.Select(l => l.Boxing.PalletId).Distinct().ToList();
         }
 
         public static List<string> LotToPalletDate(Lot lot)
         {
-            List<string> result = new List<string>();
-            result.AddRange(lot.LedsInLot.Select(l => l.Boxing.PalletisingDate.ToString()).Distinct().ToArray());
-            return result;
+            return lot.LedsInLot.Select(l => l.Boxing.PalletisingDate.ToString()).Distinct().ToList();
         }
     }
 }
