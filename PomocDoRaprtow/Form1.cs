@@ -6,20 +6,20 @@ using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Linq;
 using System.Globalization;
+using PomocDoRaprtow.Tabs;
 
 namespace PomocDoRaprtow
 {
     public partial class Form1 : Form
     {
-        private readonly OptionProvider optionProvider;
         private LedStorage ledStorage;
+        private WasteOperations wasteOperations;
 
         public Form1()
         {
             InitializeComponent();
-
-
-            optionProvider = new OptionProvider(this);
+            
+            wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad);
         }
 
 
@@ -27,7 +27,6 @@ namespace PomocDoRaprtow
         {
         }
 
-        DataTable Odpady_table = new DataTable();
         DataTable Tester_table = new DataTable();
         static DataTable LOT_Module_Short = new DataTable();
 
@@ -60,13 +59,14 @@ namespace PomocDoRaprtow
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Odpady_table = SqlTableLoader.LoadWasteTable();
             Tester_table = SqlTableLoader.LoadTesterWorkCard();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
             ledStorage = new LedStorageLoader().BuildStorage();
+            wasteOperations.LedStorage = ledStorage;
+            
             CapaModelcheckedListBox.Items.Clear();
             foreach (var model in ledStorage.Models.Values)
             {
@@ -223,26 +223,26 @@ namespace PomocDoRaprtow
             return ModelSelected(led.Lot.Model);
         }
 
-        private bool WasteInfoBySplittingTime(WasteInfo wasteInfo)
+        public bool WasteInfoBySplittingTime(WasteInfo wasteInfo)
         {
             return wasteInfo != null && wasteInfo.SplittingDate > dateTimePickerBegin.Value &&
             wasteInfo.SplittingDate < dateTimePickerEnd.Value;
         }
 
-        private bool LotBySplittingTime(Lot lot)
+        public bool LotBySplittingTime(Lot lot)
         {
             return WasteInfoBySplittingTime(lot.WasteInfo);
         }
-        private bool ModelSelected(Model model)
+        public bool ModelSelected(Model model)
         {
             return enabledModels.Contains(model.ModelName);
         }
-        private IEnumerable<Led> FilterLeds()
+        public IEnumerable<Led> FilterLeds()
         {
             return ledStorage.SerialNumbersToLed.Values.Where(PassesFilter);
         }
 
-        private IEnumerable<TesterData> TesterDataFilter(List<TesterData> testerData)
+        public IEnumerable<TesterData> TesterDataFilter(List<TesterData> testerData)
         {
             return testerData.Where(t =>
             t.TimeOfTest > dateTimePickerBegin.Value &&
@@ -263,72 +263,7 @@ namespace PomocDoRaprtow
 
         private void RefreshTreeViewWasteNodes()
         {
-            treeViewWaste.BeginUpdate();
-            treeViewWaste.Nodes.Clear();
-            var models = ledStorage.Models.Values.Where(ModelSelected).ToList();
-            var totalWaste = models.Sum(m => m.CalculateWaste(WasteInfoBySplittingTime).Sum());
-            var totalProduced = models.SelectMany(m => m.Lots.Where(LotBySplittingTime)).Sum(l => l.TestedQuantity);
-            
-            List<TreeNode> wasteNodes = new List<TreeNode>();
-            TreeNode totalNode = new TreeNode("Total  - " +   MathUtilities.CalculatePercentage(totalProduced,totalWaste));
-            totalNode.Name = "Total";
-            treeViewWaste.Nodes.Add(totalNode);
-           
-            foreach (var model in models)
-            {
-                int totalWasteInModel = model.CalculateWaste(WasteInfoBySplittingTime).Sum();
-                int totalProducedInModel = model.Lots.Where(LotBySplittingTime).Sum(l => l.TestedQuantity);
-                if (totalProducedInModel == 0) continue;
-                TreeNode modelNode = new TreeNode($"{model.ModelName}  - {MathUtilities.CalculatePercentage(totalProducedInModel,totalWasteInModel)}");
-                modelNode.Name = model.ModelName;
-                treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
-            }
-
-            treeViewWaste.ExpandAll();
-            treeViewWaste.EndUpdate();
-            treeViewWaste.SelectedNode = treeViewWaste.Nodes["Total"];
-        }   
-
-        private void DrawWasteHistogram()
-        {
-            DataTable hist = new DataTable();
-            hist.Columns.Add("Name");
-            hist.Columns.Add("Count", typeof(int));
-
-            foreach (var wasteHeader in WasteInfo.WasteFieldNames)
-            {
-                hist.Rows.Add(wasteHeader, 0);
-            }
-
-            var models = ledStorage.Models.Values.Where(ModelSelected);
-
-            if (treeViewWaste.SelectedNode.Name == "Total")
-            {
-                for (int i = 0; i < WasteInfo.WasteFieldNames.Length; ++i)
-                {
-                    hist.Rows[i][1] = models.Sum(m => m.CalculateWaste(WasteInfoBySplittingTime)[i]);
-                }
-            }
-
-            foreach (var model in models)
-            {
-                if (model.ModelName == treeViewWaste.SelectedNode.Name)
-                {
-                    for (int i = 0; i < model.CalculateWaste(WasteInfoBySplittingTime).Count; i++)
-                    {
-                        var waste = model.CalculateWaste(WasteInfoBySplittingTime)[i];
-                        hist.Rows[i][1] = waste;
-                    }
-                }
-            }
-
-            DataView dv = hist.DefaultView;
-            dv.Sort = "Count desc";
-            hist = dv.ToTable();
-
-            dataGridViewWaste.DataSource = hist;
-            Charting.BarChart(chart_odpad, hist, 0, 1);
-        }
+        } 
 
         private void dateTimePicker_odpad_od_ValueChanged(object sender, EventArgs e)
         {
@@ -376,13 +311,13 @@ namespace PomocDoRaprtow
 
         private void button3_Click(object sender, EventArgs e)
         {
+            wasteOperations.RedrawWasteTab();
             DrawCapaChart(chart_Capacity_Test, dataGridView_Capacity_Test);
-            RefreshTreeViewWasteNodes();
         }
 
         private void treeViewWaste_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            DrawWasteHistogram();
+            wasteOperations.TreeViewWasteSelectionChanged();
         }
 
         
