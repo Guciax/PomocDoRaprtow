@@ -27,10 +27,12 @@ namespace PomocDoRaprtow
                 }
             }
             var valuesSum = xValues.Sum();
+            double runningSum = 0;
 
             foreach (var val in xValues)
             {
-                xPercentage.Add( val / valuesSum);
+                if (valuesSum > 0) xPercentage.Add((val + runningSum) / valuesSum * 100); else xPercentage.Add(0);
+                runningSum += val;
             }
 
 
@@ -46,6 +48,11 @@ namespace PomocDoRaprtow
             Series serLine = new Series();
             serLine.ChartType = SeriesChartType.Line;
             serLine.YAxisType = AxisType.Secondary;
+            serLine.IsVisibleInLegend = false;
+            serLine.IsValueShownAsLabel = true;
+            serLine.LabelFormat = "{0} %";
+            serLine.Color = System.Drawing.Color.Orange;
+            serLine.BorderWidth = 2;
 
             ChartArea area = new ChartArea();
             area.AxisX.IsLabelAutoFit = true;
@@ -54,17 +61,18 @@ namespace PomocDoRaprtow
             area.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 12);
             area.AxisX.MajorGrid.LineColor = System.Drawing.Color.Silver;
             area.AxisY.MajorGrid.LineColor = System.Drawing.Color.Silver;
+            area.AxisY2.MajorGrid.Enabled = false;
             area.AxisY2.Enabled = AxisEnabled.Auto;
-            
+            area.AxisY2.LabelStyle.Format = "{0} %";
 
             barChartControl.Series.Add(serColumn);
-            //barChartControl.Series.Add(serLine);
+            barChartControl.Series.Add(serLine);
             barChartControl.ChartAreas.Add(area);
 
             for (int i = 0; i < xValues.Count; i++)
             {
                 barChartControl.Series[0].Points.AddXY(xNames[i], xValues[i]);
-                //barChartControl.Series[1].Points.AddXY(xNames[i], xPercentage[i]);
+                barChartControl.Series[1].Points.AddXY(xNames[i], xPercentage[i]);
             }
         }
 

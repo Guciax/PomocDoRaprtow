@@ -270,7 +270,7 @@ namespace PomocDoRaprtow
             var totalProduced = models.SelectMany(m => m.Lots.Where(LotBySplittingTime)).Sum(l => l.TestedQuantity);
             
             List<TreeNode> wasteNodes = new List<TreeNode>();
-            TreeNode totalNode = new TreeNode("Total" + " " + totalWaste + " Total Produced " + MathUtilities.CalculatePercentage(totalProduced,totalWaste));
+            TreeNode totalNode = new TreeNode("Total  - " +   MathUtilities.CalculatePercentage(totalProduced,totalWaste));
             totalNode.Name = "Total";
             treeViewWaste.Nodes.Add(totalNode);
            
@@ -279,7 +279,7 @@ namespace PomocDoRaprtow
                 int totalWasteInModel = model.CalculateWaste(WasteInfoBySplittingTime).Sum();
                 int totalProducedInModel = model.Lots.Where(LotBySplittingTime).Sum(l => l.TestedQuantity);
                 if (totalProducedInModel == 0) continue;
-                TreeNode modelNode = new TreeNode($"{model.ModelName} {totalWasteInModel} - {MathUtilities.CalculatePercentage(totalProducedInModel,totalWasteInModel)}");
+                TreeNode modelNode = new TreeNode($"{model.ModelName}  - {MathUtilities.CalculatePercentage(totalProducedInModel,totalWasteInModel)}");
                 modelNode.Name = model.ModelName;
                 treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
             }
