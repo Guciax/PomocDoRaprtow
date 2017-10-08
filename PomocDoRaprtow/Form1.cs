@@ -14,12 +14,14 @@ namespace PomocDoRaprtow
     {
         private LedStorage ledStorage;
         private WasteOperations wasteOperations;
+        private LotInfoOperations lotInfoOperations;
 
         public Form1()
         {
             InitializeComponent();
             
             wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad);
+            lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo);
         }
 
 
@@ -66,6 +68,7 @@ namespace PomocDoRaprtow
         {
             ledStorage = new LedStorageLoader().BuildStorage();
             wasteOperations.LedStorage = ledStorage;
+            lotInfoOperations.LedStorage = ledStorage;
             
             CapaModelcheckedListBox.Items.Clear();
             foreach (var model in ledStorage.Models.Values)
@@ -320,6 +323,15 @@ namespace PomocDoRaprtow
             wasteOperations.TreeViewWasteSelectionChanged();
         }
 
-        
+        private void button6_Click(object sender, EventArgs e)
+        {
+            //lotInfoOperations.BuildModelLotInfoDictionary();
+            lotInfoOperations.FilterLotInfoTreeView();
+        }
+
+        private void textBoxFilterLotInfo_TextChanged(object sender, EventArgs e)
+        {
+            lotInfoOperations.FilterLotInfoTreeView();
+        }
     }
 }

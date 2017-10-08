@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PomocDoRaprtow.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,19 +13,57 @@ namespace PomocDoRaprtow
         private Dictionary<String, WasteInfo> LotIdToWasteInfo { get; set; }
         private Dictionary<String, Led> SerialNumbersToLed { get; set; }
         private Dictionary<string, Model> models { get; set; }
+        private Dictionary<String, Boxing> serialToBoxing { get; set; }
 
         public const String LotPath = @"DB\Zlecenia_produkcyjne.txt";
         public const String WastePath = @"DB\Odpady.csv";
         public const String TesterPath = @"DB\tester.csv";
+        public const string BoxingPath = @"DB\WyrobLG_opakowanie.txt";
+
 
 
         public LedStorage BuildStorage(String lotPath = LotPath, String wastePath = WastePath,
-            String testerPath = TesterPath)
+            String testerPath = TesterPath, string boxingPathi = BoxingPath)
         {
             LoadWasteTable(wastePath);
             LoadLotTable(lotPath);
             LoadLedTable(testerPath);
-            return new LedStorage(Lots, LotIdToWasteInfo, SerialNumbersToLed, models);
+            LoadBoxingTable(boxingPathi);
+            return new LedStorage(Lots, LotIdToWasteInfo, SerialNumbersToLed, models, serialToBoxing);
+        }
+
+        private void LoadBoxingTable(string boxingPath)
+        {
+            serialToBoxing = new Dictionary<string, Boxing>();
+            string[] boxLines = System.IO.File.ReadAllLines(boxingPath);
+            string[] header = boxLines[0].Split(';');
+
+            int indexSerial = Array.IndexOf(header, "serial_no");
+            int indexBoxingDate = Array.IndexOf(header, "Boxing_Date");
+            int indexPalletisingDate = Array.IndexOf(header, "Palletising_Date");
+
+            foreach (var line in boxLines.Skip(1))
+            {
+                var splitLine = line.Split(';');
+                var serial = splitLine[indexSerial];
+                DateTime boxingDate = new DateTime();
+                DateTime palletisingDate = new DateTime();
+
+                if (splitLine[indexBoxingDate]!="NULL")
+                {
+                    boxingDate = DateUtilities.ParseExact(splitLine[indexBoxingDate]);
+                }
+
+                if (splitLine[indexPalletisingDate] != "NULL")
+                {
+                    palletisingDate = DateUtilities.ParseExact(splitLine[indexPalletisingDate]);
+                }
+
+                if (!serialToBoxing.ContainsKey(serial))
+                {
+                    serialToBoxing.Add(serial, new Boxing(boxingDate, palletisingDate));
+                }
+            }
         }
 
         private void LoadLotTable(String path = LotPath)
@@ -33,13 +72,20 @@ namespace PomocDoRaprtow
             models = new Dictionary<string, Model>();
             string[] fileLines = System.IO.File.ReadAllLines(path);
             string[] header = fileLines[0].Split(';');
+
             int indexLotId = Array.IndexOf(header, "Nr_Zlecenia_Produkcyjnego");
+            int indexPlanId = Array.IndexOf(header, "Nr_Planu_Produkcji");
             int indexModel = Array.IndexOf(header, "NC12_wyrobu");
             int indexRankA = Array.IndexOf(header, "RankA");
             int indexRankB = Array.IndexOf(header, "RankB");
             int indexMrm = Array.IndexOf(header, "MRM");
+            int indexOrderedQty = Array.IndexOf(header, "Ilosc_wyrobu_zlecona");
+            int indexManufacturedGoodQty = Array.IndexOf(header, "Ilosc_wyr_dobrego");
+            int indexReworkQty = Array.IndexOf(header, "Ilosc_wyr_do_poprawy");
+            int indexmScrapQty = Array.IndexOf(header, "Ilosc_wyr_na_zlom");
+            int indexPrintDate = Array.IndexOf(header, "DataCzasWydruku");
 
-
+            
             foreach (var line in fileLines.Skip(1))
             {
                 var splitLine = line.Split(';');
@@ -55,11 +101,32 @@ namespace PomocDoRaprtow
                     model = new Model(modelName);
                     models.Add(modelName, model);
                 }
+                int orderedQty = 0;
+                int manufacturedQty = 0;
+                int reworkQty = 0;
+                int scrapQty = 0;
+                DateTime printDate = new DateTime();
+
+                Int32.TryParse(splitLine[indexOrderedQty], out orderedQty);
+                Int32.TryParse(splitLine[indexManufacturedGoodQty], out manufacturedQty);
+                Int32.TryParse(splitLine[indexReworkQty], out reworkQty);
+                Int32.TryParse(splitLine[indexmScrapQty], out scrapQty);
+                if (splitLine[indexPrintDate]!="NULL") DateUtilities.ParseExactWithFraction(splitLine[indexPrintDate]);
+
 
                 var lot = new Lot(splitLine[indexLotId],
+                    splitLine[indexPlanId],
                     splitLine[indexRankA],
                     splitLine[indexRankB],
-                    splitLine[indexMrm], model, info, 0);
+                    splitLine[indexMrm], 
+                    model, 
+                    info, 
+                    0,//testted quantity to fiilup later
+                    orderedQty,
+                    manufacturedQty,
+                    reworkQty,
+                    scrapQty,
+                    printDate);
 
 
                 Lots.Add(lot.LotId, lot);

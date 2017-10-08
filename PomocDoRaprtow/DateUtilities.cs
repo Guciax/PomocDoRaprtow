@@ -54,5 +54,10 @@ namespace PomocDoRaprtow
         {
             return DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
         }
+
+        public static DateTime ParseExactWithFraction(String date)
+        {
+            return DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+        }
     }
 }
