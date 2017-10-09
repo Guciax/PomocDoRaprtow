@@ -15,10 +15,10 @@ namespace PomocDoRaprtow
         private Dictionary<string, Model> models { get; set; }
         private Dictionary<String, Boxing> serialToBoxing { get; set; }
 
-        public const String LotPath = @"DB\Zlecenia_produkcyjne.txt";
+        public const String LotPath = @"DB\Zlecenia_produkcyjne.csv";
         public const String WastePath = @"DB\Odpady.csv";
         public const String TesterPath = @"DB\tester.csv";
-        public const string BoxingPath = @"DB\WyrobLG_opakowanie.txt";
+        public const string BoxingPath = @"DB\WyrobLG_opakowanie.csv";
 
 
 

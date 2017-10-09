@@ -36,7 +36,7 @@ namespace PomocDoRaprtow
 
         public static List<string> LotToBoxesDate(Lot lot)
         {
-            return lot.LedsInLot.Select(l => l.Boxing.BoxingDate.ToString()).ToList();
+            return lot.LedsInLot.Select(l => l.Boxing.BoxingDate.ToString()).Distinct().ToList();
         }
 
         public static List<string> LotToPalletId(Lot lot)
