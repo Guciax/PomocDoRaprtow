@@ -27,44 +27,21 @@ namespace PomocDoRaprtow
             capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest, dataGridViewCapaTest, chartSplitting, dataGridViewSplitting);
         }
 
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
 
-        DataTable Tester_table = new DataTable();
-        static DataTable LOT_Module_Short = new DataTable();
-
-        private void button1_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
+            wasteOperations.RedrawWasteTab();
 
-        }
-
-
-        public static string LOT_to_Model(string lot)
-        {
-            foreach (DataRow row in LOT_Module_Short.Rows)
-            {
-                if (row[0].ToString() == lot)
-                {
-                    return row[1].ToString();
-                }
-            }
-            return "";
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            DataTable shifts = TableOperations.Tester_IloscNaZmiane(Tester_table);
-            dataGridViewSplitting.DataSource = shifts;
-            dataGridViewSplitting.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            Charting.ShiftLineChart(chart1, shifts, 0, 1, 2);
+            capabilityOperations.DrawCapability(FilterLeds().ToList(), FilterLots().ToList());
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Tester_table = SqlTableLoader.LoadTesterWorkCard();
+            //Tester_table = SqlTableLoader.LoadTesterWorkCard();
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -134,10 +111,6 @@ namespace PomocDoRaprtow
 
         }
 
-        private void RefreshTreeViewWasteNodes()
-        {
-        }
-
         private void dateTimePicker_odpad_od_ValueChanged(object sender, EventArgs e)
         {
 
@@ -162,7 +135,6 @@ namespace PomocDoRaprtow
             RebuildEnabledModelsSet();
         }
 
-
         private void RebuildEnabledModelsSet()
         {
             enabledModels.Clear();
@@ -172,23 +144,6 @@ namespace PomocDoRaprtow
             }
         }
 
-        private void dateTimePicker_wyd_od_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dateTimePicker_wyd_do_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            wasteOperations.RedrawWasteTab();
-
-            capabilityOperations.DrawCapability(FilterLeds().ToList(), FilterLots().ToList());
-        }
-
         private void treeViewWaste_AfterSelect(object sender, TreeViewEventArgs e)
         {
             wasteOperations.TreeViewWasteSelectionChanged();
@@ -196,7 +151,6 @@ namespace PomocDoRaprtow
 
         private void button6_Click(object sender, EventArgs e)
         {
-            //lotInfoOperations.BuildModelLotInfoDictionary();
             lotInfoOperations.FilterLotInfoTreeView();
         }
 
