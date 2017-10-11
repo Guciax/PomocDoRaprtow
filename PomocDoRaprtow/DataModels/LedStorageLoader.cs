@@ -244,11 +244,6 @@ namespace PomocDoRaprtow
                 int count = entry.Value.Count;
                 Lots[entry.Key].TestedQuantity = count;
             }
-
-            foreach(var lot in Lots.Values)
-            {
-                lot.GoodLedsInLot = lot.LedsInLot.Where(l => l.TestOk).ToList();
-            }
         }
     }
 }

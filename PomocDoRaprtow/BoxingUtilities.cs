@@ -8,10 +8,9 @@ namespace PomocDoRaprtow
 {
     public class BoxingUtilities
     {
-        
         public static String PercentPalletised(Lot lot)
         {
-            return MathUtilities.CalculatePercentage(lot.GoodLedsInLot.Count, lot.GoodLedsInLot.Count(l => l.Boxing.PalletisingDate.HasValue));
+            return MathUtilities.CalculatePercentage(lot.ManufacturedGoodQuantity, lot.LedsInLot.Count(l => l.Boxing.PalletisingDate.HasValue));
         }
 
         public static bool IsFullyPalletised(Lot lot)
@@ -21,7 +20,7 @@ namespace PomocDoRaprtow
 
         public static String PercentBoxed(Lot lot)
         {
-            return MathUtilities.CalculatePercentage(lot.GoodLedsInLot.Count, lot.GoodLedsInLot.Count(l => l.Boxing.BoxingDate.HasValue));
+            return MathUtilities.CalculatePercentage(lot.ManufacturedGoodQuantity, lot.LedsInLot.Count(l => l.Boxing.BoxingDate.HasValue));
         }
 
         public static bool IsSplit(Lot lot)

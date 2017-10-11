@@ -41,7 +41,7 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.button1 = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridViewSplitting = new System.Windows.Forms.DataGridView();
             this.button2 = new System.Windows.Forms.Button();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.button3 = new System.Windows.Forms.Button();
@@ -50,14 +50,14 @@
             this.Tab = new System.Windows.Forms.TabControl();
             this.tab_Start = new System.Windows.Forms.TabPage();
             this.tab_Capacity = new System.Windows.Forms.TabPage();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.richTextBoxCapaTest = new System.Windows.Forms.RichTextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.treeViewCapa = new System.Windows.Forms.TreeView();
-            this.chart_Capacity_Test = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.dataGridView_Capacity_Test = new System.Windows.Forms.DataGridView();
+            this.treeViewTestCapa = new System.Windows.Forms.TreeView();
+            this.chartCapaTest = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.dataGridViewCapaTest = new System.Windows.Forms.DataGridView();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartSplitting = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tab_Waste = new System.Windows.Forms.TabPage();
             this.treeViewWaste = new System.Windows.Forms.TreeView();
             this.dataGridViewWaste = new System.Windows.Forms.DataGridView();
@@ -76,13 +76,13 @@
             this.CapaModelcheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.dateTimePickerBegin = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSplitting)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.Tab.SuspendLayout();
             this.tab_Capacity.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart_Capacity_Test)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Capacity_Test)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartCapaTest)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCapaTest)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSplitting)).BeginInit();
             this.tab_Waste.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewWaste)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart_odpad)).BeginInit();
@@ -102,15 +102,15 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // dataGridView1
+            // dataGridViewSplitting
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(569, 782);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(452, 458);
-            this.dataGridView1.TabIndex = 1;
+            this.dataGridViewSplitting.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewSplitting.Location = new System.Drawing.Point(569, 782);
+            this.dataGridViewSplitting.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridViewSplitting.Name = "dataGridViewSplitting";
+            this.dataGridViewSplitting.RowTemplate.Height = 24;
+            this.dataGridViewSplitting.Size = new System.Drawing.Size(452, 458);
+            this.dataGridViewSplitting.TabIndex = 1;
             // 
             // button2
             // 
@@ -202,15 +202,15 @@
             // tab_Capacity
             // 
             this.tab_Capacity.AutoScroll = true;
-            this.tab_Capacity.Controls.Add(this.richTextBox1);
+            this.tab_Capacity.Controls.Add(this.richTextBoxCapaTest);
             this.tab_Capacity.Controls.Add(this.label4);
-            this.tab_Capacity.Controls.Add(this.treeViewCapa);
-            this.tab_Capacity.Controls.Add(this.chart_Capacity_Test);
-            this.tab_Capacity.Controls.Add(this.dataGridView_Capacity_Test);
+            this.tab_Capacity.Controls.Add(this.treeViewTestCapa);
+            this.tab_Capacity.Controls.Add(this.chartCapaTest);
+            this.tab_Capacity.Controls.Add(this.dataGridViewCapaTest);
             this.tab_Capacity.Controls.Add(this.label3);
             this.tab_Capacity.Controls.Add(this.label2);
-            this.tab_Capacity.Controls.Add(this.chart2);
-            this.tab_Capacity.Controls.Add(this.dataGridView1);
+            this.tab_Capacity.Controls.Add(this.chartSplitting);
+            this.tab_Capacity.Controls.Add(this.dataGridViewSplitting);
             this.tab_Capacity.Location = new System.Drawing.Point(4, 25);
             this.tab_Capacity.Name = "tab_Capacity";
             this.tab_Capacity.Padding = new System.Windows.Forms.Padding(3);
@@ -219,13 +219,13 @@
             this.tab_Capacity.Text = "Capacity";
             this.tab_Capacity.UseVisualStyleBackColor = true;
             // 
-            // richTextBox1
+            // richTextBoxCapaTest
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(570, 230);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(219, 347);
-            this.richTextBox1.TabIndex = 24;
-            this.richTextBox1.Text = "";
+            this.richTextBoxCapaTest.Location = new System.Drawing.Point(570, 230);
+            this.richTextBoxCapaTest.Name = "richTextBoxCapaTest";
+            this.richTextBoxCapaTest.Size = new System.Drawing.Size(219, 347);
+            this.richTextBoxCapaTest.TabIndex = 24;
+            this.richTextBoxCapaTest.Text = "";
             // 
             // label4
             // 
@@ -236,38 +236,38 @@
             this.label4.TabIndex = 23;
             this.label4.Text = "SPLITTING";
             // 
-            // treeViewCapa
+            // treeViewTestCapa
             // 
-            this.treeViewCapa.Location = new System.Drawing.Point(795, 230);
-            this.treeViewCapa.Name = "treeViewCapa";
-            this.treeViewCapa.Size = new System.Drawing.Size(416, 458);
-            this.treeViewCapa.TabIndex = 22;
+            this.treeViewTestCapa.Location = new System.Drawing.Point(795, 230);
+            this.treeViewTestCapa.Name = "treeViewTestCapa";
+            this.treeViewTestCapa.Size = new System.Drawing.Size(416, 458);
+            this.treeViewTestCapa.TabIndex = 22;
             // 
-            // chart_Capacity_Test
+            // chartCapaTest
             // 
             chartArea2.Name = "ChartArea1";
-            this.chart_Capacity_Test.ChartAreas.Add(chartArea2);
+            this.chartCapaTest.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend1";
-            this.chart_Capacity_Test.Legends.Add(legend2);
-            this.chart_Capacity_Test.Location = new System.Drawing.Point(11, 230);
-            this.chart_Capacity_Test.Name = "chart_Capacity_Test";
+            this.chartCapaTest.Legends.Add(legend2);
+            this.chartCapaTest.Location = new System.Drawing.Point(11, 230);
+            this.chartCapaTest.Name = "chartCapaTest";
             series2.ChartArea = "ChartArea1";
             series2.Legend = "Legend1";
             series2.Name = "Series1";
-            this.chart_Capacity_Test.Series.Add(series2);
-            this.chart_Capacity_Test.Size = new System.Drawing.Size(552, 453);
-            this.chart_Capacity_Test.TabIndex = 20;
-            this.chart_Capacity_Test.Text = "chart5";
+            this.chartCapaTest.Series.Add(series2);
+            this.chartCapaTest.Size = new System.Drawing.Size(552, 453);
+            this.chartCapaTest.TabIndex = 20;
+            this.chartCapaTest.Text = "chartCapaTest";
             // 
-            // dataGridView_Capacity_Test
+            // dataGridViewCapaTest
             // 
-            this.dataGridView_Capacity_Test.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView_Capacity_Test.Location = new System.Drawing.Point(569, 597);
-            this.dataGridView_Capacity_Test.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.dataGridView_Capacity_Test.Name = "dataGridView_Capacity_Test";
-            this.dataGridView_Capacity_Test.RowTemplate.Height = 24;
-            this.dataGridView_Capacity_Test.Size = new System.Drawing.Size(183, 91);
-            this.dataGridView_Capacity_Test.TabIndex = 19;
+            this.dataGridViewCapaTest.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewCapaTest.Location = new System.Drawing.Point(569, 597);
+            this.dataGridViewCapaTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridViewCapaTest.Name = "dataGridViewCapaTest";
+            this.dataGridViewCapaTest.RowTemplate.Height = 24;
+            this.dataGridViewCapaTest.Size = new System.Drawing.Size(183, 91);
+            this.dataGridViewCapaTest.TabIndex = 19;
             // 
             // label3
             // 
@@ -287,21 +287,21 @@
             this.label2.TabIndex = 15;
             this.label2.Text = "SMT";
             // 
-            // chart2
+            // chartSplitting
             // 
             chartArea3.Name = "ChartArea1";
-            this.chart2.ChartAreas.Add(chartArea3);
+            this.chartSplitting.ChartAreas.Add(chartArea3);
             legend3.Name = "Legend1";
-            this.chart2.Legends.Add(legend3);
-            this.chart2.Location = new System.Drawing.Point(11, 782);
-            this.chart2.Name = "chart2";
+            this.chartSplitting.Legends.Add(legend3);
+            this.chartSplitting.Location = new System.Drawing.Point(11, 782);
+            this.chartSplitting.Name = "chartSplitting";
             series3.ChartArea = "ChartArea1";
             series3.Legend = "Legend1";
             series3.Name = "Series1";
-            this.chart2.Series.Add(series3);
-            this.chart2.Size = new System.Drawing.Size(552, 453);
-            this.chart2.TabIndex = 7;
-            this.chart2.Text = "chart2";
+            this.chartSplitting.Series.Add(series3);
+            this.chartSplitting.Size = new System.Drawing.Size(552, 453);
+            this.chartSplitting.TabIndex = 7;
+            this.chartSplitting.Text = "chart2";
             // 
             // tab_Waste
             // 
@@ -512,14 +512,14 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewSplitting)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.Tab.ResumeLayout(false);
             this.tab_Capacity.ResumeLayout(false);
             this.tab_Capacity.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart_Capacity_Test)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView_Capacity_Test)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartCapaTest)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCapaTest)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSplitting)).EndInit();
             this.tab_Waste.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewWaste)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart_odpad)).EndInit();
@@ -535,7 +535,7 @@
         #endregion
 
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridViewSplitting;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.Button button3;
@@ -549,18 +549,18 @@
         private System.Windows.Forms.TabPage tab_Start;
         private System.Windows.Forms.DateTimePicker dateTimePickerBegin;
         private System.Windows.Forms.DateTimePicker dateTimePickerEnd;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart_Capacity_Test;
-        private System.Windows.Forms.DataGridView dataGridView_Capacity_Test;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartSplitting;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartCapaTest;
+        private System.Windows.Forms.DataGridView dataGridViewCapaTest;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckedListBox CapaModelcheckedListBox;
-        private System.Windows.Forms.TreeView treeViewCapa;
+        private System.Windows.Forms.TreeView treeViewTestCapa;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView treeViewLotsinUse;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox richTextBoxCapaTest;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TreeView treeViewWaste;
         private System.Windows.Forms.TabPage tabPageLotInfo;
