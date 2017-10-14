@@ -20,5 +20,7 @@ namespace PomocDoRaprtow
         public Dictionary<string, Led> SerialNumbersToLed { get; }
         public Dictionary<string, Model> Models { get; }
         public Dictionary<string, Boxing> SerialInBox { get; }
+
+        public IEnumerable<Led> Leds => SerialNumbersToLed.Values;
     }
 }

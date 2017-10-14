@@ -7,6 +7,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Linq;
 using System.Globalization;
 using PomocDoRaprtow.Tabs;
+using PomocDoRaprtow.DataModels;
 
 namespace PomocDoRaprtow
 {
@@ -24,7 +25,7 @@ namespace PomocDoRaprtow
             wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad);
             lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo, dataGridViewLotInfo);
             lotInUseOperations = new LotsInUseOperations(this, treeViewLotsinUse);
-            capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest, dataGridViewCapaTest, chartSplitting, dataGridViewSplitting);
+            capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest, dataGridViewCapaTest, chartSplitting, dataGridViewSplitting, treeViewSplitting, treeViewCapaBoxing,dataGridViewCapaBoxing, chartCapaBoxing);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -36,7 +37,7 @@ namespace PomocDoRaprtow
         {
             wasteOperations.RedrawWasteTab();
 
-            capabilityOperations.DrawCapability(FilterLeds().ToList(), FilterLots().ToList());
+            capabilityOperations.DrawCapability();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -50,6 +51,7 @@ namespace PomocDoRaprtow
             wasteOperations.LedStorage = ledStorage;
             lotInfoOperations.LedStorage = ledStorage;
             lotInUseOperations.LedStorage = ledStorage;
+            capabilityOperations.LedStorage = ledStorage;
             CapaModelcheckedListBox.Items.Clear();
 
             foreach (var model in ledStorage.Models.Values)
@@ -63,15 +65,14 @@ namespace PomocDoRaprtow
 
         private HashSet<String> enabledModels = new HashSet<string>();
 
-        private bool PassesFilter(Led led)
+        public bool LedModelIsSelected(Led led)
         {
             return ModelSelected(led.Lot.Model);
         }
 
         public bool WasteInfoBySplittingTime(WasteInfo wasteInfo)
         {
-            return wasteInfo != null && wasteInfo.SplittingDate > dateTimePickerBegin.Value &&
-            wasteInfo.SplittingDate < dateTimePickerEnd.Value;
+            return wasteInfo != null && DateFilter(wasteInfo.SplittingDate);
         }
 
         public bool LotBySplittingTime(Lot lot)
@@ -89,21 +90,30 @@ namespace PomocDoRaprtow
             return enabledModels.Contains(model.ModelName);
         }
 
-        public IEnumerable<Led> FilterLeds()
+        public IEnumerable<Led> FilterLedsBySelectedModels()
         {
-            return ledStorage.SerialNumbersToLed.Values.Where(PassesFilter);
+            return ledStorage.SerialNumbersToLed.Values.Where(LedModelIsSelected);
         }
 
-        public IEnumerable<Lot> FilterLots()
+        public IEnumerable<Lot> FilterLotsBySelecteModels()
         {
-            return ledStorage.Lots.Values.Where(LotByModel).Where(LotBySplittingTime);
+            return ledStorage.Lots.Values.Where(LotByModel);
         }
 
-        public IEnumerable<TesterData> TesterDataFilter(List<TesterData> testerData)
+        public bool DateFilter(DateTime dt)
         {
-            return testerData.Where(t =>
-            t.TimeOfTest > dateTimePickerBegin.Value &&
-            t.TimeOfTest < dateTimePickerEnd.Value);
+            return dt > dateTimePickerBegin.Value &&
+            dt < dateTimePickerEnd.Value;
+        }
+
+        public IEnumerable<TesterData> TesterDataFilter(IEnumerable<TesterData> testerData)
+        {
+            return testerData.Where(t => DateFilter(t.TimeOfTest));
+        }
+
+        public bool BoxingDateFilter(Boxing boxingData)
+        {
+            return boxingData.BoxingDate.HasValue && DateFilter(boxingData.BoxingDate.Value); 
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -161,12 +171,17 @@ namespace PomocDoRaprtow
 
         private void treeViewLotInfo_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (treeViewLotInfo.SelectedNode.Level > 0) lotInfoOperations.ShowLotInfo();
+            if (treeViewLotInfo.SelectedNode.Level > 0) lotInfoOperations.DisplayLotInfo(treeViewLotInfo.SelectedNode.Name, dataGridViewLotInfo);
         }
 
         private void buttonLotsinUse_Click(object sender, EventArgs e)
         {
             lotInUseOperations.GenerateLotsInUseToTree();
+        }
+
+        private void treeViewLotsinUse_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (treeViewLotsinUse.SelectedNode.Level > 1) lotInfoOperations.DisplayLotInfo(treeViewLotsinUse.SelectedNode.Name, dataGridViewLotsInUse);
         }
     }
 }

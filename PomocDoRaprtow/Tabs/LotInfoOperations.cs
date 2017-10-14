@@ -61,6 +61,68 @@ namespace PomocDoRaprtow.Tabs
             return lots.Where(l => l.LotId.Contains(textBoxFilterLotInfo.Text));
         }
 
+        public void DisplayLotInfo(string lotID, DataGridView targetGrid)
+        {
+            var modelName = LedStorage.Lots[lotID].Model.ModelName;
+            var MRM = LedStorage.Lots[lotID].Mrm;
+            var RankA = LedStorage.Lots[lotID].RankA;
+            var RangB = LedStorage.Lots[lotID].RankB;
+            var orderedQty = LedStorage.Lots[lotID].OrderedQuantity;
+            var goodQty = LedStorage.Lots[lotID].ManufacturedGoodQuantity;
+            var reworkQty = LedStorage.Lots[lotID].ReworkQuantity;
+            var scrapQty = LedStorage.Lots[lotID].ScrapQuantity;
+            var planID = LedStorage.Lots[lotID].PlanId;
+            var kittingDate = LedStorage.Lots[lotID].PrintDate.ToString();
+            var testedQty = LedStorage.Lots[lotID].TestedQuantity;
+            var boxedPercentage = BoxingUtilities.BoxingProgress(LedStorage.Lots[lotID]);
+            var palletisedPercentage = BoxingUtilities.PalletizingProgress(LedStorage.Lots[lotID]);
+            var boxingDate = BoxingUtilities.LotToBoxesDate(LedStorage.Lots[lotID]);
+            var boxId = BoxingUtilities.LotToBoxesId(LedStorage.Lots[lotID]);
+            var palletisingDate = BoxingUtilities.LotToPalletDate(LedStorage.Lots[lotID]);
+            var palletisingId = BoxingUtilities.LotToPalletId(LedStorage.Lots[lotID]);
+            var testDate = "";
+            if (LedStorage.Lots[lotID].LedsInLot.Count > 0)
+            {
+                testDate = LedStorage.Lots[lotID].LedsInLot[0].TesterData[0].TimeOfTest.ToString();
+            }
+
+            string splittingDate = "";
+            if (LedStorage.Lots[lotID].WasteInfo != null)
+            {
+                splittingDate = LedStorage.Lots[lotID].WasteInfo.SplittingDate.ToString();
+            }
+
+            DataTable sourceTable = new DataTable();
+            sourceTable.Columns.Add("Name");
+            sourceTable.Columns.Add("Value");
+
+            sourceTable.Rows.Add("Plan ID", planID);
+            sourceTable.Rows.Add("Model Name", modelName);
+            sourceTable.Rows.Add("MRM", MRM);
+            sourceTable.Rows.Add("Rank A", RankA);
+            sourceTable.Rows.Add("Rank B", RangB);
+            sourceTable.Rows.Add("Kitting date", kittingDate);
+            sourceTable.Rows.Add("Ordered quantity", orderedQty);
+            sourceTable.Rows.Add("Good quantity", goodQty);
+            sourceTable.Rows.Add("Rework quantity", reworkQty);
+            sourceTable.Rows.Add("Scrap quantity", scrapQty);
+            sourceTable.Rows.Add("Tested quantity", testedQty);
+            sourceTable.Rows.Add("Testing date (1st)", testDate);
+            sourceTable.Rows.Add("Splitting Date", splittingDate);
+            sourceTable.Rows.Add("Boxed", boxedPercentage);
+            sourceTable.Rows.Add("Boxing date", String.Join(", ", boxingDate));
+            sourceTable.Rows.Add("Box ID", String.Join(", ", boxId));
+            sourceTable.Rows.Add("Palletised", palletisedPercentage);
+            sourceTable.Rows.Add("Palletising date", String.Join(", ", palletisingDate));
+            sourceTable.Rows.Add("Pallet ID", String.Join(", ", palletisingId));
+
+            targetGrid.DataSource = sourceTable;
+            foreach (DataGridViewColumn col in targetGrid.Columns)
+            {
+                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
+        }
+
         public void ShowLotInfo()
         {
             var selectedLot = treeViewLotInfo.SelectedNode.Name;
@@ -76,8 +138,8 @@ namespace PomocDoRaprtow.Tabs
             var planID = LedStorage.Lots[selectedLot].PlanId;
             var kittingDate = LedStorage.Lots[selectedLot].PrintDate.ToString();
             var testedQty = LedStorage.Lots[selectedLot].TestedQuantity;
-            var boxedPercentage = BoxingUtilities.PercentBoxed(LedStorage.Lots[selectedLot]);
-            var palletisedPercentage = BoxingUtilities.PercentPalletised(LedStorage.Lots[selectedLot]);
+            var boxedPercentage = BoxingUtilities.BoxingProgress(LedStorage.Lots[selectedLot]);
+            var palletisedPercentage = BoxingUtilities.PalletizingProgress(LedStorage.Lots[selectedLot]);
             var boxingDate = BoxingUtilities.LotToBoxesDate(LedStorage.Lots[selectedLot]);
             var boxId = BoxingUtilities.LotToBoxesId(LedStorage.Lots[selectedLot]);
             var palletisingDate = BoxingUtilities.LotToPalletDate(LedStorage.Lots[selectedLot]);

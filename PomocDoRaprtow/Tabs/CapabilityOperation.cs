@@ -19,10 +19,14 @@ namespace PomocDoRaprtow.Tabs
         private readonly DataGridView dataGridViewCapaTest;
         private readonly Chart chartSplitting;
         private readonly DataGridView dataGridViewSplitting;
+        private readonly TreeView treeViewSplitting;
+        private readonly TreeView treeViewCapaBoxing;
+        private readonly DataGridView dataGridViewCapaBoxing;
+        private readonly Chart chartCapaBoxing;
 
-        public CapabilityOperation(Form1 form1, TreeView treeViewTestCapa, RichTextBox richTextBoxCapaTest, 
-            Chart chartCapaTest, DataGridView dataGridViewCapaTest, 
-            Chart chartSplitting, DataGridView dataGridViewSplitting)
+        public CapabilityOperation(Form1 form1, TreeView treeViewTestCapa, RichTextBox richTextBoxCapaTest,
+            Chart chartCapaTest, DataGridView dataGridViewCapaTest,
+            Chart chartSplitting, DataGridView dataGridViewSplitting, TreeView treeViewSplitting, TreeView treeViewCapaBoxing, DataGridView dataGridViewCapaBoxing, Chart chartCapaBoxing)
         {
             this.form1 = form1;
             this.treeViewTestCapa = treeViewTestCapa;
@@ -31,6 +35,10 @@ namespace PomocDoRaprtow.Tabs
             this.dataGridViewCapaTest = dataGridViewCapaTest;
             this.chartSplitting = chartSplitting;
             this.dataGridViewSplitting = dataGridViewSplitting;
+            this.treeViewSplitting = treeViewSplitting;
+            this.treeViewCapaBoxing = treeViewCapaBoxing;
+            this.dataGridViewCapaBoxing = dataGridViewCapaBoxing;
+            this.chartCapaBoxing = chartCapaBoxing;
         }
 
         private string FormatTreeViewNodeName(String mainName, int occurences)
@@ -38,15 +46,15 @@ namespace PomocDoRaprtow.Tabs
             return mainName + " " + occurences;
         }
 
-        private void RebuildOccurenceTreeView(OccurenceCalculations occurenceCalculations)
+        private void RebuildOccurenceTreeView(TreeView targetTreeView, OccurenceCalculations occurenceCalculations)
         {
-            treeViewTestCapa.BeginUpdate();
-            treeViewTestCapa.Nodes.Clear();
+            targetTreeView.BeginUpdate();
+            targetTreeView.Nodes.Clear();
             foreach (var weekTree in occurenceCalculations.Tree.WeekNoToTree.Values)
             {
                 var weekTreeViewNode =
                     new TreeNode(FormatTreeViewNodeName(weekTree.Week.ToString(), weekTree.Occurences));
-                treeViewTestCapa.Nodes.Add(weekTreeViewNode);
+                targetTreeView.Nodes.Add(weekTreeViewNode);
                 foreach (var dayTree in weekTree.DayToTree.Values)
                 {
                     string dayMonth = dayTree.DateTime.Day.ToString("d2") + "-" + dayTree.DateTime.Month.ToString("d2");
@@ -62,14 +70,35 @@ namespace PomocDoRaprtow.Tabs
                     }
                 }
             }
-            treeViewTestCapa.EndUpdate();
+            targetTreeView.EndUpdate();
         }
 
-        public void DrawCapability(List<Led> leds, List<Lot> lots)
+        public void DrawCapability()
         {
+            var leds = LedStorage.Leds.Where(form1.LedModelIsSelected).ToList();
+            var lots = LedStorage.Lots.Values.Where(form1.LotByModel).ToList();
+
             DrawCapaChart(PrepareTesterDataForCharting(leds), chartCapaTest, dataGridViewCapaTest);
             DrawCapaChart(PrepareSplittingDataForCharting(lots), chartSplitting, dataGridViewSplitting);
-            DisplayOccurences(leds);
+            DrawCapaChart(PrepareBoxingDataForCharting(leds), chartCapaBoxing, dataGridViewCapaBoxing);
+            DisplayTesterDataOccurences(leds, lots);
+            DisplaySplittingDataOccurences(lots);
+            DisplayBoxingDataOccurences(lots);
+
+        }
+
+        private void DisplaySplittingDataOccurences(List<Lot> lots)
+        {
+
+            var occurences = new OccurenceCalculations(lots, LotToSplittingDates);
+            RebuildOccurenceTreeView(treeViewSplitting, occurences);
+        }
+
+        private void DisplayBoxingDataOccurences(List<Lot> lots)
+        {
+
+            var occurences = new OccurenceCalculations(lots, LotToBoxingDates);
+            RebuildOccurenceTreeView(treeViewCapaBoxing, occurences);
         }
 
         private DataTable PrepareSplittingDataForCharting(List<Lot> lots)
@@ -84,7 +113,7 @@ namespace PomocDoRaprtow.Tabs
 
             foreach (var lot in lots)
             {
-                if (lot.WasteInfo == null) continue;
+                if (!form1.WasteInfoBySplittingTime(lot.WasteInfo)) continue;
 
                 var splittingDate = lot.WasteInfo.SplittingDate;
                 var shiftInfo = DateUtilities.DateToShiftInfo(splittingDate);
@@ -109,6 +138,42 @@ namespace PomocDoRaprtow.Tabs
 
             return GridSource;
         }
+
+        private DataTable PrepareBoxingDataForCharting(List<Led> leds)
+        {
+            DataTable GridSource = new DataTable();
+            GridSource.Columns.Add("Day");
+            GridSource.Columns.Add("Shift III", typeof(int));
+            GridSource.Columns.Add("Shift I", typeof(int));
+            GridSource.Columns.Add("Shift II", typeof(int));
+
+            List<int> initializedDays = new List<int>();
+
+            foreach (var boxing in leds.Select(l => l.Boxing).Where(form1.BoxingDateFilter))
+            {
+                DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(boxing.BoxingDate.Value);
+                string dayMonth = ShiftInfoToDayMonth(shiftInfo);
+                if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
+                {
+                    initializedDays.Add(shiftInfo.DayOfTheMonth);
+                    GridSource.Rows.Add(dayMonth, 0, 0, 0);
+                }
+
+                int gridColumn = ShiftUtilities.ShiftNoToIndex(shiftInfo.ShiftNo);
+
+                var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
+                GridSource.Rows[indexInInitializedDays][gridColumn] =
+                    (int)GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
+            }
+
+            DataView dv = GridSource.DefaultView;
+            dv.Sort = "Day asc";
+            GridSource = dv.ToTable();
+
+
+            return GridSource;
+        }
+
 
         private DataTable PrepareTesterDataForCharting(List<Led> leds)
         {
@@ -154,19 +219,30 @@ namespace PomocDoRaprtow.Tabs
             return shiftInfo.DayOfTheMonth.ToString("d2") + "-" + shiftInfo.Month.ToString("d2");
         }
 
-        private void DisplayOccurences(List<Led> leds)
+        private void DisplayTesterDataOccurences(IEnumerable<Led> leds, List<Lot> lots)
         {
-            var occurencesCalculations = new OccurenceCalculations(leds, form1.TesterDataFilter);
-            RebuildOccurenceTreeView(occurencesCalculations);
+            var occurencesCalculations = new OccurenceCalculations(lots, LotToTesterDates);
+            RebuildOccurenceTreeView(treeViewTestCapa, occurencesCalculations);
 
             richTextBoxCapaTest.Text = "";
             int occurencesSum = 0;
-            foreach (KeyValuePair<int, int> kvp in occurencesCalculations.CountOccurences)
+            var countOccurences = new SortedDictionary<int, int>();
+
+            foreach (var led in leds)
+            {
+                int val = 0;
+                var count = led.TesterData.Where(td => form1.DateFilter(td.TimeOfTest)).Count();
+                if (count == 0) continue;
+                countOccurences.TryGetValue(count, out val);
+                countOccurences[count] = val + 1;
+            }
+
+            foreach (KeyValuePair<int, int> kvp in countOccurences)
             {
                 occurencesSum += kvp.Value;
             }
 
-            foreach (KeyValuePair<int, int> kvp in occurencesCalculations.CountOccurences)
+            foreach (KeyValuePair<int, int> kvp in countOccurences)
             {
                 richTextBoxCapaTest.AppendText($"{kvp.Key} test: {kvp.Value} - {MathUtilities.CalculatePercentage(occurencesSum, kvp.Value)}" + "\r");
             }
@@ -235,6 +311,34 @@ namespace PomocDoRaprtow.Tabs
                 DestinationChart.Series[2].Points
                     .AddXY(row[0].ToString(), (int)row[3]);
             }
+        }
+
+
+
+        private IEnumerable<Tuple<DateTime, int>> LotToTesterDates(Lot lot)
+        {
+            var dates = lot.LedsInLot.SelectMany(l => l.TesterData.Select(testerData => testerData.TimeOfTest)).Where(form1.DateFilter);
+            return dates.Select(d => new Tuple<DateTime, int>(d, 1));
+        }
+
+        private IEnumerable<Tuple<DateTime, int>> LotToSplittingDates(Lot lot)
+        {
+            if (!form1.WasteInfoBySplittingTime(lot.WasteInfo))
+            {
+                yield break;
+            }
+
+            yield return Tuple.Create(lot.WasteInfo.SplittingDate, lot.LedsInLot.Count);
+        }
+
+        private IEnumerable<Tuple<DateTime, int>> LotToBoxingDates(Lot lot)
+        {
+            var dates = lot.LedsInLot
+                .Select(l => l.Boxing.BoxingDate)
+                .Where(bd => bd.HasValue)
+                .Select(bdOpt => bdOpt.Value)
+                .Where(form1.DateFilter);
+            return dates.Select(d => new Tuple<DateTime, int>(d, 1));
         }
 
     }

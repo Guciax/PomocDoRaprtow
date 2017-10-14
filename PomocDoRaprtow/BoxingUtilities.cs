@@ -8,19 +8,34 @@ namespace PomocDoRaprtow
 {
     public class BoxingUtilities
     {
-        public static String PercentPalletised(Lot lot)
+        public static String PalletizingProgress(Lot lot)
         {
-            return MathUtilities.CalculatePercentage(lot.ManufacturedGoodQuantity, lot.LedsInLot.Count(l => l.Boxing.PalletisingDate.HasValue));
+            return lot.LedsInLot.Count(l => l.Boxing.PalletisingDate.HasValue) +@"/"+lot.ManufacturedGoodQuantity;
+        }
+
+        public static int PalletisedQuantity(Lot lot)
+        {
+            return lot.LedsInLot.Count(l => l.Boxing.PalletisingDate.HasValue);
+        }
+
+        public static int BoxedQuantity(Lot lot)
+        {
+            return lot.LedsInLot.Count(l => l.Boxing.BoxingDate.HasValue);
         }
 
         public static bool IsFullyPalletised(Lot lot)
         {
-            return lot.LedsInLot.All(l => l.Boxing.PalletisingDate.HasValue);
+            return (lot.LedsInLot.Count(l => l.Boxing.PalletisingDate.HasValue) >= lot.ManufacturedGoodQuantity);
         }
 
-        public static String PercentBoxed(Lot lot)
+        public static bool IsFullyBoxed(Lot lot)
         {
-            return MathUtilities.CalculatePercentage(lot.ManufacturedGoodQuantity, lot.LedsInLot.Count(l => l.Boxing.BoxingDate.HasValue));
+            return (lot.LedsInLot.Count(l => l.Boxing.BoxingDate.HasValue) >= lot.ManufacturedGoodQuantity);
+        }
+
+        public static String BoxingProgress(Lot lot)
+        {
+            return lot.LedsInLot.Count(l => l.Boxing.BoxingDate.HasValue) + @"/" + lot.ManufacturedGoodQuantity;
         }
 
         public static bool IsSplit(Lot lot)

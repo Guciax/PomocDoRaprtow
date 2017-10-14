@@ -26,7 +26,7 @@ namespace PomocDoRaprtow
 
         public class OccurenceDay
         {
-            public List<OccurenceShift> ShiftToTree { get; } = 
+            public List<OccurenceShift> ShiftToTree { get; } =
                 new List<OccurenceShift>() { new OccurenceShift(), new OccurenceShift(), new OccurenceShift() };
 
             public int Day { get; internal set; }
@@ -49,26 +49,28 @@ namespace PomocDoRaprtow
             public int Occurences { get; internal set; }
         }
 
-        public OccurenceTree Tree { get; }= new OccurenceTree();
-        public Dictionary<int, int> CountOccurences { get; } = new Dictionary<int, int>();
+        public OccurenceTree Tree { get; } = new OccurenceTree();
 
-        public OccurenceCalculations(List<Led> leds, Func<List<TesterData>, IEnumerable<TesterData>> testerDataFilter)
+        public OccurenceCalculations(List<Lot> lots, Func<Lot, IEnumerable<Tuple<DateTime,int>>> converter)
         {
-            foreach (var led in leds)
+            foreach (var lot in lots)
             {
-                var model = led.Lot.Model;
-                Increment(CountOccurences, led.TesterData.Count);
-                foreach (var testerData in testerDataFilter(led.TesterData))
-                {
-                    var weekTree = GetWeekTree(testerData.FixedDateTime);
-                    var dayTree = GetDayTree(testerData.FixedDateTime, weekTree);
-                    var shiftTree = GetShiftTree(testerData.ShiftNo, dayTree);
-                    var modelTree = GetModelsTree(led.Lot.Model.ModelName, shiftTree);
+                var model = lot.Model;
 
-                    weekTree.Occurences++;
-                    dayTree.Occurences++;
-                    shiftTree.Occurences++;
-                    modelTree.Occurences++;
+                var interestingDates = converter(lot).ToList();
+
+                foreach (var dateCount in interestingDates)
+                {
+                    var shiftInfo = DateUtilities.DateToShiftInfo(dateCount.Item1);
+                    var weekTree = GetWeekTree(dateCount.Item1);
+                    var dayTree = GetDayTree(dateCount.Item1, weekTree);
+                    var shiftTree = GetShiftTree(shiftInfo.ShiftNo, dayTree);
+                    var modelTree = GetModelsTree(model.ModelName, shiftTree);
+
+                    weekTree.Occurences += dateCount.Item2;
+                    dayTree.Occurences += dateCount.Item2;
+                    shiftTree.Occurences += dateCount.Item2;
+                    modelTree.Occurences += dateCount.Item2;
                 }
             }
         }
@@ -120,13 +122,6 @@ namespace PomocDoRaprtow
             }
 
             return tree;
-        }
-
-        private static void Increment(Dictionary<int, int> occurencesToIncrement, int id)
-        {
-            int val = 0;
-            occurencesToIncrement.TryGetValue(id, out val);
-            occurencesToIncrement[id] = val + 1;
         }
     }
 }
