@@ -4,7 +4,8 @@ namespace PomocDoRaprtow
 {
     public class TesterData
     {
-        public TesterData(string testerId, DateTime timeOfTest, DateTime fixedDateTime, int shiftNo, bool testResult, string failureReason)
+        public TesterData(string testerId, DateTime timeOfTest, DateTime fixedDateTime, int shiftNo, 
+            bool testResult, string failureReason)
         {
             TesterId = testerId;
             TimeOfTest = timeOfTest;
@@ -12,6 +13,7 @@ namespace PomocDoRaprtow
             ShiftNo = shiftNo;
             TestResult = testResult;
             FailureReason = failureReason;
+
         }
 
         public String TesterId { get; }
@@ -20,5 +22,6 @@ namespace PomocDoRaprtow
         public int ShiftNo { get; }
         public bool TestResult { get;  }
         public String FailureReason { get; }
+
     }
 }

@@ -7,14 +7,16 @@ namespace PomocDoRaprtow
     {
         public struct ShiftInfo
         {
-            public ShiftInfo(int shiftNo, int month, int dayOfTheMonth)
+            public ShiftInfo(int shiftNo, DateTime date)
             {
                 ShiftNo = shiftNo;
-                Month = month;
-                DayOfTheMonth = dayOfTheMonth;
+                Date = date;
+                Month = date.Month;
+                DayOfTheMonth = date.Day;
             }
 
             public int ShiftNo { get; }
+            public DateTime Date { get; }
             public int Month { get; }
             public int DayOfTheMonth { get; }
         }
@@ -43,11 +45,11 @@ namespace PomocDoRaprtow
             if (inputDate.Hour >= 22)
             {
                 var fixedDate = inputDate.AddDays(1);
-                return new ShiftInfo(3, fixedDate.Month, fixedDate.Day);
+                return new ShiftInfo(3, fixedDate);
             }
-            if (inputDate.Hour >= 14) return new ShiftInfo(2, inputDate.Month, inputDate.Day);
-            if (inputDate.Hour >= 6) return new ShiftInfo(1, inputDate.Month, inputDate.Day);
-            return new ShiftInfo(3, inputDate.Month, inputDate.Day);
+            if (inputDate.Hour >= 14) return new ShiftInfo(2, inputDate);
+            if (inputDate.Hour >= 6) return new ShiftInfo(1, inputDate);
+            return new ShiftInfo(3, inputDate);
         }
 
         public static DateTime ParseExact(String date)

@@ -8,6 +8,10 @@ using System.Linq;
 using System.Globalization;
 using PomocDoRaprtow.Tabs;
 using PomocDoRaprtow.DataModels;
+using System.Threading;
+using System.Drawing;
+using System.Reflection;
+using System.IO;
 
 namespace PomocDoRaprtow
 {
@@ -18,6 +22,7 @@ namespace PomocDoRaprtow
         private LotInfoOperations lotInfoOperations;
         private LotsInUseOperations lotInUseOperations;
         private CapabilityOperation capabilityOperations;
+        private ModelOperations modelOperations;
 
         public Form1()
         {
@@ -26,18 +31,20 @@ namespace PomocDoRaprtow
             lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo, dataGridViewLotInfo);
             lotInUseOperations = new LotsInUseOperations(this, treeViewLotsinUse);
             capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest, dataGridViewCapaTest, chartSplitting, dataGridViewSplitting, treeViewSplitting, treeViewCapaBoxing,dataGridViewCapaBoxing, chartCapaBoxing);
+            modelOperations = new ModelOperations(this, chartModel, dataGridViewModelInfo);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             wasteOperations.RedrawWasteTab();
-
             capabilityOperations.DrawCapability();
+
+
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -45,22 +52,77 @@ namespace PomocDoRaprtow
             //Tester_table = SqlTableLoader.LoadTesterWorkCard();
         }
 
+        private void CheckBoxCheckAll()
+        {
+            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
+            {
+                CapaModelcheckedListBox.SetItemChecked(i, true);
+            }
+        }
+
+        private void CheckBoxCheckNone()
+        {
+            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
+            {
+                CapaModelcheckedListBox.SetItemChecked(i, false);
+            }
+        }
+        bool CsvLoadinDone = false;
         private void button5_Click(object sender, EventArgs e)
         {
-            ledStorage = new LedStorageLoader().BuildStorage();
-            wasteOperations.LedStorage = ledStorage;
-            lotInfoOperations.LedStorage = ledStorage;
-            lotInUseOperations.LedStorage = ledStorage;
-            capabilityOperations.LedStorage = ledStorage;
-            CapaModelcheckedListBox.Items.Clear();
-
-            foreach (var model in ledStorage.Models.Values)
+            CsvLoadinDone = false;
+            timerThreadCsv.Enabled = true;
+            new Thread(() =>
             {
-                CapaModelcheckedListBox.Items.Add(model.ModelName);
-                CapaModelcheckedListBox.SetItemChecked(CapaModelcheckedListBox.Items.Count - 1, true);
+                Thread.CurrentThread.IsBackground = true;
+                /* run your code here */
+                ledStorage = new LedStorageLoader().BuildStorage();
+                wasteOperations.LedStorage = ledStorage;
+                lotInfoOperations.LedStorage = ledStorage;
+                lotInUseOperations.LedStorage = ledStorage;
+                capabilityOperations.LedStorage = ledStorage;
+                modelOperations.ledStorage = ledStorage;
+                CsvLoadinDone = true;
+                
+            }).Start();
+            /*
+            PictureBox loadingBox = new PictureBox();
+            loadingBox.Parent = this;
+            loadingBox.BringToFront();
+            loadingBox.Location = new System.Drawing.Point(150, 150);
+            Image pacman = Image.FromFile("Pacman.gif");
+            loadingBox.Size = pacman.Size;
+            loadingBox.Image = pacman;*/
+
+
+        }
+
+        public System.Drawing.Image GetImageFromManifest(string sPath)
+        {
+            // Ready the return
+            System.Drawing.Image oImage = null;
+
+            try
+            {
+                // Get the assembly
+                Assembly oAssembly = Assembly.GetAssembly(this.GetType());
+
+                string[] names = oAssembly.GetManifestResourceNames();
+
+                // Get the stream
+                Stream oStream = oAssembly.GetManifestResourceStream(sPath);
+
+                // Read from the stream
+                oImage = System.Drawing.Image.FromStream(oStream);
+
+            }
+            catch (Exception ex)
+            {
+                // Missing image?           
             }
 
-            RebuildEnabledModelsSet();
+            //Return the image
+            return oImage;
         }
 
         private HashSet<String> enabledModels = new HashSet<string>();
@@ -131,15 +193,7 @@ namespace PomocDoRaprtow
 
         }
 
-        private void checkedListBox1_MouseEnter(object sender, EventArgs e)
-        {
-            CapaModelcheckedListBox.Height = 200;
-        }
-
-        private void checkedListBox1_MouseLeave(object sender, EventArgs e)
-        {
-            CapaModelcheckedListBox.Height = 50;
-        }
+       
         private void CapaModelcheckedListBox_SelectedValueChanged(object sender, EventArgs e)
         {
             RebuildEnabledModelsSet();
@@ -182,6 +236,159 @@ namespace PomocDoRaprtow
         private void treeViewLotsinUse_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treeViewLotsinUse.SelectedNode.Level > 1) lotInfoOperations.DisplayLotInfo(treeViewLotsinUse.SelectedNode.Name, dataGridViewLotsInUse);
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            modelOperations.GenerateCycleTimeChart(ledStorage.Models[comboBoxModels.Text]);
+            modelOperations.GenerateLotEfficiencyChart(ledStorage.Models[comboBoxModels.Text]);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            CheckBoxCheckAll();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            CheckBoxCheckNone();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
+            {
+                string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
+                if (itText.Contains("22-") || itText.Contains("32-") || itText.Contains("33-") || itText.Contains("53-"))
+                CapaModelcheckedListBox.SetItemChecked(i, true);
+                else CapaModelcheckedListBox.SetItemChecked(i, false);
+            }
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
+            {
+                string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
+                if (itText.Contains("K1-") || itText.Contains("K2-") || itText.Contains("61-") || itText.Contains("41-"))
+                    CapaModelcheckedListBox.SetItemChecked(i, true);
+                else CapaModelcheckedListBox.SetItemChecked(i, false);
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
+            {
+                string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
+                if (itText.Contains("G1-") || itText.Contains("G2-") || itText.Contains("31-"))
+                    CapaModelcheckedListBox.SetItemChecked(i, true);
+                else CapaModelcheckedListBox.SetItemChecked(i, false);
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
+            {
+                string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
+                if (itText.Contains("E1-") || itText.Contains("E2-") || itText.Contains("D1-") || itText.Contains("D2-"))
+                    CapaModelcheckedListBox.SetItemChecked(i, true);
+                else CapaModelcheckedListBox.SetItemChecked(i, false);
+            }
+        }
+
+        private void checkedListBox1_MouseEnter(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 450;
+        }
+
+        private void checkedListBox1_MouseLeave(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 50;
+        }
+
+        private void button7_MouseEnter(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 450;
+        }
+
+        private void button7_MouseLeave(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 50;
+        }
+
+        private void button8_MouseEnter(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 450;
+        }
+
+        private void button9_MouseEnter(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 450;
+        }
+
+        private void button10_MouseEnter(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 450;
+        }
+
+        private void button1_MouseEnter(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 450;
+        }
+
+        private void button2_MouseEnter(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 450;
+        }
+
+        private void button8_MouseLeave(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 50;
+        }
+
+        private void button9_MouseLeave(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 50;
+        }
+
+        private void button10_MouseLeave(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 50;
+        }
+
+        private void button1_MouseLeave(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 50;
+        }
+
+        private void button2_MouseLeave(object sender, EventArgs e)
+        {
+            CapaModelcheckedListBox.Height = 50;
+        }
+
+        private void timerThreadCsv_Tick(object sender, EventArgs e)
+        {
+            if (CsvLoadinDone)
+            {
+                timerThreadCsv.Enabled = false;
+                CapaModelcheckedListBox.Items.Clear();
+                CapaModelcheckedListBox.Sorted = true;
+                var modelList = ledStorage.Models.Select(m => m.Value.ModelName).ToList().OrderBy(o => o);
+                foreach (var model in modelList)
+                {
+                    CapaModelcheckedListBox.Items.Add(model);
+                    CapaModelcheckedListBox.SetItemChecked(CapaModelcheckedListBox.Items.Count - 1, true);
+                    comboBoxModels.Items.Add(model);
+                }
+
+                CheckBoxCheckAll();
+                RebuildEnabledModelsSet();
+                button3.Enabled = true;
+                button3.PerformClick();
+                
+            }
         }
     }
 }

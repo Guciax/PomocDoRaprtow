@@ -132,5 +132,32 @@ namespace PomocDoRaprtow
                         .AddXY(row[dateColIndex].ToString(), row[quantityColIndex].ToString());
             }
         }
+
+        public static void CycleTimeHistogram(Chart targetChart, Dictionary<String, SortedDictionary<double, int>> inputDict)
+        {
+            targetChart.Series.Clear();
+            Series ser = new Series();
+            ser.ChartType = SeriesChartType.Spline;
+            ser.BorderWidth = 2;
+
+            targetChart.Series.Add(ser);
+
+            targetChart.ChartAreas[0].AxisX.Minimum = 1;
+            targetChart.ChartAreas[0].AxisX.MajorGrid.Interval = 1;
+            targetChart.ChartAreas[0].AxisX.LabelStyle.Interval = 1;
+            targetChart.ChartAreas[0].AxisX.MaximumAutoSize = 0.95f;
+            targetChart.ChartAreas[0].AxisY.MajorGrid.Interval = 5;
+            targetChart.ChartAreas[0].AxisY.MaximumAutoSize = 0.90f;
+
+            foreach (var testerEntry in inputDict)
+            {
+                foreach (var cT in testerEntry.Value)
+                {
+                    targetChart.Series[0].Points.AddXY(cT.Key, cT.Value);
+                }
+                
+            }
+
+        }
     }
 }

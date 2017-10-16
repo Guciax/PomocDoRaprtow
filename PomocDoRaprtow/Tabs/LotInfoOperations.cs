@@ -80,11 +80,8 @@ namespace PomocDoRaprtow.Tabs
             var boxId = BoxingUtilities.LotToBoxesId(LedStorage.Lots[lotID]);
             var palletisingDate = BoxingUtilities.LotToPalletDate(LedStorage.Lots[lotID]);
             var palletisingId = BoxingUtilities.LotToPalletId(LedStorage.Lots[lotID]);
-            var testDate = "";
-            if (LedStorage.Lots[lotID].LedsInLot.Count > 0)
-            {
-                testDate = LedStorage.Lots[lotID].LedsInLot[0].TesterData[0].TimeOfTest.ToString();
-            }
+            var testDateStart = LedStorage.Lots[lotID].TestStart;
+            var testDateEnd = LedStorage.Lots[lotID].TestEnd;
 
             string splittingDate = "";
             if (LedStorage.Lots[lotID].WasteInfo != null)
@@ -103,11 +100,13 @@ namespace PomocDoRaprtow.Tabs
             sourceTable.Rows.Add("Rank B", RangB);
             sourceTable.Rows.Add("Kitting date", kittingDate);
             sourceTable.Rows.Add("Ordered quantity", orderedQty);
+            sourceTable.Rows.Add("Tested quantity", testedQty);
+            sourceTable.Rows.Add("Testing start", testDateStart);
+            sourceTable.Rows.Add("Testing finish", testDateEnd);
             sourceTable.Rows.Add("Good quantity", goodQty);
             sourceTable.Rows.Add("Rework quantity", reworkQty);
             sourceTable.Rows.Add("Scrap quantity", scrapQty);
-            sourceTable.Rows.Add("Tested quantity", testedQty);
-            sourceTable.Rows.Add("Testing date (1st)", testDate);
+
             sourceTable.Rows.Add("Splitting Date", splittingDate);
             sourceTable.Rows.Add("Boxed", boxedPercentage);
             sourceTable.Rows.Add("Boxing date", String.Join(", ", boxingDate));
@@ -122,71 +121,6 @@ namespace PomocDoRaprtow.Tabs
                 col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
         }
-
-        public void ShowLotInfo()
-        {
-            var selectedLot = treeViewLotInfo.SelectedNode.Name;
-
-            var modelName = LedStorage.Lots[selectedLot].Model.ModelName;
-            var MRM = LedStorage.Lots[selectedLot].Mrm;
-            var RankA = LedStorage.Lots[selectedLot].RankA;
-            var RangB = LedStorage.Lots[selectedLot].RankB;
-            var orderedQty = LedStorage.Lots[selectedLot].OrderedQuantity;
-            var goodQty = LedStorage.Lots[selectedLot].ManufacturedGoodQuantity;
-            var reworkQty = LedStorage.Lots[selectedLot].ReworkQuantity;
-            var scrapQty = LedStorage.Lots[selectedLot].ScrapQuantity;
-            var planID = LedStorage.Lots[selectedLot].PlanId;
-            var kittingDate = LedStorage.Lots[selectedLot].PrintDate.ToString();
-            var testedQty = LedStorage.Lots[selectedLot].TestedQuantity;
-            var boxedPercentage = BoxingUtilities.BoxingProgress(LedStorage.Lots[selectedLot]);
-            var palletisedPercentage = BoxingUtilities.PalletizingProgress(LedStorage.Lots[selectedLot]);
-            var boxingDate = BoxingUtilities.LotToBoxesDate(LedStorage.Lots[selectedLot]);
-            var boxId = BoxingUtilities.LotToBoxesId(LedStorage.Lots[selectedLot]);
-            var palletisingDate = BoxingUtilities.LotToPalletDate(LedStorage.Lots[selectedLot]);
-            var palletisingId = BoxingUtilities.LotToPalletId(LedStorage.Lots[selectedLot]);
-            var testDate = "";
-            if (LedStorage.Lots[selectedLot].LedsInLot.Count > 0)
-            {
-                testDate = LedStorage.Lots[selectedLot].LedsInLot[0].TesterData[0].TimeOfTest.ToString();
-            }
-
-            string splittingDate = "";
-            if (LedStorage.Lots[selectedLot].WasteInfo != null)
-            {
-                splittingDate = LedStorage.Lots[selectedLot].WasteInfo.SplittingDate.ToString();
-            }
-
-            DataTable gridTable = new DataTable();
-            gridTable.Columns.Add("Name");
-            gridTable.Columns.Add("Value");
-
-            gridTable.Rows.Add("Plan ID", planID);
-            gridTable.Rows.Add("Model Name", modelName);
-            gridTable.Rows.Add("MRM", MRM);
-            gridTable.Rows.Add("Rank A", RankA);
-            gridTable.Rows.Add("Rank B", RangB);
-            gridTable.Rows.Add("Kitting date", kittingDate);
-            gridTable.Rows.Add("Ordered quantity", orderedQty);
-            gridTable.Rows.Add("Good quantity", goodQty);
-            gridTable.Rows.Add("Rework quantity", reworkQty);
-            gridTable.Rows.Add("Scrap quantity", scrapQty);
-            gridTable.Rows.Add("Tested quantity", testedQty);
-            gridTable.Rows.Add("Testing date (1st)", testDate);
-            gridTable.Rows.Add("Splitting Date", splittingDate);
-            gridTable.Rows.Add("Boxed", boxedPercentage);
-            gridTable.Rows.Add("Boxing date", String.Join(", ", boxingDate));
-            gridTable.Rows.Add("Box ID", String.Join(", ", boxId));
-            gridTable.Rows.Add("Palletised", palletisedPercentage);
-            gridTable.Rows.Add("Palletising date", String.Join(", ", palletisingDate));
-            gridTable.Rows.Add("Pallet ID", String.Join(", ", palletisingId));
-
-            dataGridViewLotInfo.DataSource = gridTable;
-            foreach (DataGridViewColumn col in dataGridViewLotInfo.Columns)
-            {
-                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            }
-
-        }
-
+        
     }
 }

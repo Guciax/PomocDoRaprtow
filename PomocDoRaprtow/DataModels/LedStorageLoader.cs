@@ -135,7 +135,9 @@ namespace PomocDoRaprtow
                     manufacturedQty,
                     reworkQty,
                     scrapQty,
-                    printDate);
+                    printDate,
+                    System.DateTime.Now, //test start
+                    new DateTime(1970, 01, 01, 01, 01, 01)); //testEnd
 
 
                 Lots.Add(lot.LotId, lot);
@@ -231,12 +233,23 @@ namespace PomocDoRaprtow
                     var led = SerialNumbersToLed[serialNumber];
                     led.AddTesterData(testerData);
                 }
+                if (Lots[lotId].TestStart > timeOfTest) 
+                {
+                    Lots[lotId].TestStart = timeOfTest;
+                }
+
+                if (Lots[lotId].TestEnd < timeOfTest)
+                {
+                    Lots[lotId].TestEnd = timeOfTest;
+                }
             }
 
             foreach (var led in SerialNumbersToLed.Values)
             {
                 led.TestOk = led.TesterData.OrderBy(l => l.TimeOfTest).Last().TestResult;
             }
+
+            
 
             foreach (var entry in serialsInLot)
             {

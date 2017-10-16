@@ -6,7 +6,8 @@ namespace PomocDoRaprtow
     public class Lot
     {
         public Lot(string lotId, string planId, string rankA, string rankB, string mrm, Model model, WasteInfo wasteInfo, int testedQuantity,
-            int orderedQuantity, int manufacturedGoodQuantity, int reworkQuantity, int scrapQuantity, DateTime printDate)
+            int orderedQuantity, int manufacturedGoodQuantity, int reworkQuantity, int scrapQuantity, DateTime printDate, 
+            DateTime testStart, DateTime testEnd )
         {
             LotId = lotId;
             PlanId = planId;
@@ -21,7 +22,8 @@ namespace PomocDoRaprtow
             ReworkQuantity = reworkQuantity;
             ScrapQuantity = scrapQuantity;
             PrintDate = printDate;
-            
+            TestStart = testStart;
+            TestEnd = testEnd;
         }
         
         public String LotId { get; }
@@ -37,6 +39,8 @@ namespace PomocDoRaprtow
         public int ReworkQuantity { get; }
         public int ScrapQuantity { get; }
         public DateTime PrintDate { get; }
+        public DateTime TestStart { get; set; }
+        public DateTime TestEnd { get; set; }
         public List<Led> LedsInLot { get; } = new List<Led>();
     }
 }

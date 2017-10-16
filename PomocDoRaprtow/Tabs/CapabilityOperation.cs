@@ -104,12 +104,12 @@ namespace PomocDoRaprtow.Tabs
         private DataTable PrepareSplittingDataForCharting(List<Lot> lots)
         {
             DataTable GridSource = new DataTable();
-            GridSource.Columns.Add("Day");
+            GridSource.Columns.Add("Day", typeof(DateTime));
             GridSource.Columns.Add("Shift III", typeof(int));
             GridSource.Columns.Add("Shift I", typeof(int));
             GridSource.Columns.Add("Shift II", typeof(int));
 
-            List<int> initializedDays = new List<int>();
+            List<DateTime> initializedDays = new List<DateTime>();
 
             foreach (var lot in lots)
             {
@@ -118,15 +118,17 @@ namespace PomocDoRaprtow.Tabs
                 var splittingDate = lot.WasteInfo.SplittingDate;
                 var shiftInfo = DateUtilities.DateToShiftInfo(splittingDate);
                 string dayMonth = ShiftInfoToDayMonth(shiftInfo);
-                if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
+                var date = shiftInfo.Date.Date;
+
+                if (!initializedDays.Contains(date))
                 {
-                    initializedDays.Add(shiftInfo.DayOfTheMonth);
-                    GridSource.Rows.Add(dayMonth, 0, 0, 0);
+                    initializedDays.Add(date);
+                    GridSource.Rows.Add(date, 0, 0, 0);
                 }
 
                 int gridColumn = ShiftUtilities.ShiftNoToIndex(shiftInfo.ShiftNo);
 
-                var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
+                var indexInInitializedDays = initializedDays.IndexOf(date);
                 GridSource.Rows[indexInInitializedDays][gridColumn] =
                     (int)GridSource.Rows[indexInInitializedDays][gridColumn] + lot.LedsInLot.Count;
             }
@@ -142,26 +144,25 @@ namespace PomocDoRaprtow.Tabs
         private DataTable PrepareBoxingDataForCharting(List<Led> leds)
         {
             DataTable GridSource = new DataTable();
-            GridSource.Columns.Add("Day");
+            GridSource.Columns.Add("Day", typeof (DateTime));
             GridSource.Columns.Add("Shift III", typeof(int));
             GridSource.Columns.Add("Shift I", typeof(int));
             GridSource.Columns.Add("Shift II", typeof(int));
 
-            List<int> initializedDays = new List<int>();
-
+            List<DateTime> initializedDays = new List<DateTime>();
             foreach (var boxing in leds.Select(l => l.Boxing).Where(form1.BoxingDateFilter))
             {
                 DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(boxing.BoxingDate.Value);
-                string dayMonth = ShiftInfoToDayMonth(shiftInfo);
-                if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
+                var date = shiftInfo.Date.Date;
+                if (!initializedDays.Contains(date))
                 {
-                    initializedDays.Add(shiftInfo.DayOfTheMonth);
-                    GridSource.Rows.Add(dayMonth, 0, 0, 0);
+                    initializedDays.Add(date);
+                    GridSource.Rows.Add(date, 0, 0, 0);
                 }
 
                 int gridColumn = ShiftUtilities.ShiftNoToIndex(shiftInfo.ShiftNo);
 
-                var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
+                var indexInInitializedDays = initializedDays.IndexOf(date);
                 GridSource.Rows[indexInInitializedDays][gridColumn] =
                     (int)GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
             }
@@ -178,28 +179,28 @@ namespace PomocDoRaprtow.Tabs
         private DataTable PrepareTesterDataForCharting(List<Led> leds)
         {
             DataTable GridSource = new DataTable();
-            GridSource.Columns.Add("Day");
+            GridSource.Columns.Add("Day",typeof(DateTime));
             GridSource.Columns.Add("Shift III", typeof(int));
             GridSource.Columns.Add("Shift I", typeof(int));
             GridSource.Columns.Add("Shift II", typeof(int));
 
-            List<int> initializedDays = new List<int>();
+            List<DateTime> initializedDays = new List<DateTime>();
 
             foreach (var led in leds)
             {
                 foreach (var testerData in form1.TesterDataFilter(led.TesterData))
                 {
                     DateUtilities.ShiftInfo shiftInfo = DateUtilities.DateToShiftInfo(testerData.TimeOfTest);
-                    string dayMonth = ShiftInfoToDayMonth(shiftInfo);
-                    if (!initializedDays.Contains(shiftInfo.DayOfTheMonth))
+                    var date = shiftInfo.Date.Date;
+                    if (!initializedDays.Contains(date))
                     {
-                        initializedDays.Add(shiftInfo.DayOfTheMonth);
-                        GridSource.Rows.Add(dayMonth, 0, 0, 0);
+                        initializedDays.Add(date);
+                        GridSource.Rows.Add(date, 0, 0, 0);
                     }
 
                     int gridColumn = ShiftUtilities.ShiftNoToIndex(shiftInfo.ShiftNo);
 
-                    var indexInInitializedDays = initializedDays.IndexOf(shiftInfo.DayOfTheMonth);
+                    var indexInInitializedDays = initializedDays.IndexOf(date);
                     GridSource.Rows[indexInInitializedDays][gridColumn] =
                         (int)GridSource.Rows[indexInInitializedDays][gridColumn] + 1;
 
@@ -287,6 +288,7 @@ namespace PomocDoRaprtow.Tabs
             ChartArea area = new ChartArea();
             area.AxisX.IsLabelAutoFit = true;
             area.AxisX.LabelAutoFitStyle = LabelAutoFitStyles.LabelsAngleStep45;
+            //area.AxisX.LabelStyle.IntervalType = DateTimeIntervalType.Days;
             area.AxisX.LabelStyle.Enabled = true;
             area.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 12);
             area.AxisX.Interval = 1;
@@ -294,6 +296,8 @@ namespace PomocDoRaprtow.Tabs
             area.AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
             area.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
 
+            //double range = ((DateTime)gridSource.Rows[0][0] - (DateTime)gridSource.Rows[gridSource.Rows.Count - 1][0]).TotalDays;
+            //area.AxisX.LabelStyle.Interval = range / 40;
 
             DestinationChart.Series.Add(ser1);
             DestinationChart.Series.Add(ser2);
@@ -303,13 +307,19 @@ namespace PomocDoRaprtow.Tabs
             foreach (DataRow row in gridSource.Rows)
             {
                 DestinationChart.Series[0].Points
-                    .AddXY(row[0].ToString(), (int)row[1]);
+                    .AddXY(((DateTime)row[0]).ToString("dd-MM"), (int)row[1]);
 
-                DestinationChart.Series[1].Points
-                    .AddXY(row[0].ToString(), (int)row[2]);
+                DestinationChart.Series[0].Points
+                    .AddXY(((DateTime)row[0]).ToString("dd-MM"), (int)row[2]);
+
+                DestinationChart.Series[0].Points
+                    .AddXY(((DateTime)row[0]).ToString("dd-MM"), (int)row[3]);
+
+                /*DestinationChart.Series[1].Points
+                    .AddXY(((DateTime)row[0]).ToString("dd-MM"), (int)row[2]);
 
                 DestinationChart.Series[2].Points
-                    .AddXY(row[0].ToString(), (int)row[3]);
+                    .AddXY(((DateTime)row[0]).ToString("dd-MM"), (int)row[3]);*/
             }
         }
 
@@ -317,7 +327,7 @@ namespace PomocDoRaprtow.Tabs
 
         private IEnumerable<Tuple<DateTime, int>> LotToTesterDates(Lot lot)
         {
-            var dates = lot.LedsInLot.SelectMany(l => l.TesterData.Select(testerData => testerData.TimeOfTest)).Where(form1.DateFilter);
+            var dates = lot.LedsInLot.SelectMany(l => l.TesterData.Select(testerData => testerData.FixedDateTime)).Where(form1.DateFilter);
             return dates.Select(d => new Tuple<DateTime, int>(d, 1));
         }
 
@@ -328,7 +338,7 @@ namespace PomocDoRaprtow.Tabs
                 yield break;
             }
 
-            yield return Tuple.Create(lot.WasteInfo.SplittingDate, lot.LedsInLot.Count);
+            yield return Tuple.Create(DateUtilities.FixedShiftDate(lot.WasteInfo.SplittingDate), lot.LedsInLot.Count);
         }
 
         private IEnumerable<Tuple<DateTime, int>> LotToBoxingDates(Lot lot)
@@ -337,7 +347,8 @@ namespace PomocDoRaprtow.Tabs
                 .Select(l => l.Boxing.BoxingDate)
                 .Where(bd => bd.HasValue)
                 .Select(bdOpt => bdOpt.Value)
-                .Where(form1.DateFilter);
+                .Where(form1.DateFilter)
+                .Select(DateUtilities.FixedShiftDate);
             return dates.Select(d => new Tuple<DateTime, int>(d, 1));
         }
 

@@ -60,6 +60,13 @@ namespace PomocDoRaprtow.Tabs
                 //TreeViewLotsInUse.Nodes.Add($"Palletised {percentPaletised} Boxed {percentBoxed}");
             }
 
+            lotWaitingForSMT = lotWaitingForSMT.OrderBy(l => l.Model.ModelName).ToList();
+            lotWaitingForTest=lotWaitingForTest.OrderBy(l => l.Model.ModelName).ToList();
+            lotWaitingForSplitting=lotWaitingForSplitting.OrderBy(l => l.Model.ModelName).ToList();
+            lotWaitingForBoxing=lotWaitingForBoxing.OrderBy(l => l.Model.ModelName).ToList();
+            lotWaitingForPalletising=lotWaitingForPalletising.OrderBy(l => l.Model.ModelName).ToList();
+            lotOnMatching=lotOnMatching.OrderBy(l => l.Model.ModelName).ToList();
+
             TreeViewLotsInUse.BeginUpdate();
             TreeNode waitinfForSmtNode = new TreeNode("Waiting for SMT");
             waitinfForSmtNode.Name = "Waiting for SMT";
