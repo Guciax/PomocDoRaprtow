@@ -15,17 +15,20 @@ namespace PomocDoRaprtow.Tabs
         private readonly TreeView treeViewWaste;
         private readonly DataGridView wasteView;
         private readonly Chart wasteHistogramChart;
+        private readonly RadioButton radioModel;
+
         public LedStorage LedStorage { get; set; }
 
         private List<Model> models;
 
-        public WasteOperations(Form1 form, TreeView treeViewWaste, DataGridView wasteView, Chart wasteHistogramChart)
+        public WasteOperations(Form1 form, TreeView treeViewWaste, DataGridView wasteView, Chart wasteHistogramChart, RadioButton radioModel)
         {
             this.form = form;
 
             this.treeViewWaste = treeViewWaste;
             this.wasteView = wasteView;
             this.wasteHistogramChart = wasteHistogramChart;
+            this.radioModel = radioModel;
         }
 
         public void RedrawWasteTab()
@@ -41,16 +44,51 @@ namespace PomocDoRaprtow.Tabs
             totalNode.Name = "Total";
             treeViewWaste.Nodes.Add(totalNode);
 
+            List<string> sortedListToTree = new List<string>();
             foreach (var model in models)
             {
                 int totalWasteInModel = CalculateWaste(model, form.WasteInfoBySplittingTime).Sum();
                 int totalProducedInModel = model.Lots.Where(form.LotBySplittingTime).Sum(l => l.TestedQuantity);
                 if (totalProducedInModel == 0) continue;
+                string modelName = model.ModelName;
+                string rateNg = MathUtilities.CalculatePercentage(totalProducedInModel, totalWasteInModel);
+
+
+                if (radioModel.Checked)
+                {
+                    sortedListToTree.Add(modelName + " - " + rateNg);
+                }
+                else
+                {
+                    sortedListToTree.Add(rateNg + " - " + modelName);
+                }
+
+
+            }
+
+            sortedListToTree = sortedListToTree.OrderByDescending(o => o).ToList();
+
+            foreach (var modelNG in sortedListToTree)
+            {
                 TreeNode modelNode =
-                    new TreeNode($"{model.ModelName}  - {MathUtilities.CalculatePercentage(totalProducedInModel, totalWasteInModel)}");
-                modelNode.Name = model.ModelName;
+                    new TreeNode(modelNG);
+                if (radioModel.Checked)
+                modelNode.Name = modelNG.Split(' ')[0];
+                else
+                    modelNode.Name = modelNG.Split(' ')[2];
                 treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
             }
+
+            //foreach (var model in models)
+            //{
+            //    int totalWasteInModel = CalculateWaste(model, form.WasteInfoBySplittingTime).Sum();
+            //    int totalProducedInModel = model.Lots.Where(form.LotBySplittingTime).Sum(l => l.TestedQuantity);
+            //    if (totalProducedInModel == 0) continue;
+            //    TreeNode modelNode =
+            //        new TreeNode($"{model.ModelName}  - {MathUtilities.CalculatePercentage(totalProducedInModel, totalWasteInModel)}");
+            //    modelNode.Name = model.ModelName;
+            //    treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
+            //}
 
             treeViewWaste.ExpandAll();
             treeViewWaste.EndUpdate();

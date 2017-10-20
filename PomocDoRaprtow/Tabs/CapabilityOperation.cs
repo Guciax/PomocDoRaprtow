@@ -23,10 +23,12 @@ namespace PomocDoRaprtow.Tabs
         private readonly TreeView treeViewCapaBoxing;
         private readonly DataGridView dataGridViewCapaBoxing;
         private readonly Chart chartCapaBoxing;
+        private readonly RadioButton radioModel;
 
         public CapabilityOperation(Form1 form1, TreeView treeViewTestCapa, RichTextBox richTextBoxCapaTest,
             Chart chartCapaTest, DataGridView dataGridViewCapaTest,
-            Chart chartSplitting, DataGridView dataGridViewSplitting, TreeView treeViewSplitting, TreeView treeViewCapaBoxing, DataGridView dataGridViewCapaBoxing, Chart chartCapaBoxing)
+            Chart chartSplitting, DataGridView dataGridViewSplitting, TreeView treeViewSplitting, TreeView treeViewCapaBoxing, 
+            DataGridView dataGridViewCapaBoxing, Chart chartCapaBoxing, RadioButton radioModel)
         {
             this.form1 = form1;
             this.treeViewTestCapa = treeViewTestCapa;
@@ -39,6 +41,7 @@ namespace PomocDoRaprtow.Tabs
             this.treeViewCapaBoxing = treeViewCapaBoxing;
             this.dataGridViewCapaBoxing = dataGridViewCapaBoxing;
             this.chartCapaBoxing = chartCapaBoxing;
+            this.radioModel = radioModel;
         }
 
         private string FormatTreeViewNodeName(String mainName, int occurences)

@@ -52,9 +52,12 @@ namespace PomocDoRaprtow
             return new ShiftInfo(3, inputDate);
         }
 
-        public static DateTime ParseExact(String date)
+        public static DateTime ParseExact(string date)
         {
+            if (date.Contains("-"))
             return DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+            else
+                return DateTime.ParseExact(date, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
         }
 
         public static DateTime ParseExactWithFraction(String date)

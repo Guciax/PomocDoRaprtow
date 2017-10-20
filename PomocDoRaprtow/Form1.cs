@@ -27,10 +27,10 @@ namespace PomocDoRaprtow
         public Form1()
         {
             InitializeComponent();
-            wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad);
+            wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad, radioModel);
             lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo, dataGridViewLotInfo);
             lotInUseOperations = new LotsInUseOperations(this, treeViewLotsinUse);
-            capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest, dataGridViewCapaTest, chartSplitting, dataGridViewSplitting, treeViewSplitting, treeViewCapaBoxing,dataGridViewCapaBoxing, chartCapaBoxing);
+            capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest, dataGridViewCapaTest, chartSplitting, dataGridViewSplitting, treeViewSplitting, treeViewCapaBoxing,dataGridViewCapaBoxing, chartCapaBoxing,radioModel);
             modelOperations = new ModelOperations(this, chartModel, dataGridViewModelInfo);
         }
 
@@ -176,11 +176,6 @@ namespace PomocDoRaprtow
         public bool BoxingDateFilter(Boxing boxingData)
         {
             return boxingData.BoxingDate.HasValue && DateFilter(boxingData.BoxingDate.Value); 
-        }
-
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void dateTimePicker_odpad_od_ValueChanged(object sender, EventArgs e)
@@ -389,6 +384,16 @@ namespace PomocDoRaprtow
                 button3.PerformClick();
                 
             }
+        }
+
+        private void Tab_SizeChanged(object sender, EventArgs e)
+        {
+            tabMain.Size = new Size(tabMain.Width, this.Height - 95);
+        }
+
+        private void radioModel_CheckedChanged(object sender, EventArgs e)
+        {
+            wasteOperations.RedrawWasteTab();
         }
     }
 }

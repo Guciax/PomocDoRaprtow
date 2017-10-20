@@ -26,6 +26,7 @@ namespace PomocDoRaprtow
             TestEnd = testEnd;
         }
         
+
         public String LotId { get; }
         public string PlanId { get; }
         public Model Model { get; set; }
