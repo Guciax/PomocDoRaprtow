@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace PomocDoRaprtow
@@ -54,10 +55,18 @@ namespace PomocDoRaprtow
 
         public static DateTime ParseExact(string date)
         {
-            if (date.Contains("-"))
-            return DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
-            else
-                return DateTime.ParseExact(date, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+            try
+            {
+                if (date.Contains("-"))
+                    return DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+                else
+                    return DateTime.ParseExact(date, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("Date error: "+date);
+                return new DateTime(1900, 1, 1);
+            }
         }
 
         public static DateTime ParseExactWithFraction(String date)

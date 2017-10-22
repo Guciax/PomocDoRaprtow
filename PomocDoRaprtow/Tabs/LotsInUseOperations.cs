@@ -49,7 +49,7 @@ namespace PomocDoRaprtow.Tabs
                 {
                     lotWaitingForBoxing.Add(lot);
                 }
-                else if (lot.TestedQuantity > 0)
+                else if (lot.LedTest.TestedUniqueQuantity > 0)
                 {
                     lotWaitingForSplitting.Add(lot);
                 }
@@ -141,7 +141,7 @@ namespace PomocDoRaprtow.Tabs
 
                 totalForSplittingPerModel[modelNode.Name] += splittingLot.OrderedQuantity;
 
-                TreeNode lotNode = new TreeNode(splittingLot.LotId + " - " + splittingLot.TestedQuantity);
+                TreeNode lotNode = new TreeNode(splittingLot.LotId + " - " + splittingLot.LedTest.TestedUniqueQuantity);
                 lotNode.Name = splittingLot.LotId;
                 TreeViewLotsInUse.Nodes["Waiting for Splitting"].Nodes[modelNode.Name].Nodes.Add(lotNode);
             }

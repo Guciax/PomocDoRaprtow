@@ -15,116 +15,136 @@ namespace PomocDoRaprtow.Tabs
         private Form1 form;
         private readonly Chart chartModel;
         private readonly DataGridView dataGridViewModelInfo;
+        private readonly TreeView treeViewModelInfo;
+        private readonly ComboBox comboBoxModels;
+        private readonly DateTimePicker pickerStart;
+        private readonly DateTimePicker pickerEnd;
 
-        public ModelOperations(Form1 form, Chart chartModel, DataGridView dataGridViewModelInfo)
+        public ModelOperations(Form1 form, Chart chartModel, DataGridView dataGridViewModelInfo, TreeView treeViewModelInfo, 
+            ComboBox comboBoxModels, DateTimePicker pickerStart, DateTimePicker pickerEnd)
         {
             this.form = form;
             this.chartModel = chartModel;
             this.dataGridViewModelInfo = dataGridViewModelInfo;
+            this.treeViewModelInfo = treeViewModelInfo;
+            this.comboBoxModels = comboBoxModels;
+            this.pickerStart = pickerStart;
+            this.pickerEnd = pickerEnd;
         }
 
         public void GenerateCycleTimeChart(Model model)
         {
-            var testerIdToTesterDates = PrepareTesterData(model);
+            var testerIdToTesterDates = PrepareTesterDataPcsPerHour(model);
             Dictionary<String, SortedDictionary<double, int>> cyclesOccurence = new Dictionary<string, SortedDictionary<double, int>>();
 
             foreach (var entryTesterIdTesterData in testerIdToTesterDates)
             {
                 var testerId = entryTesterIdTesterData.Key;
                 var testerDatas = entryTesterIdTesterData.Value;
-                var occurences = new SortedDictionary<double, int>();
-                cyclesOccurence.Add(testerId, occurences);
+
+                if (!cyclesOccurence.ContainsKey(testerId))
+                    cyclesOccurence.Add(testerId, new SortedDictionary<double, int>());
+
                 for (int i = 1; i < testerDatas.Count; i++)
                 {
-                    var cycleDuration = (int) (testerDatas[i] - testerDatas[i - 1]).TotalSeconds;
-                    if (cycleDuration < 5 || cycleDuration>240) continue;
+                    if (!cyclesOccurence[testerId].ContainsKey(testerDatas[i]))
+                    {
+                        cyclesOccurence[testerId].Add(testerDatas[i], 0);
+                    }
 
-                    var count = 0;
-                    occurences.TryGetValue(cycleDuration, out count);
-                    occurences[cycleDuration] = count + 1;
+                    cyclesOccurence[testerId][testerDatas[i]]++;
                 }
             }
 
             Charting.CycleTimeHistogram(chartModel, cyclesOccurence);
         }
 
-        public void GenerateLotEfficiencyChart(Model model)
+        private Dictionary<int, List<DateTime>> inspectionTimeSplitter(List<DateTime> inputList)
+        {
+            Dictionary<int, List<DateTime>> result = new Dictionary<int, List<DateTime>>();
+            int lastCut = 0;
+
+            for (int i = 1; i < inputList.Count; i++)
+            {
+                if ((inputList[i] - inputList[i - 1]).TotalMinutes < 15) continue;
+                result.Add(lastCut, inputList.GetRange(lastCut, i - lastCut));
+                lastCut = i;
+
+            }
+            result.Add(lastCut, inputList.GetRange(lastCut, inputList.Count  - lastCut));
+
+            return result;
+        }
+
+        public void GenerateLotEfficiencyChart(List<Lot> lotList)
         {
             dataGridViewModelInfo.Rows.Clear();
             Dictionary<String, SortedDictionary<double, int>> lotCyclesOccurence = new Dictionary<string, SortedDictionary<double, int>>();
-            lotCyclesOccurence.Add("1", new SortedDictionary<double, int>());
+            
 
-            List<double> totalLotDuration = new List<double>();
-            List<int> totalTestedQuantity = new List<int>();
+            List<double> outputPerHourList = new List<double>();
+            double numberOfTestCycles = 0;
+            double numberOfTestedLeds = 0;
+            double testsTotalDurationHours = 0;
+            HashSet<string> uniqueModels = new HashSet<string>();
 
-
-            foreach (var lotEntry in model.Lots)
+            foreach (var lot in lotList)
             {
 
-                if (lotEntry.LedsInLot.Count == 0)
+                if (lot.LedsInLot.Count == 0)
                     continue;
+                if (lot.LedTest.TestEnd < pickerStart.Value || lot.LedTest.TestEnd > pickerEnd.Value) continue;
 
-                var lotId = lotEntry.LotId;
-                var ledsInLot = lotEntry.LedsInLot;
+                uniqueModels.Add(lot.Model.ModelName);
+                var lotId = lot.LotId;
+                var ledsInLot = lot.LedsInLot;
 
                 var inspTimeList = ledsInLot.SelectMany(l => l.TesterData).Select(ll => ll.TimeOfTest).OrderBy(o => o).ToList();
-                var begin = inspTimeList.Min(d => d);
-                var end = inspTimeList.Max(d => d);
-                var ledsTestedInLot = lotEntry.TestedQuantity;
-                var lotDuration = (end - begin).TotalSeconds;
-                var avgCycleTime = Math.Ceiling((lotDuration / ledsTestedInLot) * 2) / 2;
-                if (avgCycleTime > 30)
+                Dictionary<int, List<DateTime>> splittedInspTimes = inspectionTimeSplitter(inspTimeList);
+
+
+
+                numberOfTestCycles += inspTimeList.Count;
+                numberOfTestedLeds += lot.LedTest.TestedUniqueQuantity;
+
+                var begin = inspTimeList.Min();
+                var end = inspTimeList.Max();
+                testsTotalDurationHours += (end - begin).TotalHours;
+
+                foreach (var timeList in splittedInspTimes)
                 {
-                    //continue;
-                    int previousCut = 0;
-                    List<List<DateTime>> splittedLotList = new List<List<DateTime>>();
-                    for (int i = 1; i < inspTimeList.Count; i++) 
+                    if (timeList.Value.Count < 20) continue;
+                    testsTotalDurationHours += (timeList.Value.Max() - timeList.Value.Min()).TotalHours;
+                    double outputPerHourUp50 = Math.Round((timeList.Value.Count / (timeList.Value.Max() - timeList.Value.Min()).TotalHours) / 50, 0) * 50;
+                    outputPerHourList.Add(outputPerHourUp50);
+
+                    if (!lotCyclesOccurence.ContainsKey(lot.LedTest.TesterId))
                     {
-                        if ((inspTimeList[i]-inspTimeList[i-1]).TotalSeconds>60)
-                        {
-                            if (i - previousCut < 5) continue;
-                            {
-                                splittedLotList.Add(new List<DateTime>());
-                                for (int j = previousCut; j < i; j++)
-                                {
-                                    splittedLotList[splittedLotList.Count - 1].Add(inspTimeList[j]);
-                                }
-                                previousCut = i;
-                            }
-
-                        }
-
+                        lotCyclesOccurence.Add(lot.LedTest.TesterId, new SortedDictionary<double, int>());
                     }
-                    double sumOfDuration = 0;
-                    
-
-                    foreach (var list in splittedLotList)
+                    if (!lotCyclesOccurence[lot.LedTest.TesterId].ContainsKey(outputPerHourUp50) )
                     {
-                        sumOfDuration += (list.Max() - list.Min()).TotalSeconds;
-                        
-                        
+                        lotCyclesOccurence[lot.LedTest.TesterId].Add(outputPerHourUp50, 0);
                     }
+                    lotCyclesOccurence[lot.LedTest.TesterId][outputPerHourUp50]++;
 
-                    avgCycleTime = Math.Ceiling((sumOfDuration / ledsTestedInLot) * 2) / 2;
-                    lotDuration = sumOfDuration;
-                    
+
                 }
-                totalLotDuration.Add(lotDuration);
-                totalTestedQuantity.Add(ledsTestedInLot);
-                
-                
-                if (!lotCyclesOccurence["1"].ContainsKey(avgCycleTime)) lotCyclesOccurence["1"].Add(avgCycleTime, 0);
-                lotCyclesOccurence["1"][avgCycleTime] += 1;
 
             }
-            if (totalLotDuration.Count > 0)
+
+
+            if (outputPerHourList.Count > 0)
             {
-                var avgDurationTime = Math.Round(totalLotDuration.Average(), 0);
-                var avgCT = Math.Round(totalLotDuration.Sum() / totalTestedQuantity.Sum(), 1);
-                dataGridViewModelInfo.Rows.Add("LOT avg. duration", avgDurationTime + " sec");
-                dataGridViewModelInfo.Rows.Add("Cycle time avg.", avgCT + " sec");
-                dataGridViewModelInfo.Rows.Add("Tested modules", totalTestedQuantity.Sum());
-                //dataGridViewModelInfo.Rows.Add("data", totalLotDuration.Count);
+                dataGridViewModelInfo.Rows.Add("Output min", Math.Round(outputPerHourList.Min(), 0));
+                dataGridViewModelInfo.Rows.Add("Output max", Math.Round(outputPerHourList.Max(), 0));
+                dataGridViewModelInfo.Rows.Add("Avg output per hour", Math.Round( outputPerHourList.Average(),0));
+                dataGridViewModelInfo.Rows.Add("Tested modules", numberOfTestedLeds);
+                dataGridViewModelInfo.Rows.Add("Number of tests", numberOfTestCycles);
+                foreach (var item in uniqueModels)
+                {
+                    dataGridViewModelInfo.Rows.Add("Model", item);
+                }
             }
 
             foreach (DataGridViewColumn col in dataGridViewModelInfo.Columns)
@@ -161,6 +181,77 @@ namespace PomocDoRaprtow.Tabs
             }
 
             return result;
+        }
+
+        private Dictionary<String, List<double>> PrepareTesterDataPcsPerHour(Model model)
+        {
+            IEnumerable<Lot> modelLot = ledStorage.Lots.Values
+                 .Where(l => l.Model == model);
+
+            Dictionary<String, List<double>> result = new Dictionary<string, List<double>>();
+
+            foreach (var mdl in modelLot)
+            {
+                if (!mdl.LotStatus.TestDone || mdl.LedsInLot.Count==0) continue;
+                List<double> tdsForThisTester;
+                if (!result.TryGetValue(mdl.LedsInLot[0].TesterData[0].TesterId, out tdsForThisTester))
+                {
+                    tdsForThisTester = new List<double>();
+                    result.Add(mdl.LedsInLot[0].TesterData[0].TesterId, tdsForThisTester);
+                }
+                tdsForThisTester.Add(Math.Floor(mdl.LedTest.TestedUniqueQuantity / (mdl.LedTest.TestEnd - mdl.LedTest.TestStart).TotalHours / 50) * 50);
+            }
+            foreach (var entry in result)
+            {
+                entry.Value.Sort();
+            }
+
+            return result;
+        }
+
+        public void DisplayTesterDataOccurences(IEnumerable<Led> leds, List<Lot> lots)
+        {
+            var occurencesCalculations = new OccurenceCalculations(lots, LotToTesterDates);
+            RebuildOccurenceTreeView(treeViewModelInfo, occurencesCalculations);
+        }
+
+        private IEnumerable<Tuple<DateTime, int>> LotToTesterDates(Lot lot)
+        {
+            var dates = lot.LedsInLot.SelectMany(l => l.TesterData.Select(testerData => testerData.FixedDateTime)).Where(form.DateFilter);
+            return dates.Select(d => new Tuple<DateTime, int>(d, 1));
+        }
+
+        private void RebuildOccurenceTreeView(TreeView targetTreeView, OccurenceCalculations occurenceCalculations)
+        {
+            targetTreeView.BeginUpdate();
+            targetTreeView.Nodes.Clear();
+            foreach (var weekTree in occurenceCalculations.Tree.WeekNoToTree.Values)
+            {
+                var weekTreeViewNode =
+                    new TreeNode(FormatTreeViewNodeName(weekTree.Week.ToString(), weekTree.Occurences));
+                targetTreeView.Nodes.Add(weekTreeViewNode);
+                foreach (var dayTree in weekTree.DayToTree.Values)
+                {
+                    string dayMonth = dayTree.DateTime.Day.ToString("d2") + "-" + dayTree.DateTime.Month.ToString("d2");
+                    var dayTreeViewNode = weekTreeViewNode.Nodes.Add(FormatTreeViewNodeName(dayMonth, dayTree.Occurences));
+                    foreach (var shiftTree in dayTree.ShiftToTree)
+                    {
+
+                        if (shiftTree.Occurences == 0) continue;
+                        var shiftTreeViewNode = dayTreeViewNode.Nodes.Add(FormatTreeViewNodeName(shiftTree.ShiftNo.ToString(), shiftTree.Occurences));
+                        foreach (var modelTree in shiftTree.ModelToTree.Values)
+                        {
+
+                            shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
+                        }
+                    }
+                }
+            }
+            targetTreeView.EndUpdate();
+        }
+        private string FormatTreeViewNodeName(String mainName, int occurences)
+        {
+            return mainName + " " + occurences;
         }
     }
 }

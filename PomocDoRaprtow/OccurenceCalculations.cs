@@ -55,7 +55,8 @@ namespace PomocDoRaprtow
         {
             foreach (var lot in lots)
             {
-                var model = lot.Model;
+                var lotModel = lot.Model;
+
 
                 var interestingDates = converter(lot).ToList();
 
@@ -65,7 +66,7 @@ namespace PomocDoRaprtow
                     var weekTree = GetWeekTree(dateCount.Item1);
                     var dayTree = GetDayTree(dateCount.Item1, weekTree);
                     var shiftTree = GetShiftTree(shiftInfo.ShiftNo, dayTree);
-                    var modelTree = GetModelsTree(model.ModelName, shiftTree);
+                    var modelTree = GetModelsTree(lotModel.ModelName, shiftTree);
 
                     weekTree.Occurences += dateCount.Item2;
                     dayTree.Occurences += dateCount.Item2;

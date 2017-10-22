@@ -73,15 +73,28 @@ namespace PomocDoRaprtow.Tabs
             var scrapQty = LedStorage.Lots[lotID].ScrapQuantity;
             var planID = LedStorage.Lots[lotID].PlanId;
             var kittingDate = LedStorage.Lots[lotID].PrintDate.ToString();
-            var testedQty = LedStorage.Lots[lotID].TestedQuantity;
+            var testedQty = LedStorage.Lots[lotID].LedTest.TestedUniqueQuantity;
             var boxedPercentage = BoxingUtilities.BoxingProgress(LedStorage.Lots[lotID]);
             var palletisedPercentage = BoxingUtilities.PalletizingProgress(LedStorage.Lots[lotID]);
             var boxingDate = BoxingUtilities.LotToBoxesDate(LedStorage.Lots[lotID]);
             var boxId = BoxingUtilities.LotToBoxesId(LedStorage.Lots[lotID]);
             var palletisingDate = BoxingUtilities.LotToPalletDate(LedStorage.Lots[lotID]);
             var palletisingId = BoxingUtilities.LotToPalletId(LedStorage.Lots[lotID]);
-            var testDateStart = LedStorage.Lots[lotID].TestStart;
-            var testDateEnd = LedStorage.Lots[lotID].TestEnd;
+            string testDateStart;
+            string testDateEnd;
+            if (LedStorage.Lots[lotID].LedTest.TestStart < LedStorage.Lots[lotID].LedTest.TestEnd)
+            {
+                testDateStart = LedStorage.Lots[lotID].LedTest.TestStart.ToString();
+                testDateEnd = LedStorage.Lots[lotID].LedTest.TestEnd.ToString();
+            }
+            else
+            {
+                testDateStart = "";
+                testDateEnd = "";
+            }
+            
+
+             
 
             string splittingDate = "";
             if (LedStorage.Lots[lotID].WasteInfo != null)

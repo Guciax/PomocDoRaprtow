@@ -16,12 +16,14 @@ namespace PomocDoRaprtow.Tabs
         private readonly DataGridView wasteView;
         private readonly Chart wasteHistogramChart;
         private readonly RadioButton radioModel;
+        private readonly DataGridView dataGridviewScrap;
 
         public LedStorage LedStorage { get; set; }
 
         private List<Model> models;
 
-        public WasteOperations(Form1 form, TreeView treeViewWaste, DataGridView wasteView, Chart wasteHistogramChart, RadioButton radioModel)
+        public WasteOperations(Form1 form, TreeView treeViewWaste, DataGridView wasteView, Chart wasteHistogramChart, RadioButton radioModel,
+            DataGridView dataGridviewScrap)
         {
             this.form = form;
 
@@ -29,6 +31,7 @@ namespace PomocDoRaprtow.Tabs
             this.wasteView = wasteView;
             this.wasteHistogramChart = wasteHistogramChart;
             this.radioModel = radioModel;
+            this.dataGridviewScrap = dataGridviewScrap;
         }
 
         public void RedrawWasteTab()
@@ -38,7 +41,10 @@ namespace PomocDoRaprtow.Tabs
             models = LedStorage.Models.Values.Where(form.ModelSelected).ToList();
             var totalWaste = models.Sum(m => CalculateWaste(m, form.WasteInfoBySplittingTime).Sum());
             var totalProduced = models.SelectMany(m => m.Lots.Where(form.LotBySplittingTime))
-                .Sum(l => l.TestedQuantity);
+                .Sum(l => l.LedTest.TestedUniqueQuantity);
+            SortedDictionary<string, double[]> totalScrapInModel = new SortedDictionary<string, double[]>();
+            double totalScrap = 0;
+            
 
             TreeNode totalNode = new TreeNode("Total  - " + MathUtilities.CalculatePercentage(totalProduced, totalWaste));
             totalNode.Name = "Total";
@@ -48,8 +54,11 @@ namespace PomocDoRaprtow.Tabs
             foreach (var model in models)
             {
                 int totalWasteInModel = CalculateWaste(model, form.WasteInfoBySplittingTime).Sum();
-                int totalProducedInModel = model.Lots.Where(form.LotBySplittingTime).Sum(l => l.TestedQuantity);
+                int totalProducedInModel = model.Lots.Where(form.LotBySplittingTime).Sum(l => l.LedTest.TestedUniqueQuantity);
                 if (totalProducedInModel == 0) continue;
+                double scrapQty = model.Lots.Select(s => s.ScrapQuantity).ToList().Sum();
+                totalScrapInModel.Add(model.ModelName, new double[] { scrapQty, totalProducedInModel });
+                totalScrap += scrapQty;
                 string modelName = model.ModelName;
                 string rateNg = MathUtilities.CalculatePercentage(totalProducedInModel, totalWasteInModel);
 
@@ -79,16 +88,18 @@ namespace PomocDoRaprtow.Tabs
                 treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
             }
 
-            //foreach (var model in models)
-            //{
-            //    int totalWasteInModel = CalculateWaste(model, form.WasteInfoBySplittingTime).Sum();
-            //    int totalProducedInModel = model.Lots.Where(form.LotBySplittingTime).Sum(l => l.TestedQuantity);
-            //    if (totalProducedInModel == 0) continue;
-            //    TreeNode modelNode =
-            //        new TreeNode($"{model.ModelName}  - {MathUtilities.CalculatePercentage(totalProducedInModel, totalWasteInModel)}");
-            //    modelNode.Name = model.ModelName;
-            //    treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
-            //}
+            dataGridviewScrap.Rows.Clear();
+            dataGridviewScrap.Rows.Add("Total", totalScrap +"//"+totalProduced, Math.Round( totalScrap / totalProduced * 100,2)+" %");
+            foreach (var modelCrap in totalScrapInModel)
+            {
+                dataGridviewScrap.Rows.Add(modelCrap.Key, modelCrap.Value[0] + @"/" + modelCrap.Value[1], Math.Round(modelCrap.Value[0] / modelCrap.Value[1] * 100, 2) + " %");
+
+            }
+
+            foreach (DataGridViewColumn col in dataGridviewScrap.Columns)
+            {
+                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            }
 
             treeViewWaste.ExpandAll();
             treeViewWaste.EndUpdate();

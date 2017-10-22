@@ -16,30 +16,24 @@ namespace PomocDoRaprtow.Tabs
         private readonly TreeView treeViewTestCapa;
         private readonly Chart chartCapaTest;
         private readonly RichTextBox richTextBoxCapaTest;
-        private readonly DataGridView dataGridViewCapaTest;
-        private readonly Chart chartSplitting;
-        private readonly DataGridView dataGridViewSplitting;
+       private readonly Chart chartSplitting;
         private readonly TreeView treeViewSplitting;
         private readonly TreeView treeViewCapaBoxing;
-        private readonly DataGridView dataGridViewCapaBoxing;
         private readonly Chart chartCapaBoxing;
         private readonly RadioButton radioModel;
 
         public CapabilityOperation(Form1 form1, TreeView treeViewTestCapa, RichTextBox richTextBoxCapaTest,
-            Chart chartCapaTest, DataGridView dataGridViewCapaTest,
-            Chart chartSplitting, DataGridView dataGridViewSplitting, TreeView treeViewSplitting, TreeView treeViewCapaBoxing, 
-            DataGridView dataGridViewCapaBoxing, Chart chartCapaBoxing, RadioButton radioModel)
+            Chart chartCapaTest, 
+            Chart chartSplitting,  TreeView treeViewSplitting, TreeView treeViewCapaBoxing, 
+             Chart chartCapaBoxing, RadioButton radioModel)
         {
             this.form1 = form1;
             this.treeViewTestCapa = treeViewTestCapa;
             this.chartCapaTest = chartCapaTest;
             this.richTextBoxCapaTest = richTextBoxCapaTest;
-            this.dataGridViewCapaTest = dataGridViewCapaTest;
             this.chartSplitting = chartSplitting;
-            this.dataGridViewSplitting = dataGridViewSplitting;
             this.treeViewSplitting = treeViewSplitting;
             this.treeViewCapaBoxing = treeViewCapaBoxing;
-            this.dataGridViewCapaBoxing = dataGridViewCapaBoxing;
             this.chartCapaBoxing = chartCapaBoxing;
             this.radioModel = radioModel;
         }
@@ -68,6 +62,7 @@ namespace PomocDoRaprtow.Tabs
                         var shiftTreeViewNode = dayTreeViewNode.Nodes.Add(FormatTreeViewNodeName(shiftTree.ShiftNo.ToString(), shiftTree.Occurences));
                         foreach (var modelTree in shiftTree.ModelToTree.Values)
                         {
+
                             shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
                         }
                     }
@@ -81,14 +76,16 @@ namespace PomocDoRaprtow.Tabs
             var leds = LedStorage.Leds.Where(form1.LedModelIsSelected).ToList();
             var lots = LedStorage.Lots.Values.Where(form1.LotByModel).ToList();
 
-            DrawCapaChart(PrepareTesterDataForCharting(leds), chartCapaTest, dataGridViewCapaTest);
-            DrawCapaChart(PrepareSplittingDataForCharting(lots), chartSplitting, dataGridViewSplitting);
-            DrawCapaChart(PrepareBoxingDataForCharting(leds), chartCapaBoxing, dataGridViewCapaBoxing);
+            DrawCapaChart(PrepareTesterDataForCharting(leds), chartCapaTest);
+            DrawCapaChart(PrepareSplittingDataForCharting(lots), chartSplitting);
+            DrawCapaChart(PrepareBoxingDataForCharting(leds), chartCapaBoxing);
             DisplayTesterDataOccurences(leds, lots);
             DisplaySplittingDataOccurences(lots);
             DisplayBoxingDataOccurences(lots);
 
         }
+
+
 
         private void DisplaySplittingDataOccurences(List<Lot> lots)
         {
@@ -252,70 +249,86 @@ namespace PomocDoRaprtow.Tabs
             }
         }
 
-        private void DrawCapaChart(DataTable gridSource, Chart DestinationChart, DataGridView DestinationGrid)
+        private void DrawCapaChart(DataTable gridSource, Chart DestinationChart)
         {
-            DestinationGrid.DataSource = gridSource;
-            foreach (DataGridViewColumn col in DestinationGrid.Columns)
+            //DestinationGrid.DataSource = gridSource;
+            //foreach (DataGridViewColumn col in DestinationGrid.Columns)
             {
-                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                //col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             }
 
 
             DestinationChart.Series.Clear();
             DestinationChart.ChartAreas.Clear();
+           // DestinationChart.Legends.Clear();
 
             Series ser1 = new Series();
-            ser1.IsVisibleInLegend = false;
+            ser1.IsVisibleInLegend = true;
             ser1.IsValueShownAsLabel = false;
-            ser1.ChartType = SeriesChartType.Column;
-            ser1.Color = System.Drawing.Color.BlueViolet;
-            ser1.LegendText = "1";
+            ser1.ChartType = SeriesChartType.StackedColumn;
+            ser1.Color = System.Drawing.Color.LightSalmon;
             ser1.BorderWidth = 2;
+            ser1.Name = "3rd Shift";
 
             Series ser2 = new Series();
-            ser2.IsVisibleInLegend = false;
+            ser2.IsVisibleInLegend = true;
             ser2.IsValueShownAsLabel = false;
-            ser2.ChartType = SeriesChartType.Column;
-            ser2.Color = System.Drawing.Color.Chocolate;
-            ser2.LegendText = "2";
+            ser2.ChartType = SeriesChartType.StackedColumn;
+            ser2.Color = System.Drawing.Color.CornflowerBlue;
+            ser2.Name = "1st Shift";
             ser2.BorderWidth = 2;
 
             Series ser3 = new Series();
-            ser3.IsVisibleInLegend = false;
+            ser3.IsVisibleInLegend = true;
             ser3.IsValueShownAsLabel = false;
-            ser3.ChartType = SeriesChartType.Column;
-            ser3.Color = System.Drawing.Color.Lime;
-            ser3.LegendText = "3";
+            ser3.ChartType = SeriesChartType.StackedColumn;
+            ser3.Color = System.Drawing.Color.Tomato;
+            ser3.Name = "2nd Shift";
             ser3.BorderWidth = 2;
-
-            ChartArea area = new ChartArea();
+            double xRange = 0;
+            if (gridSource.Rows.Count>0)
+                 xRange = ((DateTime)gridSource.Rows[gridSource.Rows.Count - 1][0]-(DateTime)gridSource.Rows[0][0]  ).TotalDays;
+            decimal numberOfPoints = gridSource.Rows.Count;
+            ChartArea area = new ChartArea("area");
             area.AxisX.IsLabelAutoFit = true;
             area.AxisX.LabelAutoFitStyle = LabelAutoFitStyles.LabelsAngleStep45;
-            //area.AxisX.LabelStyle.IntervalType = DateTimeIntervalType.Days;
+            area.AxisX.LabelStyle.IntervalType = DateTimeIntervalType.Days;
             area.AxisX.LabelStyle.Enabled = true;
             area.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 12);
-            area.AxisX.Interval = 1;
-            area.AxisY.Interval = 500;
+
+            area.AxisX.LabelStyle.Interval = (double)Math.Ceiling(numberOfPoints / 20);
+
+            area.AxisX.MajorGrid.Interval = xRange / 10;
+            //area.AxisY.Interval = 500;
             area.AxisX.MajorGrid.LineColor = System.Drawing.Color.LightGray;
             area.AxisY.MajorGrid.LineColor = System.Drawing.Color.LightGray;
+            //area.AxisX.LabelStyle.Interval = (area.AxisX.Maximum - area.AxisX.Minimum) / 50;
 
-            //double range = ((DateTime)gridSource.Rows[0][0] - (DateTime)gridSource.Rows[gridSource.Rows.Count - 1][0]).TotalDays;
+
             //area.AxisX.LabelStyle.Interval = range / 40;
 
+            
+
+
+            //DestinationChart.Legends.Add(leg);
             DestinationChart.Series.Add(ser1);
             DestinationChart.Series.Add(ser2);
             DestinationChart.Series.Add(ser3);
             DestinationChart.ChartAreas.Add(area);
+            DestinationChart.Legends[0].Docking = Docking.Top;
+            DestinationChart.Legends[0].IsDockedInsideChartArea = true;
+            DestinationChart.Legends[0].DockedToChartArea = "area";
+
 
             foreach (DataRow row in gridSource.Rows)
             {
                 DestinationChart.Series[0].Points
                     .AddXY(((DateTime)row[0]).ToString("dd-MM"), (int)row[1]);
 
-                DestinationChart.Series[0].Points
+                DestinationChart.Series[1].Points
                     .AddXY(((DateTime)row[0]).ToString("dd-MM"), (int)row[2]);
 
-                DestinationChart.Series[0].Points
+                DestinationChart.Series[2].Points
                     .AddXY(((DateTime)row[0]).ToString("dd-MM"), (int)row[3]);
 
                 /*DestinationChart.Series[1].Points

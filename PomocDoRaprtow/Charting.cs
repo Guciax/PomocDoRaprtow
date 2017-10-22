@@ -136,27 +136,43 @@ namespace PomocDoRaprtow
         public static void CycleTimeHistogram(Chart targetChart, Dictionary<String, SortedDictionary<double, int>> inputDict)
         {
             targetChart.Series.Clear();
-            Series ser = new Series();
-            ser.ChartType = SeriesChartType.Spline;
-            ser.BorderWidth = 2;
 
-            targetChart.Series.Add(ser);
 
-            targetChart.ChartAreas[0].AxisX.Minimum = 1;
-            targetChart.ChartAreas[0].AxisX.MajorGrid.Interval = 1;
-            targetChart.ChartAreas[0].AxisX.LabelStyle.Interval = 1;
-            targetChart.ChartAreas[0].AxisX.MaximumAutoSize = 0.95f;
-            targetChart.ChartAreas[0].AxisY.MajorGrid.Interval = 5;
-            targetChart.ChartAreas[0].AxisY.MaximumAutoSize = 0.90f;
+
+            double maxY = 0;
+            double maxX = 0;
 
             foreach (var testerEntry in inputDict)
             {
+                Series ser = new Series
+                {
+                    ChartType = SeriesChartType.Spline,
+                    BorderWidth = 2,
+                    LegendText = "TesterID=" + testerEntry.Key,
+                    IsVisibleInLegend = true
+                };
+
+                targetChart.Series.Add(ser);
+
                 foreach (var cT in testerEntry.Value)
                 {
-                    targetChart.Series[0].Points.AddXY(cT.Key, cT.Value);
+                    if (cT.Value>maxY)
+                    {
+                        maxY = cT.Value;
+                        maxX = cT.Key;
+                    }
+                    targetChart.Series[targetChart.Series.Count - 1].Points.AddXY(cT.Key, cT.Value);
                 }
                 
+
             }
+            targetChart.ChartAreas[0].AxisX.Title = "Output/hour";
+            targetChart.ChartAreas[0].AxisY.Title = "LOT's count";
+            targetChart.ChartAreas[0].AxisY.Maximum = maxY * 1.1f;
+            targetChart.ChartAreas[0].AxisX.MajorGrid.Interval = (targetChart.ChartAreas[0].AxisX.Maximum / 5);
+            targetChart.ChartAreas[0].AxisX.MajorGrid.Interval = maxX / 10;
+
+
 
         }
     }

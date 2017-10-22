@@ -32,6 +32,16 @@ namespace PomocDoRaprtow
             return new LedStorage(Lots, LotIdToWasteInfo, SerialNumbersToLed, models, serialToBoxing);
         }
 
+        private void lotPerformanceCalculations()
+        {
+            foreach (var lot in Lots)
+            {
+                if (lot.Value.LedTest.TestedUniqueQuantity == 0) continue;
+                lot.Value.Performance.MintesLotDuration = (lot.Value.LedTest.TestEnd - lot.Value.LedTest.TestStart).TotalMinutes;
+                lot.Value.Performance.OutputPerHour = lot.Value.LedTest.TestedUniqueQuantity / lot.Value.Performance.MintesLotDuration;
+            }
+        }
+
         private void LoadBoxingTable(string boxingPath)
         {
             serialToBoxing = new Dictionary<string, Boxing>();
@@ -90,6 +100,8 @@ namespace PomocDoRaprtow
             int indexReworkQty = Array.IndexOf(header, "Ilosc_wyr_do_poprawy");
             int indexmScrapQty = Array.IndexOf(header, "Ilosc_wyr_na_zlom");
             int indexPrintDate = Array.IndexOf(header, "DataCzasWydruku");
+            int indexStatus = Array.IndexOf(header, "STATUS");
+
 
 
             foreach (var line in fileLines.Skip(1))
@@ -122,6 +134,29 @@ namespace PomocDoRaprtow
                     printDate = DateUtilities.ParseExactWithFraction(splitLine[indexPrintDate]);
                 }
 
+                bool smtDone = false;
+                bool testDone = false;
+                bool lotFinished = false;
+
+                string lotStatus = splitLine[indexStatus];
+                if (lotStatus == "3")
+                {
+                    smtDone = true;
+                    testDone = true;
+                    lotFinished = true;
+                } else if(lotStatus=="2")
+                {
+                    smtDone = true;
+                    testDone = true;
+                } else if (lotStatus == "1")
+                {
+                    smtDone = true;
+                }
+                var ledTest = new LedTest(0, System.DateTime.Now.AddYears(10), new DateTime(1970, 01, 01, 01, 01, 01),"");
+                var lotPerformance = new PerformanceTest(0,0);
+                
+                var status = new Status(smtDone, testDone, lotFinished);
+
 
                 var lot = new Lot(splitLine[indexLotId],
                     splitLine[indexPlanId],
@@ -130,14 +165,14 @@ namespace PomocDoRaprtow
                     splitLine[indexMrm],
                     model,
                     info,
-                    0,//testted quantity to fiilup later
+                    ledTest,//testted quantity to fiilup later
                     orderedQty,
                     manufacturedQty,
                     reworkQty,
                     scrapQty,
                     printDate,
-                    System.DateTime.Now, //test start
-                    new DateTime(1970, 01, 01, 01, 01, 01)); //testEnd
+                    status,
+                    lotPerformance); 
 
 
                 Lots.Add(lot.LotId, lot);
@@ -181,13 +216,17 @@ namespace PomocDoRaprtow
             int indexTestTime = Array.IndexOf(header, "inspection_time");
             int indexResult = Array.IndexOf(header, "result");
             int indexFailReason = Array.IndexOf(header, "ng_type");
+            
+
             Dictionary<string, HashSet<string>> serialsInLot = new Dictionary<string, HashSet<string>>();
 
             foreach (var line in fileLines.Skip(1))
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
-                var ledId = splitLine[indexSerialNr];
+                var testerID = splitLine[indexTesterId];
+
+                    var ledId = splitLine[indexSerialNr];
                 if (!serialsInLot.ContainsKey(lotId))
                 {
                     serialsInLot.Add(lotId, new HashSet<string>());
@@ -199,6 +238,7 @@ namespace PomocDoRaprtow
 
                 if (lot == null)
                 {
+                    //Debug.WriteLine("lot=null " + lotId + " "+ splitLine[indexTestTime]);
                     continue;
                 }
 
@@ -209,16 +249,20 @@ namespace PomocDoRaprtow
                 }
 
                 string testResult = splitLine[indexResult];
-                if (testResult != "OK" && testResult != "NG")
+                if (testerID == "0")
                 {
+                    //Debug.WriteLine("testerID=0" + " " + splitLine[7]);
                     continue;
                 }
 
+                Lots[lotId].LedTest.TesterId = testerID;
+
                 var timeOfTest = DateUtilities.ParseExact(splitLine[indexTestTime]);
+                if (timeOfTest.Year == 1900) continue;
                 var wasTestSuccesful = splitLine[indexResult] == "OK";
                 var fixedDateTime = DateUtilities.FixedShiftDate(timeOfTest);
                 var shiftNo = DateUtilities.DateToShiftInfo(timeOfTest).ShiftNo;
-                var testerData = new TesterData(splitLine[indexTesterId], timeOfTest, fixedDateTime, shiftNo,
+                var testerData = new TesterData(testerID, timeOfTest, fixedDateTime, shiftNo,
                     wasTestSuccesful, splitLine[indexFailReason]);
                 var serialNumber = splitLine[indexSerialNr];
 
@@ -233,15 +277,16 @@ namespace PomocDoRaprtow
                     var led = SerialNumbersToLed[serialNumber];
                     led.AddTesterData(testerData);
                 }
-                if (Lots[lotId].TestStart > timeOfTest) 
-                {
-                    Lots[lotId].TestStart = timeOfTest;
-                }
+            }
 
-                if (Lots[lotId].TestEnd < timeOfTest)
-                {
-                    Lots[lotId].TestEnd = timeOfTest;
-                }
+            foreach (var lot in Lots)
+            {
+                if (lot.Value.LedsInLot.Count == 0) continue;
+                var ledsInLot = lot.Value.LedsInLot.SelectMany(l => l.TesterData.Select(ll => ll.TimeOfTest)).ToList();
+                var startDate = ledsInLot.Min();
+                var endtDate = ledsInLot.Max();
+                lot.Value.LedTest.TestStart = startDate;
+                lot.Value.LedTest.TestEnd = endtDate;
             }
 
             foreach (var led in SerialNumbersToLed.Values)
@@ -255,7 +300,7 @@ namespace PomocDoRaprtow
             {
                 if (!Lots.Keys.Contains(entry.Key)) continue;
                 int count = entry.Value.Count;
-                Lots[entry.Key].TestedQuantity = count;
+                Lots[entry.Key].LedTest.TestedUniqueQuantity = count;
             }
         }
     }

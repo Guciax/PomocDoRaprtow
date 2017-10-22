@@ -24,14 +24,18 @@ namespace PomocDoRaprtow
         private CapabilityOperation capabilityOperations;
         private ModelOperations modelOperations;
 
+
         public Form1()
         {
             InitializeComponent();
-            wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad, radioModel);
+            dateTimePickerBegin.Value = new DateTime(System.DateTime.Now.Year, System.DateTime.Now.Month, 1);
+            wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad, radioModel, dataGridViewScrap);
             lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo, dataGridViewLotInfo);
             lotInUseOperations = new LotsInUseOperations(this, treeViewLotsinUse);
-            capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest, dataGridViewCapaTest, chartSplitting, dataGridViewSplitting, treeViewSplitting, treeViewCapaBoxing,dataGridViewCapaBoxing, chartCapaBoxing,radioModel);
-            modelOperations = new ModelOperations(this, chartModel, dataGridViewModelInfo);
+            capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest,  chartSplitting,  treeViewSplitting, treeViewCapaBoxing, chartCapaBoxing,radioModel);
+            modelOperations = new ModelOperations(this, chartModel, dataGridViewModelInfo, treeViewModelInfo, comboBoxModels, dateTimePickerBegin, dateTimePickerEnd);
+
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -41,6 +45,7 @@ namespace PomocDoRaprtow
 
         private void button3_Click(object sender, EventArgs e)
         {
+            
             wasteOperations.RedrawWasteTab();
             capabilityOperations.DrawCapability();
 
@@ -84,18 +89,14 @@ namespace PomocDoRaprtow
                 modelOperations.ledStorage = ledStorage;
                 CsvLoadinDone = true;
                 
+                
             }).Start();
-            /*
-            PictureBox loadingBox = new PictureBox();
-            loadingBox.Parent = this;
-            loadingBox.BringToFront();
-            loadingBox.Location = new System.Drawing.Point(150, 150);
-            Image pacman = Image.FromFile("Pacman.gif");
-            loadingBox.Size = pacman.Size;
-            loadingBox.Image = pacman;*/
 
-
+            pictureBox1.Visible = true;
+            pictureBox1.Image = PomocDoRaprtow.Properties.Resources.spinner2;
+            pictureBox1.Size = PomocDoRaprtow.Properties.Resources.spinner2.Size;
         }
+        
 
         public System.Drawing.Image GetImageFromManifest(string sPath)
         {
@@ -233,10 +234,20 @@ namespace PomocDoRaprtow
             if (treeViewLotsinUse.SelectedNode.Level > 1) lotInfoOperations.DisplayLotInfo(treeViewLotsinUse.SelectedNode.Name, dataGridViewLotsInUse);
         }
 
+        private string modelFamily(string model)
+        {
+            if (model.Length < 10) return "";
+            return model.Substring(0, 6) + model[7] + model[9];
+
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            modelOperations.GenerateCycleTimeChart(ledStorage.Models[comboBoxModels.Text]);
-            modelOperations.GenerateLotEfficiencyChart(ledStorage.Models[comboBoxModels.Text]);
+            var lots = ledStorage.Lots.Values.Where(l => l.Model.ModelName.Substring(0,3)== comboBoxModels.Text).ToList();
+            //modelOperations.GenerateCycleTimeChart(ledStorage.Models[comboBoxModels.Text]);
+            modelOperations.GenerateLotEfficiencyChart(lots);
+            modelOperations.DisplayTesterDataOccurences(ledStorage.Leds, lots);
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -367,6 +378,7 @@ namespace PomocDoRaprtow
         {
             if (CsvLoadinDone)
             {
+                pictureBox1.Visible = false;
                 timerThreadCsv.Enabled = false;
                 CapaModelcheckedListBox.Items.Clear();
                 CapaModelcheckedListBox.Sorted = true;
@@ -375,7 +387,8 @@ namespace PomocDoRaprtow
                 {
                     CapaModelcheckedListBox.Items.Add(model);
                     CapaModelcheckedListBox.SetItemChecked(CapaModelcheckedListBox.Items.Count - 1, true);
-                    comboBoxModels.Items.Add(model);
+                    string familyName = model.Substring(0, 3);
+                    if (!comboBoxModels.Items.Contains(familyName)) comboBoxModels.Items.Add(familyName);
                 }
 
                 CheckBoxCheckAll();
@@ -388,12 +401,17 @@ namespace PomocDoRaprtow
 
         private void Tab_SizeChanged(object sender, EventArgs e)
         {
-            tabMain.Size = new Size(tabMain.Width, this.Height - 95);
+            //tabMain.Size = new Size(tabMain.Width, this.Height - 95);
         }
 
         private void radioModel_CheckedChanged(object sender, EventArgs e)
         {
             wasteOperations.RedrawWasteTab();
+        }
+
+        private void CapaModelcheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            RebuildEnabledModelsSet();
         }
     }
 }

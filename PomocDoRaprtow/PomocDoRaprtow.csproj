@@ -69,6 +69,7 @@
     <Compile Include="DataModels\LedStorageLoader.cs" />
     <Compile Include="DataModels\Lot.cs" />
     <Compile Include="DataModels\Model.cs" />
+    <Compile Include="DataModels\Performance.cs" />
     <Compile Include="DataModels\TesterData.cs" />
     <Compile Include="DataModels\WasteInfo.cs" />
     <Compile Include="DateUtilities.cs" />
@@ -130,6 +131,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Pacman.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\spinner.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\spinner2.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
