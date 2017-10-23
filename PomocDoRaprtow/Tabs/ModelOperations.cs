@@ -69,7 +69,6 @@ namespace PomocDoRaprtow.Tabs
                 if ((inputList[i] - inputList[i - 1]).TotalMinutes < 15) continue;
                 result.Add(lastCut, inputList.GetRange(lastCut, i - lastCut));
                 lastCut = i;
-
             }
             result.Add(lastCut, inputList.GetRange(lastCut, inputList.Count  - lastCut));
 
@@ -99,10 +98,8 @@ namespace PomocDoRaprtow.Tabs
                 var lotId = lot.LotId;
                 var ledsInLot = lot.LedsInLot;
 
-                var inspTimeList = ledsInLot.SelectMany(l => l.TesterData).Select(ll => ll.TimeOfTest).OrderBy(o => o).ToList();
+                var inspTimeList = ledsInLot.SelectMany(l => l.TesterData).Select(td => td.TimeOfTest).OrderBy(o => o).ToList();
                 Dictionary<int, List<DateTime>> splittedInspTimes = inspectionTimeSplitter(inspTimeList);
-
-
 
                 numberOfTestCycles += inspTimeList.Count;
                 numberOfTestedLeds += lot.LedTest.TestedUniqueQuantity;

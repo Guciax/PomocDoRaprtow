@@ -56,8 +56,6 @@ namespace PomocDoRaprtow
             foreach (var lot in lots)
             {
                 var lotModel = lot.Model;
-
-
                 var interestingDates = converter(lot).ToList();
 
                 foreach (var dateCount in interestingDates)

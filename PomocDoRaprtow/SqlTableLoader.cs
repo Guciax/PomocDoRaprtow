@@ -14,6 +14,27 @@ namespace PomocDoRaprtow
         {
             DataTable result = new DataTable();
 
+            //using (SqlConnection connection = new SqlConnection(@"Data Source=MSTDB\SQLEXPRESS;Initial Catalog=Sparing2;Integrated Security=True"))
+            //{
+            //    connection.Open();
+            //    SqlCommand command = new SqlCommand(@"SELECT serial_no, inspection_time, tester_id, wip_entity_name, result, ng_type, STATUS FROM dbo.v_tester_measurements_ZlecenieGlowne", connection);
+            //    using (SqlDataReader reader = command.ExecuteReader())
+            //    {
+            //        // while there is another record present
+            //        while (reader.Read())
+            //        {
+            //            // write the data on to the screen
+            //            Console.WriteLine(String.Format("{0} \t | {1} \t | {2} \t | {3}",
+            //            // call the objects from their index
+            //            reader[0], reader[1], reader[2], reader[3]));
+            //        }
+            //    }
+
+            //}
+
+
+
+
             SqlConnection conn = new SqlConnection();
             conn.ConnectionString = @"Data Source=MSTDB\SQLEXPRESS;Initial Catalog=Sparing2;Integrated Security=True";
 
