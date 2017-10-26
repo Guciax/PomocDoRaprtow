@@ -54,7 +54,9 @@ namespace PomocDoRaprtow
 
         private void button4_Click(object sender, EventArgs e)
         {
-            SqlTableLoader.LoadTesterWorkCard();
+            SqlTableLoader.LoadTesterWorkCard("2017");
+            SqlTableLoader.LoadWasteTable("2017-10");
+            SqlTableLoader.LoadBoxingTable("2017-10");
         }
 
         private void CheckBoxCheckAll()
@@ -234,10 +236,17 @@ namespace PomocDoRaprtow
             if (treeViewLotsinUse.SelectedNode.Level > 1) lotInfoOperations.DisplayLotInfo(treeViewLotsinUse.SelectedNode.Name, dataGridViewLotsInUse);
         }
 
+        private string modelFamily(string model)
+        {
+            if (model.Length < 10) return "";
+            return model.Substring(0, 6) + model[7] + model[9];
+
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var lots = ledStorage.Lots.Values.Where(l => l.Model.ModelName.StartsWith(comboBoxModels.Text)).ToList();
-
+            var lots = ledStorage.Lots.Values.Where(l => l.Model.ModelName.Substring(0,3)== comboBoxModels.Text).ToList();
+            //modelOperations.GenerateCycleTimeChart(ledStorage.Models[comboBoxModels.Text]);
             modelOperations.GenerateLotEfficiencyChart(lots);
             modelOperations.DisplayTesterDataOccurences(ledStorage.Leds, lots);
 
@@ -246,13 +255,11 @@ namespace PomocDoRaprtow
         private void button1_Click(object sender, EventArgs e)
         {
             CheckBoxCheckAll();
-            RebuildEnabledModelsSet();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             CheckBoxCheckNone();
-            RebuildEnabledModelsSet();
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -261,10 +268,9 @@ namespace PomocDoRaprtow
             {
                 string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
                 if (itText.Contains("22-") || itText.Contains("32-") || itText.Contains("33-") || itText.Contains("53-"))
-                    CapaModelcheckedListBox.SetItemChecked(i, true);
+                CapaModelcheckedListBox.SetItemChecked(i, true);
                 else CapaModelcheckedListBox.SetItemChecked(i, false);
             }
-            RebuildEnabledModelsSet();
         }
 
         private void button8_Click(object sender, EventArgs e)
@@ -272,13 +278,10 @@ namespace PomocDoRaprtow
             for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
             {
                 string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
-                if (itText.Contains("K1") || itText.Contains("K2") || itText.Contains("61-") || itText.Contains("41-"))
-                {
+                if (itText.Contains("K1-") || itText.Contains("K2-") || itText.Contains("61-") || itText.Contains("41-"))
                     CapaModelcheckedListBox.SetItemChecked(i, true);
-                }
                 else CapaModelcheckedListBox.SetItemChecked(i, false);
             }
-            RebuildEnabledModelsSet();
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -286,11 +289,10 @@ namespace PomocDoRaprtow
             for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
             {
                 string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
-                if (itText.Contains("G") || itText.Contains("31-"))
+                if (itText.Contains("G1-") || itText.Contains("G2-") || itText.Contains("31-"))
                     CapaModelcheckedListBox.SetItemChecked(i, true);
                 else CapaModelcheckedListBox.SetItemChecked(i, false);
             }
-            RebuildEnabledModelsSet();
         }
 
         private void button10_Click(object sender, EventArgs e)
@@ -298,11 +300,10 @@ namespace PomocDoRaprtow
             for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
             {
                 string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
-                if (itText.Contains("E") || itText.Contains("D"))
+                if (itText.Contains("E1-") || itText.Contains("E2-") || itText.Contains("D1-") || itText.Contains("D2-"))
                     CapaModelcheckedListBox.SetItemChecked(i, true);
                 else CapaModelcheckedListBox.SetItemChecked(i, false);
             }
-            RebuildEnabledModelsSet();
         }
 
         private void checkedListBox1_MouseEnter(object sender, EventArgs e)
@@ -390,7 +391,7 @@ namespace PomocDoRaprtow
                     CapaModelcheckedListBox.SetItemChecked(CapaModelcheckedListBox.Items.Count - 1, true);
                     string familyName = model.Substring(0, 3);
                     if (!comboBoxModels.Items.Contains(familyName)) comboBoxModels.Items.Add(familyName);
-                } 
+                }
 
                 CheckBoxCheckAll();
                 RebuildEnabledModelsSet();
@@ -412,7 +413,7 @@ namespace PomocDoRaprtow
 
         private void CapaModelcheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            
+            RebuildEnabledModelsSet();
         }
     }
 }

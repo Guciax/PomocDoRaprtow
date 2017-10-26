@@ -65,12 +65,12 @@ namespace PomocDoRaprtow
                 DateTime? boxingDate = null;
                 DateTime? palletisingDate = null;
 
-                if (splitLine[indexBoxingDate] != "NULL")
+                if (splitLine[indexBoxingDate] != "NULL" & splitLine[indexBoxingDate] != "")
                 {
                     boxingDate = DateUtilities.ParseExact(splitLine[indexBoxingDate]);
                 }
 
-                if (splitLine[indexPalletisingDate] != "NULL")
+                if (splitLine[indexPalletisingDate] != "NULL" & splitLine[indexPalletisingDate] != "")
                 {
                     palletisingDate = DateUtilities.ParseExact(splitLine[indexPalletisingDate]);
                 }
@@ -79,6 +79,7 @@ namespace PomocDoRaprtow
                 {
                     serialToBoxing.Add(serial, new Boxing(boxingDate, palletisingDate, boxId, palletId));
                 }
+                //Debug.WriteLine("-------------- Added " + serial);
             }
         }
 

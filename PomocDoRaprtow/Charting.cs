@@ -144,14 +144,28 @@ namespace PomocDoRaprtow
 
             foreach (var testerEntry in inputDict)
             {
-                Series ser = new Series
-                {
-                    ChartType = SeriesChartType.Spline,
-                    BorderWidth = 2,
-                    LegendText = "TesterID=" + testerEntry.Key,
-                    IsVisibleInLegend = true
-                };
+                Series ser = new Series();
 
+
+                ser.ChartType = SeriesChartType.Spline;
+                    ser.BorderWidth = 2;
+                ser.LegendText = "TesterID=" + testerEntry.Key;
+                ser.IsVisibleInLegend = true;
+                switch (testerEntry.Key) {
+                    case "1": ser.Color = System.Drawing.Color.Blue;
+                        break;
+                    case "2": ser.Color = System.Drawing.Color.Green;
+                        break;
+                    case "3": ser.Color = System.Drawing.Color.Orange;
+                        break;
+                    case "4": ser.Color = System.Drawing.Color.DarkRed;
+                        break;
+                    case "5": ser.Color = System.Drawing.Color.DarkOliveGreen;
+                        break;
+
+                }
+
+                targetChart.Legends[0].BackColor = System.Drawing.Color.Transparent;
                 targetChart.Series.Add(ser);
 
                 foreach (var cT in testerEntry.Value)

@@ -60,10 +60,18 @@ namespace PomocDoRaprtow.Tabs
                     {
                         if (shiftTree.Occurences == 0) continue;
                         var shiftTreeViewNode = dayTreeViewNode.Nodes.Add(FormatTreeViewNodeName(shiftTree.ShiftNo.ToString(), shiftTree.Occurences));
+                        
                         foreach (var modelTree in shiftTree.ModelToTree.Values)
                         {
+                            if (modelTree.Occurences == 0) continue;
+                            var modelTreeViewNode = shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
 
-                            shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
+                            foreach(var prodLineTree in modelTree.LineToTree.Values)
+                            {
+                                if (prodLineTree.Occurences == 0) continue;
+                                modelTreeViewNode.Nodes.Add(FormatTreeViewNodeName(prodLineTree.Line, prodLineTree.Occurences));
+
+                            }
                         }
                     }
                 }
@@ -222,7 +230,7 @@ namespace PomocDoRaprtow.Tabs
 
         private void DisplayTesterDataOccurences(IEnumerable<Led> leds, List<Lot> lots)
         {
-            var occurencesCalculations = new OccurenceCalculations(lots, LotToTesterDates);
+            var occurencesCalculations = new OccurenceCalculations(lots, LotToTesterDates, 0);
             RebuildOccurenceTreeView(treeViewTestCapa, occurencesCalculations);
 
             richTextBoxCapaTest.Text = "";
@@ -341,10 +349,13 @@ namespace PomocDoRaprtow.Tabs
 
 
 
-        private IEnumerable<Tuple<DateTime, int>> LotToTesterDates(Lot lot)
+        private IEnumerable<Tuple<DateTime, int, string>> LotToTesterDates(Lot lot)
         {
-            var dates = lot.LedsInLot.SelectMany(l => l.TesterData.Select(testerData => testerData.FixedDateTime)).Where(form1.DateFilter);
-            return dates.Select(d => new Tuple<DateTime, int>(d, 1));
+            var datesTesterId = lot.LedsInLot.SelectMany
+                (l => l.TesterData.Select
+                (testerData => Tuple.Create(testerData.FixedDateTime, testerData.TesterId))
+                .Where(dateTesterIdTuple => form1.DateFilter(dateTesterIdTuple.Item1)));
+            return datesTesterId.Select(dateTesterId => new Tuple<DateTime, int, string>(dateTesterId.Item1, 1, dateTesterId.Item2));
         }
 
         private IEnumerable<Tuple<DateTime, int>> LotToSplittingDates(Lot lot)

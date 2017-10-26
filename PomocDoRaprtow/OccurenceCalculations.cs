@@ -9,8 +9,16 @@ namespace PomocDoRaprtow
 {
     class OccurenceCalculations
     {
+        public class OccurenceProductionLine
+        {
+            public string Line;
+            public int Occurences = 0;
+        }
         public class OccurenceModel
         {
+            public SortedDictionary<string, OccurenceProductionLine> LineToTree { get; } =
+                new SortedDictionary<string, OccurenceProductionLine>();
+
             public string Model;
             public int Occurences = 0;
         }
@@ -51,25 +59,47 @@ namespace PomocDoRaprtow
 
         public OccurenceTree Tree { get; } = new OccurenceTree();
 
-        public OccurenceCalculations(List<Lot> lots, Func<Lot, IEnumerable<Tuple<DateTime,int>>> converter)
+        public OccurenceCalculations(List<Lot> lots, Func<Lot, IEnumerable<Tuple<DateTime, int>>> converter)
         {
             foreach (var lot in lots)
             {
-                var lotModel = lot.Model;
                 var interestingDates = converter(lot).ToList();
+                IEnumerable<Tuple<DateTime, int, string>> interestingDatesWithFakeLine = 
+                    interestingDates.Select(t => Tuple.Create<DateTime, int, string>(t.Item1, t.Item2, null));
+                build(lot, interestingDatesWithFakeLine);
+            }
+        }
 
-                foreach (var dateCount in interestingDates)
+        public OccurenceCalculations(List<Lot> lots, Func<Lot, IEnumerable<Tuple<DateTime, int, string>>> converter, int fake)
+        {
+            foreach (var lot in lots)
+            {
+                var interestingDates = converter(lot).ToList();
+                build(lot, interestingDates);
+            }
+        }
+
+        private void build(Lot lot, IEnumerable<Tuple<DateTime, int, string>> interestingDates)
+        {
+            var lotModel = lot.Model;
+
+            foreach (var dateCount in interestingDates)
+            {
+                var shiftInfo = DateUtilities.DateToShiftInfo(dateCount.Item1);
+                var weekTree = GetWeekTree(dateCount.Item1);
+                var dayTree = GetDayTree(dateCount.Item1, weekTree);
+                var shiftTree = GetShiftTree(shiftInfo.ShiftNo, dayTree);
+                var modelTree = GetModelsTree(lotModel.ModelName, shiftTree);
+
+                weekTree.Occurences += dateCount.Item2;
+                dayTree.Occurences += dateCount.Item2;
+                shiftTree.Occurences += dateCount.Item2;
+                modelTree.Occurences += dateCount.Item2;
+
+                if (dateCount.Item3 != null)
                 {
-                    var shiftInfo = DateUtilities.DateToShiftInfo(dateCount.Item1);
-                    var weekTree = GetWeekTree(dateCount.Item1);
-                    var dayTree = GetDayTree(dateCount.Item1, weekTree);
-                    var shiftTree = GetShiftTree(shiftInfo.ShiftNo, dayTree);
-                    var modelTree = GetModelsTree(lotModel.ModelName, shiftTree);
-
-                    weekTree.Occurences += dateCount.Item2;
-                    dayTree.Occurences += dateCount.Item2;
-                    shiftTree.Occurences += dateCount.Item2;
-                    modelTree.Occurences += dateCount.Item2;
+                    var lineTree = GetLinesTree(dateCount.Item3, modelTree);
+                    lineTree.Occurences += dateCount.Item2;
                 }
             }
         }
@@ -105,6 +135,14 @@ namespace PomocDoRaprtow
         {
             var t = GetOrAdd(model, shiftTree.ModelToTree);
             t.Model = model;
+
+            return t;
+        }
+
+        private OccurenceProductionLine GetLinesTree(String prodLine, OccurenceModel shiftTree)
+        {
+            var t = GetOrAdd(prodLine, shiftTree.LineToTree);
+            t.Line = prodLine;
 
             return t;
         }
