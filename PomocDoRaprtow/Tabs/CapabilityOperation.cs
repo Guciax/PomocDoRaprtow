@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PomocDoRaprtow.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using static PomocDoRaprtow.OccurenceCalculations;
 
 namespace PomocDoRaprtow.Tabs
 {
@@ -16,7 +18,7 @@ namespace PomocDoRaprtow.Tabs
         private readonly TreeView treeViewTestCapa;
         private readonly Chart chartCapaTest;
         private readonly RichTextBox richTextBoxCapaTest;
-       private readonly Chart chartSplitting;
+        private readonly Chart chartSplitting;
         private readonly TreeView treeViewSplitting;
         private readonly TreeView treeViewCapaBoxing;
         private readonly Chart chartCapaBoxing;
@@ -43,7 +45,7 @@ namespace PomocDoRaprtow.Tabs
             return mainName + " " + occurences;
         }
 
-        private void RebuildOccurenceTreeView(TreeView targetTreeView, OccurenceCalculations occurenceCalculations)
+        private void RebuildOccurenceTreeView(TreeView targetTreeView, OccurenceCalculations occurenceCalculations, bool includeProductionIdLevel)
         {
             targetTreeView.BeginUpdate();
             targetTreeView.Nodes.Clear();
@@ -52,25 +54,58 @@ namespace PomocDoRaprtow.Tabs
                 var weekTreeViewNode =
                     new TreeNode(FormatTreeViewNodeName(weekTree.Week.ToString(), weekTree.Occurences));
                 targetTreeView.Nodes.Add(weekTreeViewNode);
+                targetTreeView.Tag = weekTree;
                 foreach (var dayTree in weekTree.DayToTree.Values)
                 {
-                    string dayMonth = dayTree.DateTime.Day.ToString("d2") + "-" + dayTree.DateTime.Month.ToString("d2");
+                    string dayMonth = dayTree.DateTime.Day.ToString("d2") + "-" + dayTree.DateTime.Month.ToString("d2")+ "-" + dayTree.DateTime.Year.ToString();
                     var dayTreeViewNode = weekTreeViewNode.Nodes.Add(FormatTreeViewNodeName(dayMonth, dayTree.Occurences));
+                    dayTreeViewNode.Tag = dayTree;
                     foreach (var shiftTree in dayTree.ShiftToTree)
                     {
                         if (shiftTree.Occurences == 0) continue;
                         var shiftTreeViewNode = dayTreeViewNode.Nodes.Add(FormatTreeViewNodeName(shiftTree.ShiftNo.ToString(), shiftTree.Occurences));
-                        
-                        foreach (var modelTree in shiftTree.ModelToTree.Values)
+                        shiftTreeViewNode.Tag = shiftTree;
+                        if (includeProductionIdLevel)
                         {
-                            if (modelTree.Occurences == 0) continue;
-                            var modelTreeViewNode = shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
-
-                            foreach(var prodLineTree in modelTree.LineToTree.Values)
+                            var productionDetails = shiftTree.ModelToTree.Values.SelectMany(occModel => occModel.ProductionDetails).SelectMany(lotToProdDetail => lotToProdDetail.Value).ToList();
+                            var prodIds = productionDetails.Select(pd => pd.ProductionLineId).Distinct();
+                            foreach(var prodId in prodIds)
                             {
-                                if (prodLineTree.Occurences == 0) continue;
-                                modelTreeViewNode.Nodes.Add(FormatTreeViewNodeName(prodLineTree.Line, prodLineTree.Occurences));
+                                var productionDetailsForThisProdId = productionDetails.Where(pd => pd.ProductionLineId == prodId).ToList();
+                                var prodIdTreeViewNode = shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(prodId, productionDetailsForThisProdId.Sum(pd => pd.ProducedAmount)));
+                                //tag?
 
+                                var productionDetailsGroupped = productionDetailsForThisProdId.GroupBy(pd => pd.ProducedIn.Model.ModelName);
+
+                                foreach (var modelNameToDetails in productionDetailsGroupped)
+                                {
+                                    var prodDetails = modelNameToDetails.ToList();
+                                    var lot = prodDetails.First().ProducedIn;
+                                    OccurenceModel modelTree = new OccurenceModel();
+                                    modelTree.Model = lot.Model.ModelName;
+
+                                    var lots = prodDetails.Select(pd => pd.ProducedIn).Distinct();
+
+                                    foreach(var l in lots)
+                                    {
+                                        var prodDetailsForThisL = prodDetails.Where(pd => pd.ProducedIn == l).ToList();
+                                        modelTree.ProductionDetails.Add(l, prodDetailsForThisL);
+                                    }
+
+                                    modelTree.Occurences = prodDetails.Sum(pd => pd.ProducedAmount);
+
+                                    var modelTreeViewNode = prodIdTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
+                                    modelTreeViewNode.Tag = modelTree;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var modelTree in shiftTree.ModelToTree.Values)
+                            {
+                                if (modelTree.Occurences == 0) continue;
+                                var modelTreeViewNode = shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
+                                modelTreeViewNode.Tag = modelTree;
                             }
                         }
                     }
@@ -90,23 +125,21 @@ namespace PomocDoRaprtow.Tabs
             DisplayTesterDataOccurences(leds, lots);
             DisplaySplittingDataOccurences(lots);
             DisplayBoxingDataOccurences(lots);
-
         }
 
 
 
         private void DisplaySplittingDataOccurences(List<Lot> lots)
         {
-
-            var occurences = new OccurenceCalculations(lots, LotToSplittingDates);
-            RebuildOccurenceTreeView(treeViewSplitting, occurences);
+            var occurences = new OccurenceCalculations(lots, LotToSplittingProdDetails);
+            RebuildOccurenceTreeView(treeViewSplitting, occurences, false);
         }
 
         private void DisplayBoxingDataOccurences(List<Lot> lots)
         {
 
-            var occurences = new OccurenceCalculations(lots, LotToBoxingDates);
-            RebuildOccurenceTreeView(treeViewCapaBoxing, occurences);
+            var occurences = new OccurenceCalculations(lots, LotToBoxingProductionDetails);
+            RebuildOccurenceTreeView(treeViewCapaBoxing, occurences, false);
         }
 
         private DataTable PrepareSplittingDataForCharting(List<Lot> lots)
@@ -230,8 +263,8 @@ namespace PomocDoRaprtow.Tabs
 
         private void DisplayTesterDataOccurences(IEnumerable<Led> leds, List<Lot> lots)
         {
-            var occurencesCalculations = new OccurenceCalculations(lots, LotToTesterDates, 0);
-            RebuildOccurenceTreeView(treeViewTestCapa, occurencesCalculations);
+            var occurencesCalculations = new OccurenceCalculations(lots, form1.LotToTesterProductionDetails);
+            RebuildOccurenceTreeView(treeViewTestCapa, occurencesCalculations, true);
 
             richTextBoxCapaTest.Text = "";
             int occurencesSum = 0;
@@ -250,9 +283,10 @@ namespace PomocDoRaprtow.Tabs
             {
                 occurencesSum += kvp.Value;
             }
-
+            richTextBoxCapaTest.AppendText("Test Yield" + "\r");
             foreach (KeyValuePair<int, int> kvp in countOccurences)
             {
+                if (kvp.Value < 10) break;
                 richTextBoxCapaTest.AppendText($"{kvp.Key} test: {kvp.Value} - {MathUtilities.CalculatePercentage(occurencesSum, kvp.Value)}" + "\r");
             }
         }
@@ -347,36 +381,24 @@ namespace PomocDoRaprtow.Tabs
             }
         }
 
-
-
-        private IEnumerable<Tuple<DateTime, int, string>> LotToTesterDates(Lot lot)
-        {
-            var datesTesterId = lot.LedsInLot.SelectMany
-                (l => l.TesterData.Select
-                (testerData => Tuple.Create(testerData.FixedDateTime, testerData.TesterId))
-                .Where(dateTesterIdTuple => form1.DateFilter(dateTesterIdTuple.Item1)));
-            return datesTesterId.Select(dateTesterId => new Tuple<DateTime, int, string>(dateTesterId.Item1, 1, dateTesterId.Item2));
-        }
-
-        private IEnumerable<Tuple<DateTime, int>> LotToSplittingDates(Lot lot)
+        private IEnumerable<ProductionDetail> LotToSplittingProdDetails(Lot lot)
         {
             if (!form1.WasteInfoBySplittingTime(lot.WasteInfo))
             {
                 yield break;
             }
 
-            yield return Tuple.Create(DateUtilities.FixedShiftDate(lot.WasteInfo.SplittingDate), lot.LedsInLot.Count);
+            yield return new ProductionDetail(DateUtilities.FixedShiftDate(lot.WasteInfo.SplittingDate), lot.WasteInfo.SplittingDate, WasteInfo.SplitterId, lot.LedsInLot.Count, lot);
         }
 
-        private IEnumerable<Tuple<DateTime, int>> LotToBoxingDates(Lot lot)
+        private IEnumerable<ProductionDetail> LotToBoxingProductionDetails(Lot lot)
         {
             var dates = lot.LedsInLot
                 .Select(l => l.Boxing.BoxingDate)
                 .Where(bd => bd.HasValue)
                 .Select(bdOpt => bdOpt.Value)
-                .Where(form1.DateFilter)
-                .Select(DateUtilities.FixedShiftDate);
-            return dates.Select(d => new Tuple<DateTime, int>(d, 1));
+                .Where(form1.DateFilter);
+            return dates.Select(d => new ProductionDetail(DateUtilities.FixedShiftDate(d), d, Boxing.BoxerId, 1, lot));
         }
 
     }

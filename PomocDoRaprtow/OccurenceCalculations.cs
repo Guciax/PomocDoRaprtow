@@ -9,17 +9,10 @@ namespace PomocDoRaprtow
 {
     class OccurenceCalculations
     {
-        public class OccurenceProductionLine
-        {
-            public string Line;
-            public int Occurences = 0;
-        }
         public class OccurenceModel
         {
-            public SortedDictionary<string, OccurenceProductionLine> LineToTree { get; } =
-                new SortedDictionary<string, OccurenceProductionLine>();
-
             public string Model;
+            public Dictionary<Lot, List<ProductionDetail>> ProductionDetails { get; } = new Dictionary<Lot, List<ProductionDetail>>();
             public int Occurences = 0;
         }
 
@@ -45,6 +38,7 @@ namespace PomocDoRaprtow
         public class OccurenceTreeWeek
         {
             public SortedDictionary<int, OccurenceDay> DayToTree { get; } = new SortedDictionary<int, OccurenceDay>();
+
             public int Week { get; internal set; }
             public int Occurences { get; internal set; }
         }
@@ -59,18 +53,7 @@ namespace PomocDoRaprtow
 
         public OccurenceTree Tree { get; } = new OccurenceTree();
 
-        public OccurenceCalculations(List<Lot> lots, Func<Lot, IEnumerable<Tuple<DateTime, int>>> converter)
-        {
-            foreach (var lot in lots)
-            {
-                var interestingDates = converter(lot).ToList();
-                IEnumerable<Tuple<DateTime, int, string>> interestingDatesWithFakeLine = 
-                    interestingDates.Select(t => Tuple.Create<DateTime, int, string>(t.Item1, t.Item2, null));
-                build(lot, interestingDatesWithFakeLine);
-            }
-        }
-
-        public OccurenceCalculations(List<Lot> lots, Func<Lot, IEnumerable<Tuple<DateTime, int, string>>> converter, int fake)
+        public OccurenceCalculations(List<Lot> lots, Func<Lot, IEnumerable<ProductionDetail>> converter)
         {
             foreach (var lot in lots)
             {
@@ -79,28 +62,29 @@ namespace PomocDoRaprtow
             }
         }
 
-        private void build(Lot lot, IEnumerable<Tuple<DateTime, int, string>> interestingDates)
+        private void build(Lot lot, IEnumerable<ProductionDetail> productionDetails)
         {
             var lotModel = lot.Model;
 
-            foreach (var dateCount in interestingDates)
+            foreach (var productionDetail in productionDetails)
             {
-                var shiftInfo = DateUtilities.DateToShiftInfo(dateCount.Item1);
-                var weekTree = GetWeekTree(dateCount.Item1);
-                var dayTree = GetDayTree(dateCount.Item1, weekTree);
+                var shiftInfo = DateUtilities.DateToShiftInfo(productionDetail.ProductionFixedDate);
+                var weekTree = GetWeekTree(productionDetail.ProductionFixedDate);
+                var dayTree = GetDayTree(productionDetail.ProductionFixedDate, weekTree);
                 var shiftTree = GetShiftTree(shiftInfo.ShiftNo, dayTree);
                 var modelTree = GetModelsTree(lotModel.ModelName, shiftTree);
 
-                weekTree.Occurences += dateCount.Item2;
-                dayTree.Occurences += dateCount.Item2;
-                shiftTree.Occurences += dateCount.Item2;
-                modelTree.Occurences += dateCount.Item2;
+                weekTree.Occurences += productionDetail.ProducedAmount;
+                dayTree.Occurences += productionDetail.ProducedAmount;
+                shiftTree.Occurences += productionDetail.ProducedAmount;
+                modelTree.Occurences += productionDetail.ProducedAmount;
 
-                if (dateCount.Item3 != null)
+                if(!modelTree.ProductionDetails.ContainsKey(lot))
                 {
-                    var lineTree = GetLinesTree(dateCount.Item3, modelTree);
-                    lineTree.Occurences += dateCount.Item2;
+                    modelTree.ProductionDetails.Add(lot, new List<ProductionDetail>());
                 }
+
+                modelTree.ProductionDetails[lot].Add(productionDetail);
             }
         }
 
@@ -119,7 +103,6 @@ namespace PomocDoRaprtow
             var t = GetOrAdd(day, weekTree.DayToTree);
             t.Day = day;
             t.DateTime = testerDataFixedDateTime;
-
             return t;
         }
 
@@ -135,14 +118,6 @@ namespace PomocDoRaprtow
         {
             var t = GetOrAdd(model, shiftTree.ModelToTree);
             t.Model = model;
-
-            return t;
-        }
-
-        private OccurenceProductionLine GetLinesTree(String prodLine, OccurenceModel shiftTree)
-        {
-            var t = GetOrAdd(prodLine, shiftTree.LineToTree);
-            t.Line = prodLine;
 
             return t;
         }

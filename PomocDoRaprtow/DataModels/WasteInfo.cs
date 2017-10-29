@@ -5,6 +5,7 @@ namespace PomocDoRaprtow
 {
     public class WasteInfo
     {
+        public static String SplitterId = "Splitter";
         //consider loading this from file?
         public static readonly string[] WasteFieldNames =
         {

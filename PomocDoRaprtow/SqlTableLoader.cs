@@ -11,6 +11,25 @@ namespace PomocDoRaprtow
 {
     class SqlTableLoader
     {
+        public static void LoadLotTable(string date)
+        {
+            DataTable result = new DataTable();
+
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTDB\SQLEXPRESS;Initial Catalog=Sparing2;Integrated Security=True";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+            command.CommandText =
+                @"SELECT Nr_Planu_Produkcji, Nr_Zlecenia_Produkcyjnego, NC12_wyrobu, Ilosc_wyrobu_zlecona, RankA, RankB, MRM, STATUS, Ilosc_wyr_dobrego, Ilosc_wyr_do_poprawy, Ilosc_wyr_na_zlom, DataCzasWydruku FROM dbo.tb_Zlecenia_produkcyjne ;";
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(result);
+
+            SaveDataTableToCsv(result, @"DB\Zlecenia_produkcyjne.csv");
+
+        }
+
         public static void LoadTesterWorkCard(string date)
         {
             DataTable result = new DataTable();

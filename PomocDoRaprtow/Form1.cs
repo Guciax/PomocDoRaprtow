@@ -12,6 +12,7 @@ using System.Threading;
 using System.Drawing;
 using System.Reflection;
 using System.IO;
+using static PomocDoRaprtow.OccurenceCalculations;
 
 namespace PomocDoRaprtow
 {
@@ -48,15 +49,36 @@ namespace PomocDoRaprtow
             
             wasteOperations.RedrawWasteTab();
             capabilityOperations.DrawCapability();
-
-
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
+#if DEBUG
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+#endif
+
+
             SqlTableLoader.LoadTesterWorkCard("2017");
+#if DEBUG
+            Debug.WriteLine("SQL LoadTesterWorkCard: " + stopwatch.Elapsed.Seconds);
+
+#endif
             SqlTableLoader.LoadWasteTable("2017-10");
+#if DEBUG
+            Debug.WriteLine("SQL LoadWasteTable: " + stopwatch.Elapsed.Seconds);
+
+
+#endif
             SqlTableLoader.LoadBoxingTable("2017-10");
+
+#if DEBUG
+            Debug.WriteLine("SQL LoadBoxingTable: " + stopwatch.Elapsed.Seconds);
+            stopwatch.Stop();
+
+#endif
+            SqlTableLoader.LoadLotTable("nic");
         }
 
         private void CheckBoxCheckAll()
@@ -119,7 +141,7 @@ namespace PomocDoRaprtow
                 oImage = System.Drawing.Image.FromStream(oStream);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Missing image?           
             }
@@ -179,6 +201,15 @@ namespace PomocDoRaprtow
         public bool BoxingDateFilter(Boxing boxingData)
         {
             return boxingData.BoxingDate.HasValue && DateFilter(boxingData.BoxingDate.Value); 
+        }
+
+        public IEnumerable<ProductionDetail> LotToTesterProductionDetails(Lot lot)
+        {
+            var testerDatas = lot.LedsInLot
+                .SelectMany(l => l.TesterData)
+                .Where(td => DateFilter(td.FixedDateTime));
+
+            return testerDatas.Select(td => new ProductionDetail(td.FixedDateTime,td.TimeOfTest, td.TesterId, 1, lot));
         }
 
         private void dateTimePicker_odpad_od_ValueChanged(object sender, EventArgs e)
@@ -414,6 +445,115 @@ namespace PomocDoRaprtow
         private void CapaModelcheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             RebuildEnabledModelsSet();
+        }
+
+
+
+        private void treeViewTestCapa_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            richTextBox1.Clear();
+            Dictionary<Lot, List<ProductionDetail>> lots = new Dictionary<Lot, List<ProductionDetail>>();
+            List<OccurenceModel> models = new List<OccurenceModel>();
+            if (e.Node.Level > 0)
+            {
+                var tag = e.Node.Tag;
+
+                if (tag as OccurenceDay != null)
+                {
+                    OccurenceDay occurence = (OccurenceDay)e.Node.Tag;
+                    models = occurence.ShiftToTree.SelectMany(st => st.ModelToTree.Values).ToList();
+                }
+                else if (tag as OccurenceShift != null)
+                {
+                    OccurenceShift occurence = (OccurenceShift)e.Node.Tag;
+                    models = occurence.ModelToTree.Values.ToList();
+                }
+                else if (tag as OccurenceModel != null)
+                {
+                    OccurenceModel occurence = (OccurenceModel)e.Node.Tag;
+                    models.Add(occurence);
+                }
+
+                foreach (var model in models)
+                {
+                    foreach (var lotDetailsEntry in model.ProductionDetails)
+                    {
+                        if (!lots.ContainsKey(lotDetailsEntry.Key))
+                        {
+                            lots.Add(lotDetailsEntry.Key, new List<ProductionDetail>());
+                        }
+                        lots[lotDetailsEntry.Key].AddRange(lotDetailsEntry.Value);
+                    }
+                }
+
+                List<Tuple<DateTime, String>> lotsDateInfo = new List<Tuple<DateTime, string>>();
+                foreach (var entry in lots)
+                {
+                    String lotInfo = "";
+                    entry.Value.Sort((lhs, rhs) => lhs.ProductionRealDate.CompareTo(rhs.ProductionRealDate));
+                    var productionIds = entry.Value.Select(pd => pd.ProductionLineId).Distinct();
+                    String productionIdText = String.Join(", ", productionIds);
+                   
+
+                    lotInfo += entry.Key.LotId + " - " + entry.Value.Count + " by: " + productionIdText +  '\n';
+
+                    var startTime = entry.Value.First().ProductionRealDate;
+                    var endTime = entry.Value.Last().ProductionRealDate;
+
+                    lotInfo +=
+                        "  " + startTime.ToShortTimeString() + " - " + endTime.ToShortTimeString() + ' ' + entry.Key.Model.ModelName + '\n';
+                    lotsDateInfo.Add(Tuple.Create(startTime, lotInfo));
+                }
+
+                lotsDateInfo.Sort((lhs, rhs) => lhs.Item1.CompareTo(rhs.Item1));
+
+                foreach (var entry in lotsDateInfo)
+                {
+                    richTextBox1.Text += entry.Item2;
+                    listView1.Items.Add(entry.Item2);
+                }
+            }
+        }
+
+        string allNodes = "";
+        public void PrintNodesRecursive(TreeNode oParentNode)
+        {
+            
+            string result = "";
+            //Console.WriteLine(oParentNode.Text);
+            if (oParentNode.Level == 4)
+            {
+                string week = oParentNode.Parent.Parent.Parent.Parent.Text.Split(' ')[0];
+                string day = oParentNode.Parent.Parent.Parent.Text.Split(' ')[0];
+                string shift = oParentNode.Parent.Parent.Text.Split(' ')[0];
+                string model = oParentNode.Parent.Text.Split(' ')[0];
+                string testerID = oParentNode.Text.Split(' ')[0];
+                string qty = oParentNode.Parent.Text.Split(' ')[1];
+
+                result = week + "\t" + day + "\t" + shift + "\t" + model + "\t" + testerID + "\t" + qty;
+                allNodes += result + "\n";
+            }
+            
+
+            foreach (TreeNode oSubNode in oParentNode.Nodes)
+            {
+                PrintNodesRecursive(oSubNode);
+            }
+        }
+        private void treeViewTestCapa_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button== MouseButtons.Right)
+            {
+                allNodes = "week" + "\t" + "day" + "\t" + "shift" + "\t" + "model" + "\t" + "testerID" + "\t" + "qty" + "\n";
+                foreach (TreeNode node in treeViewTestCapa.Nodes)
+                {
+                    PrintNodesRecursive(node);
+                }
+
+                Clipboard.Clear();    //Clear if any old value is there in Clipboard        
+                Clipboard.SetText(allNodes); //Copy text to Clipboard
+        
+            }
         }
     }
 }

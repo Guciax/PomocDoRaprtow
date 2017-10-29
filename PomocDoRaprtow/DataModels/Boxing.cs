@@ -8,6 +8,7 @@ namespace PomocDoRaprtow.DataModels
 {
     public class Boxing
     {
+        public static String BoxerId = "Boxer";
         public Boxing(DateTime? boxingDate, DateTime? palletisingDate, string boxId, string palletId)
         {
             BoxingDate = boxingDate;

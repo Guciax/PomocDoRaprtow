@@ -82,6 +82,7 @@
     <Compile Include="MathUtilities.cs" />
     <Compile Include="OccurenceCalculations.cs" />
     <Compile Include="OptionProvider.cs" />
+    <Compile Include="ProductionDetail.cs" />
     <Compile Include="ShiftUtilities.cs" />
     <Compile Include="Sparing2DataSet.Designer.cs">
       <AutoGen>True</AutoGen>

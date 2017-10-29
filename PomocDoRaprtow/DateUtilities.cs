@@ -62,7 +62,7 @@ namespace PomocDoRaprtow
                 else
                     return DateTime.ParseExact(date, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 Debug.WriteLine("Date error: "+date);
                 return new DateTime(1900, 1, 1);

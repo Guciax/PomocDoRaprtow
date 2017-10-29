@@ -132,7 +132,7 @@ namespace PomocDoRaprtow
                 Int32.TryParse(splitLine[indexmScrapQty], out scrapQty);
                 if (splitLine[indexPrintDate] != "NULL")
                 {
-                    printDate = DateUtilities.ParseExactWithFraction(splitLine[indexPrintDate]);
+                    printDate = DateUtilities.ParseExact(splitLine[indexPrintDate]);
                 }
 
                 bool smtDone = false;
@@ -173,9 +173,9 @@ namespace PomocDoRaprtow
                     scrapQty,
                     printDate,
                     status,
-                    lotPerformance); 
+                    lotPerformance);
 
-
+                if (Lots.ContainsKey(lot.LotId)) continue;
                 Lots.Add(lot.LotId, lot);
 
                 model.Lots.Add(lot);
@@ -226,6 +226,21 @@ namespace PomocDoRaprtow
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
                 var testerID = splitLine[indexTesterId];
+                var testerName = "Unknown";
+                switch (testerID)
+                {
+                    case "1":testerName = "Auto";
+                        break;
+                    case "2": testerName = "Manual 1";
+                        break;
+                    case "3": testerName = "Manual 2";
+                        break;
+                    case "4": testerName = "SMT 5";
+                        break;
+                    case "5": testerName = "SMT 6";
+                        break;
+                }
+                
 
                     var ledId = splitLine[indexSerialNr];
                 if (!serialsInLot.ContainsKey(lotId))
@@ -256,14 +271,14 @@ namespace PomocDoRaprtow
                     continue;
                 }
 
-                Lots[lotId].LedTest.TesterId = testerID;
+                Lots[lotId].LedTest.TesterId = testerName;
 
                 var timeOfTest = DateUtilities.ParseExact(splitLine[indexTestTime]);
                 if (timeOfTest.Year == 1900) continue;
                 var wasTestSuccesful = splitLine[indexResult] == "OK";
                 var fixedDateTime = DateUtilities.FixedShiftDate(timeOfTest);
                 var shiftNo = DateUtilities.DateToShiftInfo(timeOfTest).ShiftNo;
-                var testerData = new TesterData(testerID, timeOfTest, fixedDateTime, shiftNo,
+                var testerData = new TesterData(testerName, timeOfTest, fixedDateTime, shiftNo,
                     wasTestSuccesful, splitLine[indexFailReason]);
                 var serialNumber = splitLine[indexSerialNr];
 

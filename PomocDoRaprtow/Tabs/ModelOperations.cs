@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using static PomocDoRaprtow.OccurenceCalculations;
 
 namespace PomocDoRaprtow.Tabs
 {
@@ -79,9 +81,9 @@ namespace PomocDoRaprtow.Tabs
         {
             dataGridViewModelInfo.Rows.Clear();
             Dictionary<String, SortedDictionary<double, int>> lotCyclesOccurence = new Dictionary<string, SortedDictionary<double, int>>();
-            
 
-            List<double> outputPerHourList = new List<double>();
+
+            SortedDictionary<string, List<double>> outputPerHourList = new SortedDictionary<string, List<double>>();
             double numberOfTestCycles = 0;
             double numberOfTestedLeds = 0;
             double testsTotalDurationHours = 0;
@@ -97,6 +99,7 @@ namespace PomocDoRaprtow.Tabs
                 uniqueModels.Add(lot.Model.ModelName);
                 var lotId = lot.LotId;
                 var ledsInLot = lot.LedsInLot;
+                var testerID = lot.LedTest.TesterId;
 
                 var inspTimeList = ledsInLot.SelectMany(l => l.TesterData).Select(td => td.TimeOfTest).OrderBy(o => o).ToList();
                 Dictionary<int, List<DateTime>> splittedInspTimes = inspectionTimeSplitter(inspTimeList);
@@ -113,7 +116,11 @@ namespace PomocDoRaprtow.Tabs
                     if (timeList.Value.Count < 20) continue;
                     testsTotalDurationHours += (timeList.Value.Max() - timeList.Value.Min()).TotalHours;
                     double outputPerHourUp50 = Math.Round((timeList.Value.Count / (timeList.Value.Max() - timeList.Value.Min()).TotalHours) / 50, 0) * 50;
-                    outputPerHourList.Add(outputPerHourUp50);
+                    if (!outputPerHourList.ContainsKey(testerID))
+                    {
+                        outputPerHourList.Add(testerID, new List<double>());
+                    }
+                    outputPerHourList[testerID].Add(outputPerHourUp50);
 
                     if (!lotCyclesOccurence.ContainsKey(lot.LedTest.TesterId))
                     {
@@ -133,9 +140,26 @@ namespace PomocDoRaprtow.Tabs
 
             if (outputPerHourList.Count > 0)
             {
-                dataGridViewModelInfo.Rows.Add("Output min", Math.Round(outputPerHourList.Min(), 0));
-                dataGridViewModelInfo.Rows.Add("Output max", Math.Round(outputPerHourList.Max(), 0));
-                dataGridViewModelInfo.Rows.Add("Avg output per hour", Math.Round( outputPerHourList.Average(),0));
+                List<string> allMin = new List<string>();
+                List<string> allMax = new List<string>();
+                List<string> allAvg = new List<string>();
+
+                allMin.Add("Output/h min");
+                allMax.Add("Output/h max");
+                allAvg.Add("Output/h avg");
+
+                foreach (var testerID in outputPerHourList)
+                {
+                    if (testerID.Value.Count > 0) 
+                    {
+                        allMin.Add(Math.Round(testerID.Value.Min(),0).ToString());
+                        allMax.Add(Math.Round(testerID.Value.Max(),0).ToString());
+                        allAvg.Add(Math.Round(testerID.Value.Average(),0).ToString());
+                    }
+                }
+                dataGridViewModelInfo.Rows.Add(allMin.ToArray());
+                dataGridViewModelInfo.Rows.Add(allMax.ToArray());
+                dataGridViewModelInfo.Rows.Add(allAvg.ToArray());
                 dataGridViewModelInfo.Rows.Add("Tested modules", numberOfTestedLeds);
                 dataGridViewModelInfo.Rows.Add("Number of tests", numberOfTestCycles);
                 foreach (var item in uniqueModels)
@@ -208,14 +232,8 @@ namespace PomocDoRaprtow.Tabs
 
         public void DisplayTesterDataOccurences(IEnumerable<Led> leds, List<Lot> lots)
         {
-            var occurencesCalculations = new OccurenceCalculations(lots, LotToTesterDates);
+            var occurencesCalculations = new OccurenceCalculations(lots, form.LotToTesterProductionDetails);
             RebuildOccurenceTreeView(treeViewModelInfo, occurencesCalculations);
-        }
-
-        private IEnumerable<Tuple<DateTime, int>> LotToTesterDates(Lot lot)
-        {
-            var dates = lot.LedsInLot.SelectMany(l => l.TesterData.Select(testerData => testerData.FixedDateTime)).Where(form.DateFilter);
-            return dates.Select(d => new Tuple<DateTime, int>(d, 1));
         }
 
         private void RebuildOccurenceTreeView(TreeView targetTreeView, OccurenceCalculations occurenceCalculations)
