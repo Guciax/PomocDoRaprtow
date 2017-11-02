@@ -16,22 +16,20 @@ namespace PomocDoRaprtow.Tabs
         private readonly DataGridView wasteView;
         private readonly Chart wasteHistogramChart;
         private readonly RadioButton radioModel;
-        private readonly DataGridView dataGridviewScrap;
-
+        private readonly ListView listViewScrap;
         public LedStorage LedStorage { get; set; }
 
         private List<Model> models;
 
         public WasteOperations(Form1 form, TreeView treeViewWaste, DataGridView wasteView, Chart wasteHistogramChart, RadioButton radioModel,
-            DataGridView dataGridviewScrap)
+            ListView listViewScrap)
         {
             this.form = form;
-
             this.treeViewWaste = treeViewWaste;
             this.wasteView = wasteView;
             this.wasteHistogramChart = wasteHistogramChart;
             this.radioModel = radioModel;
-            this.dataGridviewScrap = dataGridviewScrap;
+            this.listViewScrap = listViewScrap;
         }
 
         public void RedrawWasteTab()
@@ -88,17 +86,37 @@ namespace PomocDoRaprtow.Tabs
                 treeViewWaste.Nodes["Total"].Nodes.Add(modelNode);
             }
 
-            dataGridviewScrap.Rows.Clear();
-            dataGridviewScrap.Rows.Add("Total", totalScrap +"//"+totalProduced, Math.Round( totalScrap / totalProduced * 100,2)+" %");
+            //dataGridviewScrap.Rows.Clear();
+            //dataGridviewScrap.Rows.Add("Total", totalScrap +"/"+totalProduced, Math.Round( totalScrap / totalProduced * 100,2)+" %");
+            var listItmtotal = new ListViewItem(new string[] { "Total", totalScrap + "/" + totalProduced, Math.Round(totalScrap / totalProduced * 100, 2) + " %" });
+            listViewScrap.Items.Add(listItmtotal);
+            listViewScrap.BackColor = System.Drawing.Color.DimGray;
+            listViewScrap.ForeColor = System.Drawing.Color.White;
             foreach (var modelCrap in totalScrapInModel)
             {
-                dataGridviewScrap.Rows.Add(modelCrap.Key, modelCrap.Value[0] + @"/" + modelCrap.Value[1], Math.Round(modelCrap.Value[0] / modelCrap.Value[1] * 100, 2) + " %");
-
+                //dataGridviewScrap.Rows.Add(modelCrap.Key, modelCrap.Value[0] + @"/" + modelCrap.Value[1], Math.Round(modelCrap.Value[0] / modelCrap.Value[1] * 100, 2) + " %");
+                var listItm = new ListViewItem(new string[] { modelCrap.Key, modelCrap.Value[0] + @"/" + modelCrap.Value[1], Math.Round(modelCrap.Value[0] / modelCrap.Value[1] * 100, 2) + " %" });
+                if (listViewScrap.Items.Count % 2 == 0)
+                {
+                    listItm.BackColor = System.Drawing.Color.LightGray;
+                    listItm.ForeColor = System.Drawing.Color.Black;
+                }
+                else
+                {
+                    listItm.BackColor = System.Drawing.Color.White;
+                    listItm.ForeColor = System.Drawing.Color.Black;
+                }
+                listViewScrap.Items.Add(listItm);
             }
 
-            foreach (DataGridViewColumn col in dataGridviewScrap.Columns)
+            //foreach (DataGridViewColumn col in dataGridviewScrap.Columns)
+            //{
+            //    col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            //}
+
+            foreach (ColumnHeader col in listViewScrap.Columns)
             {
-                col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                col.Width = -2;
             }
 
             treeViewWaste.ExpandAll();

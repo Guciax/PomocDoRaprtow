@@ -15,10 +15,10 @@ namespace PomocDoRaprtow
         private Dictionary<string, Model> models { get; set; }
         private Dictionary<String, Boxing> serialToBoxing { get; set; }
 
-        public const String LotPath = @"DB\Zlecenia_produkcyjne.csv";
-        public const String WastePath = @"DB\Odpady.csv";
-        public const String TesterPath = @"DB\tester.csv";
-        public const string BoxingPath = @"DB\WyrobLG_opakowanie.csv";
+        public const String LotPath = @"DB\tb_Zlecenia_produkcyjne.csv";
+        public const String WastePath = @"DB\tb_Zlecenia_produkcyjne_Karta_Pracy.csv";
+        public const String TesterPath = @"DB\tb_tester_measurements.csv";
+        public const string BoxingPath = @"DB\tb_WyrobLG_opakowanie.csv";
 
 
 
@@ -46,7 +46,7 @@ namespace PomocDoRaprtow
         {
             serialToBoxing = new Dictionary<string, Boxing>();
             string[] boxLines = System.IO.File.ReadAllLines(boxingPath);
-            string[] header = boxLines[0].Split(';');
+            string[] header = boxLines[1].Split(';');
 
             int indexSerial = Array.IndexOf(header, "serial_no");
             int indexBoxingDate = Array.IndexOf(header, "Boxing_Date");
@@ -54,7 +54,7 @@ namespace PomocDoRaprtow
             int indexBoxId = Array.IndexOf(header, "Box_LOT_NO");
             int indexPalletId = Array.IndexOf(header, "Palet_LOT_NO");
 
-            foreach (var line in boxLines.Skip(1))
+            foreach (var line in boxLines.Skip(2))
             {
                 var splitLine = line.Split(';');
                 var serial = splitLine[indexSerial];
@@ -88,7 +88,7 @@ namespace PomocDoRaprtow
             Lots = new Dictionary<string, Lot>();
             models = new Dictionary<string, Model>();
             string[] fileLines = System.IO.File.ReadAllLines(path);
-            string[] header = fileLines[0].Split(';');
+            string[] header = fileLines[1].Split(';');
 
             int indexLotId = Array.IndexOf(header, "Nr_Zlecenia_Produkcyjnego");
             int indexPlanId = Array.IndexOf(header, "Nr_Planu_Produkcji");
@@ -105,7 +105,7 @@ namespace PomocDoRaprtow
 
 
 
-            foreach (var line in fileLines.Skip(1))
+            foreach (var line in fileLines.Skip(2))
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];
@@ -186,13 +186,13 @@ namespace PomocDoRaprtow
         {
             LotIdToWasteInfo = new Dictionary<string, WasteInfo>();
             string[] fileLines = System.IO.File.ReadAllLines(path);
-            string[] header = fileLines[0].Split(';');
+            string[] header = fileLines[1].Split(';');
 
             var indices = WasteInfo.WasteFieldNames.Select(wasteName => Array.IndexOf(header, wasteName)).ToList();
             var lotIdIndex = Array.IndexOf(header, "Nr_Zlecenia_Produkcyjnego");
             var splittingTimeIndex = Array.IndexOf(header, "DataCzas");
 
-            foreach (var line in fileLines.Skip(1))
+            foreach (var line in fileLines.Skip(2))
             {
                 List<int> counts = new List<int>();
                 var splitLine = line.Split(';');
@@ -210,7 +210,7 @@ namespace PomocDoRaprtow
         {
             SerialNumbersToLed = new Dictionary<string, Led>();
             string[] fileLines = System.IO.File.ReadAllLines(path);
-            string[] header = fileLines[0].Split(';');
+            string[] header = fileLines[1].Split(';');
             int indexSerialNr = Array.IndexOf(header, "serial_no");
             int indexLotId = Array.IndexOf(header, "wip_entity_name");
             int indexTesterId = Array.IndexOf(header, "tester_id");
@@ -221,7 +221,7 @@ namespace PomocDoRaprtow
 
             Dictionary<string, HashSet<string>> serialsInLot = new Dictionary<string, HashSet<string>>();
 
-            foreach (var line in fileLines.Skip(1))
+            foreach (var line in fileLines.Skip(2))
             {
                 var splitLine = line.Split(';');
                 var lotId = splitLine[indexLotId];

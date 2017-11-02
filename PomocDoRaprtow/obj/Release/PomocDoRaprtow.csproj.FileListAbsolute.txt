@@ -1,0 +1,10 @@
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Release\PomocDoRaprtow.exe.config
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Release\PomocDoRaprtow.exe
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Release\PomocDoRaprtow.pdb
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Release\PomocDoRaprtow.csprojResolveAssemblyReference.cache
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Release\PomocDoRaprtow.Form1.resources
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Release\PomocDoRaprtow.Properties.Resources.resources
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Release\PomocDoRaprtow.csproj.GenerateResource.Cache
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Release\PomocDoRaprtow.csproj.CoreCompileInputs.cache
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Release\PomocDoRaprtow.exe
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Release\PomocDoRaprtow.pdb

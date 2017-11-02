@@ -53,7 +53,7 @@ namespace PomocDoRaprtow
 
         public OccurenceTree Tree { get; } = new OccurenceTree();
 
-        public OccurenceCalculations(List<Lot> lots, Func<Lot, IEnumerable<ProductionDetail>> converter)
+        public OccurenceCalculations(IEnumerable<Lot> lots, Func<Lot, IEnumerable<ProductionDetail>> converter)
         {
             foreach (var lot in lots)
             {

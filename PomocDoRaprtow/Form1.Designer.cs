@@ -54,12 +54,35 @@
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tab_Start = new System.Windows.Forms.TabPage();
             this.tab_Capacity = new System.Windows.Forms.TabPage();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.listView3 = new System.Windows.Forms.ListView();
+            this.columnHeader14 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader15 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader16 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader18 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader21 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listView2 = new System.Windows.Forms.ListView();
+            this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader13 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader20 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listViewTestYield = new System.Windows.Forms.ListView();
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader19 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.treeViewCapaBoxing = new System.Windows.Forms.TreeView();
             this.label5 = new System.Windows.Forms.Label();
             this.chartCapaBoxing = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.treeViewSplitting = new System.Windows.Forms.TreeView();
-            this.richTextBoxCapaTest = new System.Windows.Forms.RichTextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.treeViewTestCapa = new System.Windows.Forms.TreeView();
             this.chartCapaTest = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -67,10 +90,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.chartSplitting = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tab_Waste = new System.Windows.Forms.TabPage();
-            this.dataGridViewScrap = new System.Windows.Forms.DataGridView();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.listViewScrap = new System.Windows.Forms.ListView();
+            this.columnHeader22 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader23 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader24 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioModel = new System.Windows.Forms.RadioButton();
@@ -80,9 +103,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dataGridViewLotsInUse = new System.Windows.Forms.DataGridView();
             this.buttonLotsinUse = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.treeViewLotsinUse = new System.Windows.Forms.TreeView();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
             this.tabPageLotInfo = new System.Windows.Forms.TabPage();
             this.dataGridViewLotInfo = new System.Windows.Forms.DataGridView();
             this.textBoxFilterLotInfo = new System.Windows.Forms.TextBox();
@@ -114,19 +135,15 @@
             this.button10 = new System.Windows.Forms.Button();
             this.timerThreadCsv = new System.Windows.Forms.Timer(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.richConsole = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.tabMain.SuspendLayout();
+            this.tab_Start.SuspendLayout();
             this.tab_Capacity.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartCapaBoxing)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartCapaTest)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartSplitting)).BeginInit();
             this.tab_Waste.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewScrap)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewWaste)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart_odpad)).BeginInit();
@@ -146,48 +163,48 @@
             this.chart1.ChartAreas.Add(chartArea13);
             legend13.Name = "Legend1";
             this.chart1.Legends.Add(legend13);
-            this.chart1.Location = new System.Drawing.Point(469, 165);
-            this.chart1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chart1.Location = new System.Drawing.Point(352, 134);
+            this.chart1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chart1.Name = "chart1";
             series13.ChartArea = "ChartArea1";
             series13.Legend = "Legend1";
             series13.Name = "Series1";
             this.chart1.Series.Add(series13);
-            this.chart1.Size = new System.Drawing.Size(597, 458);
+            this.chart1.Size = new System.Drawing.Size(448, 372);
             this.chart1.TabIndex = 3;
             this.chart1.Text = "chart1";
             // 
             // button3
             // 
             this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(735, 10);
-            this.button3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button3.Location = new System.Drawing.Point(551, 8);
+            this.button3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(73, 54);
+            this.button3.Size = new System.Drawing.Size(55, 44);
             this.button3.TabIndex = 6;
-            this.button3.Text = "Refresh";
+            this.button3.Text = "Apply filters";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(4, 2);
-            this.button4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button4.Location = new System.Drawing.Point(3, 2);
+            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(109, 30);
+            this.button4.Size = new System.Drawing.Size(97, 24);
             this.button4.TabIndex = 7;
-            this.button4.Text = "SQL";
+            this.button4.Text = "MES SYNCHRO";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(4, 36);
-            this.button5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button5.Location = new System.Drawing.Point(3, 29);
+            this.button5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(109, 32);
+            this.button5.Size = new System.Drawing.Size(97, 26);
             this.button5.TabIndex = 8;
-            this.button5.Text = "CSV";
+            this.button5.Text = "BUILD TABLES";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -200,21 +217,22 @@
             this.tabMain.Controls.Add(this.tabPageLotInfo);
             this.tabMain.Controls.Add(this.tabPageModelInfo);
             this.tabMain.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tabMain.Location = new System.Drawing.Point(0, 69);
-            this.tabMain.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabMain.Location = new System.Drawing.Point(0, 56);
+            this.tabMain.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(1524, 738);
+            this.tabMain.Size = new System.Drawing.Size(1143, 600);
             this.tabMain.TabIndex = 9;
             this.tabMain.SizeChanged += new System.EventHandler(this.Tab_SizeChanged);
             // 
             // tab_Start
             // 
-            this.tab_Start.Location = new System.Drawing.Point(4, 25);
-            this.tab_Start.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tab_Start.Controls.Add(this.richConsole);
+            this.tab_Start.Location = new System.Drawing.Point(4, 22);
+            this.tab_Start.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tab_Start.Name = "tab_Start";
-            this.tab_Start.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tab_Start.Size = new System.Drawing.Size(1516, 709);
+            this.tab_Start.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Start.Size = new System.Drawing.Size(1135, 574);
             this.tab_Start.TabIndex = 2;
             this.tab_Start.Text = "Start";
             this.tab_Start.UseVisualStyleBackColor = true;
@@ -222,51 +240,212 @@
             // tab_Capacity
             // 
             this.tab_Capacity.AutoScroll = true;
+            this.tab_Capacity.BackColor = System.Drawing.Color.White;
+            this.tab_Capacity.Controls.Add(this.listView3);
+            this.tab_Capacity.Controls.Add(this.listView2);
+            this.tab_Capacity.Controls.Add(this.listViewTestYield);
             this.tab_Capacity.Controls.Add(this.listView1);
-            this.tab_Capacity.Controls.Add(this.richTextBox1);
             this.tab_Capacity.Controls.Add(this.treeViewCapaBoxing);
             this.tab_Capacity.Controls.Add(this.label5);
             this.tab_Capacity.Controls.Add(this.chartCapaBoxing);
             this.tab_Capacity.Controls.Add(this.treeViewSplitting);
-            this.tab_Capacity.Controls.Add(this.richTextBoxCapaTest);
             this.tab_Capacity.Controls.Add(this.label4);
             this.tab_Capacity.Controls.Add(this.treeViewTestCapa);
             this.tab_Capacity.Controls.Add(this.chartCapaTest);
             this.tab_Capacity.Controls.Add(this.label3);
             this.tab_Capacity.Controls.Add(this.label2);
             this.tab_Capacity.Controls.Add(this.chartSplitting);
-            this.tab_Capacity.Location = new System.Drawing.Point(4, 25);
-            this.tab_Capacity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tab_Capacity.Location = new System.Drawing.Point(4, 22);
+            this.tab_Capacity.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tab_Capacity.Name = "tab_Capacity";
-            this.tab_Capacity.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tab_Capacity.Size = new System.Drawing.Size(1516, 709);
+            this.tab_Capacity.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Capacity.Size = new System.Drawing.Size(1135, 574);
             this.tab_Capacity.TabIndex = 0;
             this.tab_Capacity.Text = "Capacity";
-            this.tab_Capacity.UseVisualStyleBackColor = true;
             // 
-            // richTextBox1
+            // listView3
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(1083, 225);
-            this.richTextBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(386, 458);
-            this.richTextBox1.TabIndex = 31;
-            this.richTextBox1.Text = "";
+            this.listView3.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader14,
+            this.columnHeader15,
+            this.columnHeader16,
+            this.columnHeader17,
+            this.columnHeader18,
+            this.columnHeader21});
+            this.listView3.Location = new System.Drawing.Point(812, 1028);
+            this.listView3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView3.Name = "listView3";
+            this.listView3.Size = new System.Drawing.Size(306, 373);
+            this.listView3.TabIndex = 35;
+            this.listView3.UseCompatibleStateImageBehavior = false;
+            this.listView3.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader14
+            // 
+            this.columnHeader14.Text = "Start";
+            this.columnHeader14.Width = 39;
+            // 
+            // columnHeader15
+            // 
+            this.columnHeader15.Text = "End";
+            this.columnHeader15.Width = 36;
+            // 
+            // columnHeader16
+            // 
+            this.columnHeader16.Text = "Model";
+            this.columnHeader16.Width = 50;
+            // 
+            // columnHeader17
+            // 
+            this.columnHeader17.Text = "Q-ty";
+            this.columnHeader17.Width = 36;
+            // 
+            // columnHeader18
+            // 
+            this.columnHeader18.Text = "Line";
+            this.columnHeader18.Width = 148;
+            // 
+            // columnHeader21
+            // 
+            this.columnHeader21.Text = "LOT";
+            // 
+            // listView2
+            // 
+            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader9,
+            this.columnHeader10,
+            this.columnHeader11,
+            this.columnHeader12,
+            this.columnHeader13,
+            this.columnHeader20});
+            this.listView2.Location = new System.Drawing.Point(812, 623);
+            this.listView2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView2.Name = "listView2";
+            this.listView2.Size = new System.Drawing.Size(306, 373);
+            this.listView2.TabIndex = 34;
+            this.listView2.UseCompatibleStateImageBehavior = false;
+            this.listView2.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader9
+            // 
+            this.columnHeader9.Text = "Start";
+            this.columnHeader9.Width = 39;
+            // 
+            // columnHeader10
+            // 
+            this.columnHeader10.Text = "End";
+            this.columnHeader10.Width = 36;
+            // 
+            // columnHeader11
+            // 
+            this.columnHeader11.Text = "Model";
+            this.columnHeader11.Width = 50;
+            // 
+            // columnHeader12
+            // 
+            this.columnHeader12.Text = "Q-ty";
+            this.columnHeader12.Width = 36;
+            // 
+            // columnHeader13
+            // 
+            this.columnHeader13.Text = "Line";
+            this.columnHeader13.Width = 148;
+            // 
+            // columnHeader20
+            // 
+            this.columnHeader20.Text = "LOT";
+            // 
+            // listViewTestYield
+            // 
+            this.listViewTestYield.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader6,
+            this.columnHeader7,
+            this.columnHeader8});
+            this.listViewTestYield.Location = new System.Drawing.Point(597, 183);
+            this.listViewTestYield.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listViewTestYield.Name = "listViewTestYield";
+            this.listViewTestYield.Size = new System.Drawing.Size(212, 88);
+            this.listViewTestYield.TabIndex = 33;
+            this.listViewTestYield.UseCompatibleStateImageBehavior = false;
+            this.listViewTestYield.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "#Tests";
+            this.columnHeader6.Width = 39;
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "Q-ty";
+            this.columnHeader7.Width = 36;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Text = "%Yield";
+            this.columnHeader8.Width = 50;
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5,
+            this.columnHeader19});
+            this.listView1.Location = new System.Drawing.Point(812, 183);
+            this.listView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(306, 373);
+            this.listView1.TabIndex = 32;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Start";
+            this.columnHeader1.Width = 39;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "End";
+            this.columnHeader2.Width = 36;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Model";
+            this.columnHeader3.Width = 50;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Q-ty";
+            this.columnHeader4.Width = 36;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Line";
+            this.columnHeader5.Width = 148;
+            // 
+            // columnHeader19
+            // 
+            this.columnHeader19.Text = "LOT";
             // 
             // treeViewCapaBoxing
             // 
-            this.treeViewCapaBoxing.Location = new System.Drawing.Point(796, 1265);
-            this.treeViewCapaBoxing.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.treeViewCapaBoxing.Location = new System.Drawing.Point(597, 1028);
+            this.treeViewCapaBoxing.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.treeViewCapaBoxing.Name = "treeViewCapaBoxing";
-            this.treeViewCapaBoxing.Size = new System.Drawing.Size(281, 458);
+            this.treeViewCapaBoxing.Size = new System.Drawing.Size(212, 373);
             this.treeViewCapaBoxing.TabIndex = 29;
+            this.treeViewCapaBoxing.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewCapaBoxing_AfterSelect);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(38, 1265);
+            this.label5.Location = new System.Drawing.Point(28, 1028);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(61, 17);
+            this.label5.Size = new System.Drawing.Size(48, 13);
             this.label5.TabIndex = 28;
             this.label5.Text = "BOXING";
             // 
@@ -276,49 +455,42 @@
             this.chartCapaBoxing.ChartAreas.Add(chartArea14);
             legend14.Name = "Legend1";
             this.chartCapaBoxing.Legends.Add(legend14);
-            this.chartCapaBoxing.Location = new System.Drawing.Point(12, 1265);
-            this.chartCapaBoxing.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chartCapaBoxing.Location = new System.Drawing.Point(9, 1028);
+            this.chartCapaBoxing.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chartCapaBoxing.Name = "chartCapaBoxing";
             series14.ChartArea = "ChartArea1";
             series14.Legend = "Legend1";
             series14.Name = "Series1";
             this.chartCapaBoxing.Series.Add(series14);
-            this.chartCapaBoxing.Size = new System.Drawing.Size(778, 453);
+            this.chartCapaBoxing.Size = new System.Drawing.Size(584, 368);
             this.chartCapaBoxing.TabIndex = 27;
             this.chartCapaBoxing.Text = "chart2";
             // 
             // treeViewSplitting
             // 
-            this.treeViewSplitting.Location = new System.Drawing.Point(796, 767);
-            this.treeViewSplitting.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.treeViewSplitting.Location = new System.Drawing.Point(597, 623);
+            this.treeViewSplitting.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.treeViewSplitting.Name = "treeViewSplitting";
-            this.treeViewSplitting.Size = new System.Drawing.Size(281, 458);
+            this.treeViewSplitting.Size = new System.Drawing.Size(212, 373);
             this.treeViewSplitting.TabIndex = 25;
-            // 
-            // richTextBoxCapaTest
-            // 
-            this.richTextBoxCapaTest.Location = new System.Drawing.Point(796, 225);
-            this.richTextBoxCapaTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.richTextBoxCapaTest.Name = "richTextBoxCapaTest";
-            this.richTextBoxCapaTest.Size = new System.Drawing.Size(281, 117);
-            this.richTextBoxCapaTest.TabIndex = 24;
-            this.richTextBoxCapaTest.Text = "";
+            this.treeViewSplitting.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewSplitting_AfterSelect);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(38, 767);
+            this.label4.Location = new System.Drawing.Point(28, 623);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(79, 17);
+            this.label4.Size = new System.Drawing.Size(63, 13);
             this.label4.TabIndex = 23;
             this.label4.Text = "SPLITTING";
             // 
             // treeViewTestCapa
             // 
-            this.treeViewTestCapa.Location = new System.Drawing.Point(796, 346);
-            this.treeViewTestCapa.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.treeViewTestCapa.Location = new System.Drawing.Point(597, 274);
+            this.treeViewTestCapa.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.treeViewTestCapa.Name = "treeViewTestCapa";
-            this.treeViewTestCapa.Size = new System.Drawing.Size(281, 337);
+            this.treeViewTestCapa.Size = new System.Drawing.Size(212, 282);
             this.treeViewTestCapa.TabIndex = 22;
             this.treeViewTestCapa.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewTestCapa_AfterSelect);
             this.treeViewTestCapa.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeViewTestCapa_MouseClick);
@@ -329,32 +501,34 @@
             this.chartCapaTest.ChartAreas.Add(chartArea15);
             legend15.Name = "Legend1";
             this.chartCapaTest.Legends.Add(legend15);
-            this.chartCapaTest.Location = new System.Drawing.Point(12, 225);
-            this.chartCapaTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chartCapaTest.Location = new System.Drawing.Point(9, 183);
+            this.chartCapaTest.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chartCapaTest.Name = "chartCapaTest";
             series15.ChartArea = "ChartArea1";
             series15.Legend = "Legend1";
             series15.Name = "Series1";
             this.chartCapaTest.Series.Add(series15);
-            this.chartCapaTest.Size = new System.Drawing.Size(778, 453);
+            this.chartCapaTest.Size = new System.Drawing.Size(584, 368);
             this.chartCapaTest.TabIndex = 20;
             this.chartCapaTest.Text = "chartCapaTest";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 205);
+            this.label3.Location = new System.Drawing.Point(7, 167);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 17);
+            this.label3.Size = new System.Drawing.Size(35, 13);
             this.label3.TabIndex = 18;
             this.label3.Text = "TEST";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 2);
+            this.label2.Location = new System.Drawing.Point(4, 2);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 17);
+            this.label2.Size = new System.Drawing.Size(30, 13);
             this.label2.TabIndex = 15;
             this.label2.Text = "SMT";
             // 
@@ -364,74 +538,69 @@
             this.chartSplitting.ChartAreas.Add(chartArea16);
             legend16.Name = "Legend1";
             this.chartSplitting.Legends.Add(legend16);
-            this.chartSplitting.Location = new System.Drawing.Point(12, 777);
-            this.chartSplitting.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chartSplitting.Location = new System.Drawing.Point(9, 631);
+            this.chartSplitting.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chartSplitting.Name = "chartSplitting";
             series16.ChartArea = "ChartArea1";
             series16.Legend = "Legend1";
             series16.Name = "Series1";
             this.chartSplitting.Series.Add(series16);
-            this.chartSplitting.Size = new System.Drawing.Size(778, 453);
+            this.chartSplitting.Size = new System.Drawing.Size(584, 368);
             this.chartSplitting.TabIndex = 7;
             this.chartSplitting.Text = "chart2";
             // 
             // tab_Waste
             // 
-            this.tab_Waste.Controls.Add(this.dataGridViewScrap);
+            this.tab_Waste.Controls.Add(this.listViewScrap);
             this.tab_Waste.Controls.Add(this.groupBox1);
             this.tab_Waste.Controls.Add(this.treeViewWaste);
             this.tab_Waste.Controls.Add(this.dataGridViewWaste);
             this.tab_Waste.Controls.Add(this.chart_odpad);
-            this.tab_Waste.Location = new System.Drawing.Point(4, 25);
-            this.tab_Waste.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tab_Waste.Location = new System.Drawing.Point(4, 22);
+            this.tab_Waste.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tab_Waste.Name = "tab_Waste";
-            this.tab_Waste.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tab_Waste.Size = new System.Drawing.Size(1516, 709);
+            this.tab_Waste.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Waste.Size = new System.Drawing.Size(1135, 574);
             this.tab_Waste.TabIndex = 1;
             this.tab_Waste.Text = "NG";
             this.tab_Waste.UseVisualStyleBackColor = true;
             // 
-            // dataGridViewScrap
+            // listViewScrap
             // 
-            this.dataGridViewScrap.AllowUserToAddRows = false;
-            this.dataGridViewScrap.AllowUserToDeleteRows = false;
-            this.dataGridViewScrap.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewScrap.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Column3,
-            this.Column5,
-            this.Column4});
-            this.dataGridViewScrap.Location = new System.Drawing.Point(1204, 24);
-            this.dataGridViewScrap.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.dataGridViewScrap.Name = "dataGridViewScrap";
-            this.dataGridViewScrap.RowHeadersVisible = false;
-            this.dataGridViewScrap.RowTemplate.Height = 24;
-            this.dataGridViewScrap.Size = new System.Drawing.Size(304, 491);
-            this.dataGridViewScrap.TabIndex = 11;
+            this.listViewScrap.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader22,
+            this.columnHeader23,
+            this.columnHeader24});
+            this.listViewScrap.Location = new System.Drawing.Point(903, 58);
+            this.listViewScrap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listViewScrap.Name = "listViewScrap";
+            this.listViewScrap.Size = new System.Drawing.Size(229, 362);
+            this.listViewScrap.TabIndex = 33;
+            this.listViewScrap.UseCompatibleStateImageBehavior = false;
+            this.listViewScrap.View = System.Windows.Forms.View.Details;
             // 
-            // Column3
+            // columnHeader22
             // 
-            this.Column3.HeaderText = "Model";
-            this.Column3.Name = "Column3";
+            this.columnHeader22.Text = "Model";
+            this.columnHeader22.Width = 39;
             // 
-            // Column5
+            // columnHeader23
             // 
-            this.Column5.HeaderText = "Scrap %";
-            this.Column5.Name = "Column5";
+            this.columnHeader23.Text = "Scrap";
+            this.columnHeader23.Width = 36;
             // 
-            // Column4
+            // columnHeader24
             // 
-            this.Column4.HeaderText = "Scrap";
-            this.Column4.Name = "Column4";
+            this.columnHeader24.Text = "Scrap %";
+            this.columnHeader24.Width = 50;
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.radioButton2);
             this.groupBox1.Controls.Add(this.radioModel);
-            this.groupBox1.Location = new System.Drawing.Point(934, 17);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Location = new System.Drawing.Point(700, 14);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(265, 46);
+            this.groupBox1.Size = new System.Drawing.Size(199, 37);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "NG rate sort by";
@@ -439,10 +608,9 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(145, 17);
-            this.radioButton2.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButton2.Location = new System.Drawing.Point(109, 14);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(79, 21);
+            this.radioButton2.Size = new System.Drawing.Size(62, 17);
             this.radioButton2.TabIndex = 1;
             this.radioButton2.Text = "NG rate";
             this.radioButton2.UseVisualStyleBackColor = true;
@@ -451,10 +619,9 @@
             // 
             this.radioModel.AutoSize = true;
             this.radioModel.Checked = true;
-            this.radioModel.Location = new System.Drawing.Point(29, 17);
-            this.radioModel.Margin = new System.Windows.Forms.Padding(4);
+            this.radioModel.Location = new System.Drawing.Point(22, 14);
             this.radioModel.Name = "radioModel";
-            this.radioModel.Size = new System.Drawing.Size(67, 21);
+            this.radioModel.Size = new System.Drawing.Size(54, 17);
             this.radioModel.TabIndex = 0;
             this.radioModel.TabStop = true;
             this.radioModel.Text = "Model";
@@ -463,10 +630,10 @@
             // 
             // treeViewWaste
             // 
-            this.treeViewWaste.Location = new System.Drawing.Point(933, 71);
-            this.treeViewWaste.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.treeViewWaste.Location = new System.Drawing.Point(700, 58);
+            this.treeViewWaste.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.treeViewWaste.Name = "treeViewWaste";
-            this.treeViewWaste.Size = new System.Drawing.Size(265, 445);
+            this.treeViewWaste.Size = new System.Drawing.Size(200, 362);
             this.treeViewWaste.TabIndex = 8;
             this.treeViewWaste.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewWaste_AfterSelect);
             // 
@@ -475,12 +642,12 @@
             this.dataGridViewWaste.AllowUserToAddRows = false;
             this.dataGridViewWaste.AllowUserToDeleteRows = false;
             this.dataGridViewWaste.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewWaste.Location = new System.Drawing.Point(647, 17);
-            this.dataGridViewWaste.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridViewWaste.Location = new System.Drawing.Point(485, 14);
+            this.dataGridViewWaste.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridViewWaste.Name = "dataGridViewWaste";
             this.dataGridViewWaste.RowHeadersVisible = false;
             this.dataGridViewWaste.RowTemplate.Height = 24;
-            this.dataGridViewWaste.Size = new System.Drawing.Size(280, 498);
+            this.dataGridViewWaste.Size = new System.Drawing.Size(210, 405);
             this.dataGridViewWaste.TabIndex = 7;
             // 
             // chart_odpad
@@ -489,14 +656,14 @@
             this.chart_odpad.ChartAreas.Add(chartArea17);
             legend17.Name = "Legend1";
             this.chart_odpad.Legends.Add(legend17);
-            this.chart_odpad.Location = new System.Drawing.Point(5, 58);
-            this.chart_odpad.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chart_odpad.Location = new System.Drawing.Point(4, 47);
+            this.chart_odpad.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chart_odpad.Name = "chart_odpad";
             series17.ChartArea = "ChartArea1";
             series17.Legend = "Legend1";
             series17.Name = "Series1";
             this.chart_odpad.Series.Add(series17);
-            this.chart_odpad.Size = new System.Drawing.Size(645, 455);
+            this.chart_odpad.Size = new System.Drawing.Size(484, 370);
             this.chart_odpad.TabIndex = 6;
             this.chart_odpad.Text = "chart2";
             // 
@@ -504,14 +671,12 @@
             // 
             this.tabPage1.Controls.Add(this.dataGridViewLotsInUse);
             this.tabPage1.Controls.Add(this.buttonLotsinUse);
-            this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.treeViewLotsinUse);
-            this.tabPage1.Controls.Add(this.dateTimePicker1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPage1.Size = new System.Drawing.Size(1516, 709);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage1.Size = new System.Drawing.Size(1135, 574);
             this.tabPage1.TabIndex = 3;
             this.tabPage1.Text = "LOT\'s in use";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -521,49 +686,32 @@
             this.dataGridViewLotsInUse.AllowUserToAddRows = false;
             this.dataGridViewLotsInUse.AllowUserToDeleteRows = false;
             this.dataGridViewLotsInUse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewLotsInUse.Location = new System.Drawing.Point(373, 81);
-            this.dataGridViewLotsInUse.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridViewLotsInUse.Location = new System.Drawing.Point(280, 66);
+            this.dataGridViewLotsInUse.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridViewLotsInUse.Name = "dataGridViewLotsInUse";
             this.dataGridViewLotsInUse.RowTemplate.Height = 24;
-            this.dataGridViewLotsInUse.Size = new System.Drawing.Size(707, 620);
+            this.dataGridViewLotsInUse.Size = new System.Drawing.Size(530, 504);
             this.dataGridViewLotsInUse.TabIndex = 4;
             // 
             // buttonLotsinUse
             // 
-            this.buttonLotsinUse.Location = new System.Drawing.Point(292, 33);
-            this.buttonLotsinUse.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.buttonLotsinUse.Location = new System.Drawing.Point(34, 39);
+            this.buttonLotsinUse.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonLotsinUse.Name = "buttonLotsinUse";
-            this.buttonLotsinUse.Size = new System.Drawing.Size(75, 23);
+            this.buttonLotsinUse.Size = new System.Drawing.Size(70, 24);
             this.buttonLotsinUse.TabIndex = 3;
-            this.buttonLotsinUse.Text = "GO";
+            this.buttonLotsinUse.Text = "Refresh";
             this.buttonLotsinUse.UseVisualStyleBackColor = true;
             this.buttonLotsinUse.Click += new System.EventHandler(this.buttonLotsinUse_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(43, 39);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(37, 17);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Day:";
-            // 
             // treeViewLotsinUse
             // 
-            this.treeViewLotsinUse.Location = new System.Drawing.Point(45, 81);
-            this.treeViewLotsinUse.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.treeViewLotsinUse.Location = new System.Drawing.Point(34, 66);
+            this.treeViewLotsinUse.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.treeViewLotsinUse.Name = "treeViewLotsinUse";
-            this.treeViewLotsinUse.Size = new System.Drawing.Size(321, 619);
+            this.treeViewLotsinUse.Size = new System.Drawing.Size(242, 504);
             this.treeViewLotsinUse.TabIndex = 1;
             this.treeViewLotsinUse.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewLotsinUse_AfterSelect);
-            // 
-            // dateTimePicker1
-            // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(85, 34);
-            this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(200, 22);
-            this.dateTimePicker1.TabIndex = 0;
             // 
             // tabPageLotInfo
             // 
@@ -571,11 +719,11 @@
             this.tabPageLotInfo.Controls.Add(this.textBoxFilterLotInfo);
             this.tabPageLotInfo.Controls.Add(this.treeViewLotInfo);
             this.tabPageLotInfo.Controls.Add(this.button6);
-            this.tabPageLotInfo.Location = new System.Drawing.Point(4, 25);
-            this.tabPageLotInfo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPageLotInfo.Location = new System.Drawing.Point(4, 22);
+            this.tabPageLotInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPageLotInfo.Name = "tabPageLotInfo";
-            this.tabPageLotInfo.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.tabPageLotInfo.Size = new System.Drawing.Size(1516, 709);
+            this.tabPageLotInfo.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageLotInfo.Size = new System.Drawing.Size(1135, 574);
             this.tabPageLotInfo.TabIndex = 4;
             this.tabPageLotInfo.Text = "LOT Info";
             this.tabPageLotInfo.UseVisualStyleBackColor = true;
@@ -585,37 +733,37 @@
             this.dataGridViewLotInfo.AllowUserToAddRows = false;
             this.dataGridViewLotInfo.AllowUserToDeleteRows = false;
             this.dataGridViewLotInfo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewLotInfo.Location = new System.Drawing.Point(277, 33);
-            this.dataGridViewLotInfo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridViewLotInfo.Location = new System.Drawing.Point(208, 27);
+            this.dataGridViewLotInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridViewLotInfo.Name = "dataGridViewLotInfo";
             this.dataGridViewLotInfo.RowTemplate.Height = 24;
-            this.dataGridViewLotInfo.Size = new System.Drawing.Size(579, 668);
+            this.dataGridViewLotInfo.Size = new System.Drawing.Size(434, 543);
             this.dataGridViewLotInfo.TabIndex = 3;
             // 
             // textBoxFilterLotInfo
             // 
-            this.textBoxFilterLotInfo.Location = new System.Drawing.Point(11, 33);
-            this.textBoxFilterLotInfo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBoxFilterLotInfo.Location = new System.Drawing.Point(8, 27);
+            this.textBoxFilterLotInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxFilterLotInfo.Name = "textBoxFilterLotInfo";
-            this.textBoxFilterLotInfo.Size = new System.Drawing.Size(261, 22);
+            this.textBoxFilterLotInfo.Size = new System.Drawing.Size(197, 20);
             this.textBoxFilterLotInfo.TabIndex = 2;
             this.textBoxFilterLotInfo.TextChanged += new System.EventHandler(this.textBoxFilterLotInfo_TextChanged);
             // 
             // treeViewLotInfo
             // 
-            this.treeViewLotInfo.Location = new System.Drawing.Point(11, 62);
-            this.treeViewLotInfo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.treeViewLotInfo.Location = new System.Drawing.Point(8, 50);
+            this.treeViewLotInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.treeViewLotInfo.Name = "treeViewLotInfo";
-            this.treeViewLotInfo.Size = new System.Drawing.Size(261, 640);
+            this.treeViewLotInfo.Size = new System.Drawing.Size(197, 521);
             this.treeViewLotInfo.TabIndex = 1;
             this.treeViewLotInfo.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewLotInfo_AfterSelect);
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(11, 6);
-            this.button6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button6.Location = new System.Drawing.Point(8, 5);
+            this.button6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(116, 23);
+            this.button6.Size = new System.Drawing.Size(87, 19);
             this.button6.TabIndex = 0;
             this.button6.Text = "Get LOT\'s";
             this.button6.UseVisualStyleBackColor = true;
@@ -631,10 +779,10 @@
             this.tabPageModelInfo.Controls.Add(this.chartModel);
             this.tabPageModelInfo.Controls.Add(this.comboBoxModels);
             this.tabPageModelInfo.Controls.Add(this.label7);
-            this.tabPageModelInfo.Location = new System.Drawing.Point(4, 25);
-            this.tabPageModelInfo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tabPageModelInfo.Location = new System.Drawing.Point(4, 22);
+            this.tabPageModelInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.tabPageModelInfo.Name = "tabPageModelInfo";
-            this.tabPageModelInfo.Size = new System.Drawing.Size(1516, 709);
+            this.tabPageModelInfo.Size = new System.Drawing.Size(1135, 574);
             this.tabPageModelInfo.TabIndex = 5;
             this.tabPageModelInfo.Text = "Model Statistics";
             this.tabPageModelInfo.UseVisualStyleBackColor = true;
@@ -643,9 +791,10 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label9.Location = new System.Drawing.Point(8, 42);
+            this.label9.Location = new System.Drawing.Point(6, 34);
+            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(75, 25);
+            this.label9.Size = new System.Drawing.Size(58, 20);
             this.label9.TabIndex = 7;
             this.label9.Text = "Family:";
             // 
@@ -653,9 +802,10 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label8.Location = new System.Drawing.Point(8, 413);
+            this.label8.Location = new System.Drawing.Point(6, 336);
+            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(149, 25);
+            this.label8.Size = new System.Drawing.Size(122, 20);
             this.label8.TabIndex = 6;
             this.label8.Text = "SMT statistics";
             // 
@@ -663,17 +813,19 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label6.Location = new System.Drawing.Point(8, 16);
+            this.label6.Location = new System.Drawing.Point(6, 13);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(174, 25);
+            this.label6.Size = new System.Drawing.Size(145, 20);
             this.label6.TabIndex = 4;
             this.label6.Text = "Testing statistics";
             // 
             // treeViewModelInfo
             // 
-            this.treeViewModelInfo.Location = new System.Drawing.Point(419, 72);
+            this.treeViewModelInfo.Location = new System.Drawing.Point(314, 58);
+            this.treeViewModelInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.treeViewModelInfo.Name = "treeViewModelInfo";
-            this.treeViewModelInfo.Size = new System.Drawing.Size(314, 314);
+            this.treeViewModelInfo.Size = new System.Drawing.Size(236, 256);
             this.treeViewModelInfo.TabIndex = 3;
             // 
             // dataGridViewModelInfo
@@ -688,12 +840,12 @@
             this.Column7,
             this.Column8,
             this.Column9});
-            this.dataGridViewModelInfo.Location = new System.Drawing.Point(8, 72);
-            this.dataGridViewModelInfo.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridViewModelInfo.Location = new System.Drawing.Point(6, 58);
+            this.dataGridViewModelInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGridViewModelInfo.Name = "dataGridViewModelInfo";
             this.dataGridViewModelInfo.ReadOnly = true;
             this.dataGridViewModelInfo.RowTemplate.Height = 24;
-            this.dataGridViewModelInfo.Size = new System.Drawing.Size(405, 314);
+            this.dataGridViewModelInfo.Size = new System.Drawing.Size(304, 255);
             this.dataGridViewModelInfo.TabIndex = 2;
             // 
             // Column1
@@ -748,25 +900,25 @@
             legend18.LegendStyle = System.Windows.Forms.DataVisualization.Charting.LegendStyle.Row;
             legend18.Name = "Legend1";
             this.chartModel.Legends.Add(legend18);
-            this.chartModel.Location = new System.Drawing.Point(717, 52);
-            this.chartModel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.chartModel.Location = new System.Drawing.Point(538, 42);
+            this.chartModel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chartModel.Name = "chartModel";
             series18.ChartArea = "ChartArea1";
             series18.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series18.Legend = "Legend1";
             series18.Name = "Series1";
             this.chartModel.Series.Add(series18);
-            this.chartModel.Size = new System.Drawing.Size(645, 357);
+            this.chartModel.Size = new System.Drawing.Size(484, 290);
             this.chartModel.TabIndex = 1;
             this.chartModel.Text = "chart2";
             // 
             // comboBoxModels
             // 
             this.comboBoxModels.FormattingEnabled = true;
-            this.comboBoxModels.Location = new System.Drawing.Point(91, 43);
-            this.comboBoxModels.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxModels.Location = new System.Drawing.Point(68, 35);
+            this.comboBoxModels.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBoxModels.Name = "comboBoxModels";
-            this.comboBoxModels.Size = new System.Drawing.Size(91, 24);
+            this.comboBoxModels.Size = new System.Drawing.Size(69, 21);
             this.comboBoxModels.TabIndex = 0;
             this.comboBoxModels.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -774,9 +926,10 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label7.Location = new System.Drawing.Point(8, 387);
+            this.label7.Location = new System.Drawing.Point(6, 314);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(1354, 25);
+            this.label7.Size = new System.Drawing.Size(1107, 20);
             this.label7.TabIndex = 5;
             this.label7.Text = "_________________________________________________________________________________" +
     "_________________________________________";
@@ -790,10 +943,10 @@
             "2",
             "3",
             "4"});
-            this.CapaModelcheckedListBox.Location = new System.Drawing.Point(813, 10);
-            this.CapaModelcheckedListBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.CapaModelcheckedListBox.Location = new System.Drawing.Point(610, 8);
+            this.CapaModelcheckedListBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CapaModelcheckedListBox.Name = "CapaModelcheckedListBox";
-            this.CapaModelcheckedListBox.Size = new System.Drawing.Size(237, 55);
+            this.CapaModelcheckedListBox.Size = new System.Drawing.Size(179, 34);
             this.CapaModelcheckedListBox.TabIndex = 21;
             this.CapaModelcheckedListBox.SelectedValueChanged += new System.EventHandler(this.CapaModelcheckedListBox_SelectedValueChanged);
             this.CapaModelcheckedListBox.MouseEnter += new System.EventHandler(this.checkedListBox1_MouseEnter);
@@ -801,28 +954,28 @@
             // 
             // dateTimePickerBegin
             // 
-            this.dateTimePickerBegin.Location = new System.Drawing.Point(429, 10);
-            this.dateTimePickerBegin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dateTimePickerBegin.Location = new System.Drawing.Point(322, 8);
+            this.dateTimePickerBegin.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dateTimePickerBegin.Name = "dateTimePickerBegin";
-            this.dateTimePickerBegin.Size = new System.Drawing.Size(299, 22);
+            this.dateTimePickerBegin.Size = new System.Drawing.Size(225, 20);
             this.dateTimePickerBegin.TabIndex = 9;
             this.dateTimePickerBegin.Value = new System.DateTime(2017, 9, 1, 0, 0, 0, 0);
             // 
             // dateTimePickerEnd
             // 
-            this.dateTimePickerEnd.Location = new System.Drawing.Point(429, 39);
-            this.dateTimePickerEnd.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dateTimePickerEnd.Location = new System.Drawing.Point(322, 32);
+            this.dateTimePickerEnd.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dateTimePickerEnd.Name = "dateTimePickerEnd";
-            this.dateTimePickerEnd.Size = new System.Drawing.Size(299, 22);
+            this.dateTimePickerEnd.Size = new System.Drawing.Size(225, 20);
             this.dateTimePickerEnd.TabIndex = 10;
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button1.Location = new System.Drawing.Point(1103, 10);
-            this.button1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button1.Location = new System.Drawing.Point(827, 8);
+            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(43, 20);
+            this.button1.Size = new System.Drawing.Size(32, 16);
             this.button1.TabIndex = 22;
             this.button1.Text = "All";
             this.button1.UseVisualStyleBackColor = true;
@@ -833,10 +986,10 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button2.Location = new System.Drawing.Point(1103, 28);
-            this.button2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button2.Location = new System.Drawing.Point(827, 23);
+            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(43, 20);
+            this.button2.Size = new System.Drawing.Size(32, 16);
             this.button2.TabIndex = 23;
             this.button2.Text = "None";
             this.button2.UseVisualStyleBackColor = true;
@@ -847,10 +1000,10 @@
             // button7
             // 
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button7.Location = new System.Drawing.Point(1055, 10);
-            this.button7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button7.Location = new System.Drawing.Point(791, 8);
+            this.button7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(51, 20);
+            this.button7.Size = new System.Drawing.Size(38, 16);
             this.button7.TabIndex = 24;
             this.button7.Text = "Square";
             this.button7.UseVisualStyleBackColor = true;
@@ -861,10 +1014,10 @@
             // button8
             // 
             this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button8.Location = new System.Drawing.Point(1055, 28);
-            this.button8.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button8.Location = new System.Drawing.Point(791, 23);
+            this.button8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(51, 20);
+            this.button8.Size = new System.Drawing.Size(38, 16);
             this.button8.TabIndex = 25;
             this.button8.Text = "Long";
             this.button8.UseVisualStyleBackColor = true;
@@ -875,10 +1028,10 @@
             // button9
             // 
             this.button9.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button9.Location = new System.Drawing.Point(1055, 46);
-            this.button9.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button9.Location = new System.Drawing.Point(791, 37);
+            this.button9.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(51, 20);
+            this.button9.Size = new System.Drawing.Size(38, 16);
             this.button9.TabIndex = 26;
             this.button9.Text = "Short";
             this.button9.UseVisualStyleBackColor = true;
@@ -889,10 +1042,10 @@
             // button10
             // 
             this.button10.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button10.Location = new System.Drawing.Point(1055, 64);
-            this.button10.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button10.Location = new System.Drawing.Point(791, 52);
+            this.button10.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(51, 20);
+            this.button10.Size = new System.Drawing.Size(38, 16);
             this.button10.TabIndex = 27;
             this.button10.Text = "v.Short";
             this.button10.UseVisualStyleBackColor = true;
@@ -906,49 +1059,30 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(117, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(104, 0);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(104, 98);
+            this.pictureBox1.Size = new System.Drawing.Size(78, 80);
             this.pictureBox1.TabIndex = 28;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Visible = false;
             // 
-            // listView1
+            // richConsole
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4});
-            this.listView1.Location = new System.Drawing.Point(336, 135);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(313, 420);
-            this.listView1.TabIndex = 32;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Start";
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "End";
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Model";
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Q-ty";
+            this.richConsole.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.richConsole.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.richConsole.Location = new System.Drawing.Point(3, 7);
+            this.richConsole.Name = "richConsole";
+            this.richConsole.Size = new System.Drawing.Size(498, 564);
+            this.richConsole.TabIndex = 0;
+            this.richConsole.Text = "";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1524, 807);
+            this.ClientSize = new System.Drawing.Size(1143, 656);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
@@ -965,25 +1099,24 @@
             this.Controls.Add(this.dateTimePickerEnd);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.tabMain.ResumeLayout(false);
+            this.tab_Start.ResumeLayout(false);
             this.tab_Capacity.ResumeLayout(false);
             this.tab_Capacity.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartCapaBoxing)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartCapaTest)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartSplitting)).EndInit();
             this.tab_Waste.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewScrap)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewWaste)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart_odpad)).EndInit();
             this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLotsInUse)).EndInit();
             this.tabPageLotInfo.ResumeLayout(false);
             this.tabPageLotInfo.PerformLayout();
@@ -1017,10 +1150,7 @@
         private System.Windows.Forms.CheckedListBox CapaModelcheckedListBox;
         private System.Windows.Forms.TreeView treeViewTestCapa;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TreeView treeViewLotsinUse;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.RichTextBox richTextBoxCapaTest;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TreeView treeViewWaste;
         private System.Windows.Forms.TabPage tabPageLotInfo;
@@ -1052,13 +1182,8 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.DataGridView dataGridViewScrap;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column5;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column6;
@@ -1070,6 +1195,31 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ListView listViewTestYield;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ColumnHeader columnHeader9;
+        private System.Windows.Forms.ColumnHeader columnHeader10;
+        private System.Windows.Forms.ColumnHeader columnHeader11;
+        private System.Windows.Forms.ColumnHeader columnHeader12;
+        private System.Windows.Forms.ColumnHeader columnHeader13;
+        private System.Windows.Forms.ListView listView3;
+        private System.Windows.Forms.ColumnHeader columnHeader14;
+        private System.Windows.Forms.ColumnHeader columnHeader15;
+        private System.Windows.Forms.ColumnHeader columnHeader16;
+        private System.Windows.Forms.ColumnHeader columnHeader17;
+        private System.Windows.Forms.ColumnHeader columnHeader18;
+        private System.Windows.Forms.ColumnHeader columnHeader21;
+        private System.Windows.Forms.ColumnHeader columnHeader20;
+        private System.Windows.Forms.ColumnHeader columnHeader19;
+        private System.Windows.Forms.ListView listViewScrap;
+        private System.Windows.Forms.ColumnHeader columnHeader22;
+        private System.Windows.Forms.ColumnHeader columnHeader23;
+        private System.Windows.Forms.ColumnHeader columnHeader24;
+        private System.Windows.Forms.RichTextBox richConsole;
     }
 }
 

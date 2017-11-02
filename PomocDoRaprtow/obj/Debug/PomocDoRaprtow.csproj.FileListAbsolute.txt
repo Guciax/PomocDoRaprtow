@@ -1,0 +1,28 @@
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.exe.config
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.exe
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.pdb
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.Form1.resources
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.Properties.Resources.resources
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.csproj.GenerateResource.Cache
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.csproj.CoreCompileInputs.cache
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.exe
+D:\Google Drive\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.pdb
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.exe.config
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.exe
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.pdb
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.exe
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.pdb
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.csprojResolveAssemblyReference.cache
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.Form1.resources
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.Properties.Resources.resources
+C:\Users\piotr.dabrowski\Dysk Google\Praca\real\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.csproj.GenerateResource.Cache
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.exe.config
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.exe
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\bin\Debug\PomocDoRaprtow.pdb
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.Form1.resources
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.Properties.Resources.resources
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.csproj.GenerateResource.Cache
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.csproj.CoreCompileInputs.cache
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.exe
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.pdb
+C:\Users\piotr.dabrowski\Documents\Visual Studio 2017\PomocDoRaprtow\PomocDoRaprtow\obj\Debug\PomocDoRaprtow.csprojResolveAssemblyReference.cache

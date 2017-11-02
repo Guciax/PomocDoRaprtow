@@ -24,24 +24,25 @@ namespace PomocDoRaprtow
         private LotsInUseOperations lotInUseOperations;
         private CapabilityOperation capabilityOperations;
         private ModelOperations modelOperations;
-
+        private SqlTableLoader sqlTableLoader;
 
         public Form1()
         {
             InitializeComponent();
             dateTimePickerBegin.Value = new DateTime(System.DateTime.Now.Year, System.DateTime.Now.Month, 1);
-            wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad, radioModel, dataGridViewScrap);
+            wasteOperations = new WasteOperations(this, treeViewWaste, dataGridViewWaste, chart_odpad, radioModel, listViewScrap);
             lotInfoOperations = new LotInfoOperations(this, treeViewLotInfo, textBoxFilterLotInfo, dataGridViewLotInfo);
             lotInUseOperations = new LotsInUseOperations(this, treeViewLotsinUse);
-            capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, richTextBoxCapaTest, chartCapaTest,  chartSplitting,  treeViewSplitting, treeViewCapaBoxing, chartCapaBoxing,radioModel);
+            capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, chartCapaTest,  chartSplitting,  treeViewSplitting, treeViewCapaBoxing, chartCapaBoxing,radioModel,listViewTestYield );
             modelOperations = new ModelOperations(this, chartModel, dataGridViewModelInfo, treeViewModelInfo, comboBoxModels, dateTimePickerBegin, dateTimePickerEnd);
-
+            sqlTableLoader = new SqlTableLoader(this, richConsole);
             
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            tabMain.Enabled = false;
+            CheckLastSynchroDate();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -53,32 +54,35 @@ namespace PomocDoRaprtow
 
         private void button4_Click(object sender, EventArgs e)
         {
-#if DEBUG
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
 
-#endif
+            SqlTableLoader.launchDbLoadSequence(richConsole,"2017-10");
 
+            //SqlTableLoader.LoadTesterWorkCard(5, richConsole);
 
-            SqlTableLoader.LoadTesterWorkCard("2017");
-#if DEBUG
-            Debug.WriteLine("SQL LoadTesterWorkCard: " + stopwatch.Elapsed.Seconds);
+            //SqlTableLoader.LoadWasteTable("2017-10", richConsole);
+            
+            //SqlTableLoader.LoadBoxingTable("2017-10", richConsole);
 
-#endif
-            SqlTableLoader.LoadWasteTable("2017-10");
-#if DEBUG
-            Debug.WriteLine("SQL LoadWasteTable: " + stopwatch.Elapsed.Seconds);
+            //SqlTableLoader.LoadLotTable("nic", richConsole);
+        }
 
+        private void CheckLastSynchroDate()
+        {
+            string LotPath = @"DB\tb_Zlecenia_produkcyjne.csv";
+            string WastePath = @"DB\tb_Zlecenia_produkcyjne_Karta_Pracy.csv";
+            string TesterPath = @"DB\tb_tester_measurements.csv";
+            string BoxingPath = @"DB\tb_WyrobLG_opakowanie.csv";
 
-#endif
-            SqlTableLoader.LoadBoxingTable("2017-10");
+            string zleceniaProdukcyjne = File.ReadLines(LotPath).First();
+            string kartaPracy = File.ReadLines(WastePath).First();
+            string testerMeasurements = File.ReadLines(TesterPath).First();
+            string wyrobLGOpakowanie = File.ReadLines(BoxingPath).First();
 
-#if DEBUG
-            Debug.WriteLine("SQL LoadBoxingTable: " + stopwatch.Elapsed.Seconds);
-            stopwatch.Stop();
+            richConsole.AppendText("tb_Zlecenia_produkcyjne " + zleceniaProdukcyjne + "\n");
+            richConsole.AppendText("tb_Zlecenia_produkcyjne_Karta_Pracy "+kartaPracy + "\n");
+            richConsole.AppendText("tb_tester_measurements "+testerMeasurements + "\n");
+            richConsole.AppendText("tb_WyrobLG_opakowanie "+wyrobLGOpakowanie + "\n");
 
-#endif
-            SqlTableLoader.LoadLotTable("nic");
         }
 
         private void CheckBoxCheckAll()
@@ -101,6 +105,7 @@ namespace PomocDoRaprtow
         {
             CsvLoadinDone = false;
             timerThreadCsv.Enabled = true;
+            richConsole.AppendText("Building tables...");
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
@@ -112,13 +117,13 @@ namespace PomocDoRaprtow
                 capabilityOperations.LedStorage = ledStorage;
                 modelOperations.ledStorage = ledStorage;
                 CsvLoadinDone = true;
-                
-                
-            }).Start();
 
+                SqlTableLoader.writeToConsole(richConsole, "Done. \n");
+            }).Start();
             pictureBox1.Visible = true;
             pictureBox1.Image = PomocDoRaprtow.Properties.Resources.spinner2;
             pictureBox1.Size = PomocDoRaprtow.Properties.Resources.spinner2.Size;
+            tabMain.Enabled = true;
         }
         
 
@@ -286,55 +291,53 @@ namespace PomocDoRaprtow
         private void button1_Click(object sender, EventArgs e)
         {
             CheckBoxCheckAll();
+            RebuildEnabledModelsSet();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             CheckBoxCheckNone();
+            RebuildEnabledModelsSet();
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
-            {
-                string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
-                if (itText.Contains("22-") || itText.Contains("32-") || itText.Contains("33-") || itText.Contains("53-"))
-                CapaModelcheckedListBox.SetItemChecked(i, true);
-                else CapaModelcheckedListBox.SetItemChecked(i, false);
-            }
+            selectModelsFamilyInCheckBoxList(new string[] { "22-", "32-", "33-", "53-" });
+            RebuildEnabledModelsSet();
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
-            {
-                string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
-                if (itText.Contains("K1-") || itText.Contains("K2-") || itText.Contains("61-") || itText.Contains("41-"))
-                    CapaModelcheckedListBox.SetItemChecked(i, true);
-                else CapaModelcheckedListBox.SetItemChecked(i, false);
-            }
+            selectModelsFamilyInCheckBoxList(new string[] { "K1-", "K2-", "61-", "41-" , "K5-"});
+            RebuildEnabledModelsSet();
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
+            selectModelsFamilyInCheckBoxList(new string[] { "G1-", "G2-", "G5-", "31-" });
+            RebuildEnabledModelsSet();
+        }
+
+        private void selectModelsFamilyInCheckBoxList(string[] models)
+        {
+
             for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
             {
-                string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
-                if (itText.Contains("G1-") || itText.Contains("G2-") || itText.Contains("31-"))
-                    CapaModelcheckedListBox.SetItemChecked(i, true);
-                else CapaModelcheckedListBox.SetItemChecked(i, false);
+                CapaModelcheckedListBox.SetItemChecked(i, false);
+                foreach (var model in models)
+                {
+                    string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
+                    if (itText.Contains(model))
+                        CapaModelcheckedListBox.SetItemChecked(i, true);
+                }
             }
+            RebuildEnabledModelsSet();
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < CapaModelcheckedListBox.Items.Count; i++)
-            {
-                string itText = CapaModelcheckedListBox.GetItemText(CapaModelcheckedListBox.Items[i]);
-                if (itText.Contains("E1-") || itText.Contains("E2-") || itText.Contains("D1-") || itText.Contains("D2-"))
-                    CapaModelcheckedListBox.SetItemChecked(i, true);
-                else CapaModelcheckedListBox.SetItemChecked(i, false);
-            }
+            selectModelsFamilyInCheckBoxList(new string[] { "D1-", "E2-"});
+            RebuildEnabledModelsSet();
         }
 
         private void checkedListBox1_MouseEnter(object sender, EventArgs e)
@@ -428,7 +431,6 @@ namespace PomocDoRaprtow
                 RebuildEnabledModelsSet();
                 button3.Enabled = true;
                 button3.PerformClick();
-                
             }
         }
 
@@ -447,72 +449,84 @@ namespace PomocDoRaprtow
             RebuildEnabledModelsSet();
         }
 
+        private void showSelectedNodeDetails(TreeNode node, ListView targetListView)
+        {
+            targetListView.Items.Clear();
+            Dictionary<Lot, List<ProductionDetail>> lots = new Dictionary<Lot, List<ProductionDetail>>();
+            List<OccurenceModel> models = new List<OccurenceModel>();
+            var tag = node.Tag;
+
+            if (tag as OccurenceDay != null)
+            {
+                OccurenceDay occurence = (OccurenceDay)node.Tag;
+                models = occurence.ShiftToTree.SelectMany(st => st.ModelToTree.Values).ToList();
+            }
+            else if (tag as OccurenceShift != null)
+            {
+                OccurenceShift occurence = (OccurenceShift)node.Tag;
+                models = occurence.ModelToTree.Values.ToList();
+            }
+            else if (tag as OccurenceModel != null)
+            {
+                OccurenceModel occurence = (OccurenceModel)node.Tag;
+                models.Add(occurence);
+            }
+
+            foreach (var model in models)
+            {
+                foreach (var lotDetailsEntry in model.ProductionDetails)
+                {
+                    if (!lots.ContainsKey(lotDetailsEntry.Key))
+                    {
+                        lots.Add(lotDetailsEntry.Key, new List<ProductionDetail>());
+                    }
+                    lots[lotDetailsEntry.Key].AddRange(lotDetailsEntry.Value);
+                }
+            }
+
+            List<Tuple<DateTime, string[]>> lotsDateInfo = new List<Tuple<DateTime, string[]>>();
+            foreach (var entry in lots)
+            {
+
+                entry.Value.Sort((lhs, rhs) => lhs.ProductionRealDate.CompareTo(rhs.ProductionRealDate));
+                var productionIds = entry.Value.Select(pd => pd.ProductionLineId).Distinct();
+                String productionIdText = String.Join(", ", productionIds);
+
+                var startTime = entry.Value.First().ProductionRealDate;
+                var endTime = entry.Value.Last().ProductionRealDate;
+                var amount = entry.Value.Sum(pd => pd.ProducedAmount);
+
+                if (amount == 0) continue;
+
+                lotsDateInfo.Add(Tuple.Create(startTime, 
+                    new string[] {
+                        startTime.ToShortTimeString(),
+                        endTime.ToShortTimeString(),
+                        entry.Key.Model.ModelName,
+                        amount.ToString(),
+                        productionIdText,
+                        entry.Key.LotId}));
+            }
+
+            lotsDateInfo.Sort((lhs, rhs) => lhs.Item1.CompareTo(rhs.Item1));
+
+            foreach (var entry in lotsDateInfo)
+            {
+                ListViewItem itm = new ListViewItem(entry.Item2);
+                if (targetListView.Items.Count % 2 != 0) itm.BackColor = Color.LightGray;
+                targetListView.Items.Add(itm);
+            }
+
+            foreach (ColumnHeader column in targetListView.Columns)
+            {
+                column.Width = -2;
+            }
+        }
 
 
         private void treeViewTestCapa_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            richTextBox1.Clear();
-            Dictionary<Lot, List<ProductionDetail>> lots = new Dictionary<Lot, List<ProductionDetail>>();
-            List<OccurenceModel> models = new List<OccurenceModel>();
-            if (e.Node.Level > 0)
-            {
-                var tag = e.Node.Tag;
-
-                if (tag as OccurenceDay != null)
-                {
-                    OccurenceDay occurence = (OccurenceDay)e.Node.Tag;
-                    models = occurence.ShiftToTree.SelectMany(st => st.ModelToTree.Values).ToList();
-                }
-                else if (tag as OccurenceShift != null)
-                {
-                    OccurenceShift occurence = (OccurenceShift)e.Node.Tag;
-                    models = occurence.ModelToTree.Values.ToList();
-                }
-                else if (tag as OccurenceModel != null)
-                {
-                    OccurenceModel occurence = (OccurenceModel)e.Node.Tag;
-                    models.Add(occurence);
-                }
-
-                foreach (var model in models)
-                {
-                    foreach (var lotDetailsEntry in model.ProductionDetails)
-                    {
-                        if (!lots.ContainsKey(lotDetailsEntry.Key))
-                        {
-                            lots.Add(lotDetailsEntry.Key, new List<ProductionDetail>());
-                        }
-                        lots[lotDetailsEntry.Key].AddRange(lotDetailsEntry.Value);
-                    }
-                }
-
-                List<Tuple<DateTime, String>> lotsDateInfo = new List<Tuple<DateTime, string>>();
-                foreach (var entry in lots)
-                {
-                    String lotInfo = "";
-                    entry.Value.Sort((lhs, rhs) => lhs.ProductionRealDate.CompareTo(rhs.ProductionRealDate));
-                    var productionIds = entry.Value.Select(pd => pd.ProductionLineId).Distinct();
-                    String productionIdText = String.Join(", ", productionIds);
-                   
-
-                    lotInfo += entry.Key.LotId + " - " + entry.Value.Count + " by: " + productionIdText +  '\n';
-
-                    var startTime = entry.Value.First().ProductionRealDate;
-                    var endTime = entry.Value.Last().ProductionRealDate;
-
-                    lotInfo +=
-                        "  " + startTime.ToShortTimeString() + " - " + endTime.ToShortTimeString() + ' ' + entry.Key.Model.ModelName + '\n';
-                    lotsDateInfo.Add(Tuple.Create(startTime, lotInfo));
-                }
-
-                lotsDateInfo.Sort((lhs, rhs) => lhs.Item1.CompareTo(rhs.Item1));
-
-                foreach (var entry in lotsDateInfo)
-                {
-                    richTextBox1.Text += entry.Item2;
-                    listView1.Items.Add(entry.Item2);
-                }
-            }
+            showSelectedNodeDetails(e.Node, listView1);
         }
 
         string allNodes = "";
@@ -554,6 +568,16 @@ namespace PomocDoRaprtow
                 Clipboard.SetText(allNodes); //Copy text to Clipboard
         
             }
+        }
+
+        private void treeViewSplitting_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            showSelectedNodeDetails(e.Node, listView2);
+        }
+
+        private void treeViewCapaBoxing_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            showSelectedNodeDetails(e.Node, listView3);
         }
     }
 }

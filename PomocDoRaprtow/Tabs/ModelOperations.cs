@@ -80,15 +80,17 @@ namespace PomocDoRaprtow.Tabs
         public void GenerateLotEfficiencyChart(List<Lot> lotList)
         {
             dataGridViewModelInfo.Rows.Clear();
+            dataGridViewModelInfo.Columns.Clear();
+
+
             Dictionary<String, SortedDictionary<double, int>> lotCyclesOccurence = new Dictionary<string, SortedDictionary<double, int>>();
 
 
             SortedDictionary<string, List<double>> outputPerHourList = new SortedDictionary<string, List<double>>();
-            double numberOfTestCycles = 0;
-            double numberOfTestedLeds = 0;
+            Dictionary<string, double> numberOfTestCycles = new Dictionary<string, double>();
+            Dictionary<string, double> numberOfTestedLeds = new Dictionary<string, double>();
             double testsTotalDurationHours = 0;
-            HashSet<string> uniqueModels = new HashSet<string>();
-
+            Dictionary<string, HashSet<string>> uniqueModels = new Dictionary<string, HashSet<string>>();
             foreach (var lot in lotList)
             {
 
@@ -96,7 +98,8 @@ namespace PomocDoRaprtow.Tabs
                     continue;
                 if (lot.LedTest.TestEnd < pickerStart.Value || lot.LedTest.TestEnd > pickerEnd.Value) continue;
 
-                uniqueModels.Add(lot.Model.ModelName);
+                if (!uniqueModels.ContainsKey(lot.LedTest.TesterId)) uniqueModels.Add(lot.LedTest.TesterId, new HashSet<string>());
+                uniqueModels[lot.LedTest.TesterId].Add(lot.Model.ModelName);
                 var lotId = lot.LotId;
                 var ledsInLot = lot.LedsInLot;
                 var testerID = lot.LedTest.TesterId;
@@ -104,8 +107,11 @@ namespace PomocDoRaprtow.Tabs
                 var inspTimeList = ledsInLot.SelectMany(l => l.TesterData).Select(td => td.TimeOfTest).OrderBy(o => o).ToList();
                 Dictionary<int, List<DateTime>> splittedInspTimes = inspectionTimeSplitter(inspTimeList);
 
-                numberOfTestCycles += inspTimeList.Count;
-                numberOfTestedLeds += lot.LedTest.TestedUniqueQuantity;
+                if (!numberOfTestCycles.ContainsKey(lot.LedTest.TesterId)) numberOfTestCycles.Add(lot.LedTest.TesterId,0);
+                numberOfTestCycles[lot.LedTest.TesterId] += inspTimeList.Count;
+
+                if (!numberOfTestedLeds.ContainsKey(lot.LedTest.TesterId)) numberOfTestedLeds.Add(lot.LedTest.TesterId, 0);
+                numberOfTestedLeds[lot.LedTest.TesterId] += lot.LedTest.TestedUniqueQuantity;
 
                 var begin = inspTimeList.Min();
                 var end = inspTimeList.Max();
@@ -136,35 +142,54 @@ namespace PomocDoRaprtow.Tabs
                 }
 
             }
-
-
-            if (outputPerHourList.Count > 0)
+            dataGridViewModelInfo.Columns.Add("descr","");
+            foreach (var testerID in outputPerHourList)
             {
+                dataGridViewModelInfo.Columns.Add(testerID.Key, testerID.Key);
+            }
+
+
+                if (outputPerHourList.Count > 0)
+            {
+                Dictionary<string, List<string>> minMaxAvg = new Dictionary<string, List<string>>();
+
                 List<string> allMin = new List<string>();
                 List<string> allMax = new List<string>();
                 List<string> allAvg = new List<string>();
+                dataGridViewModelInfo.Rows.Add(5);
 
-                allMin.Add("Output/h min");
-                allMax.Add("Output/h max");
-                allAvg.Add("Output/h avg");
+                dataGridViewModelInfo.Rows[0].Cells[0].Value = "Output/h min";
+                dataGridViewModelInfo.Rows[1].Cells[0].Value = "Output/h mx";
+                dataGridViewModelInfo.Rows[2].Cells[0].Value = "Output/h avg";
+                dataGridViewModelInfo.Rows[3].Cells[0].Value = "Tested modules";
+                dataGridViewModelInfo.Rows[4].Cells[0].Value = "Number of tests";
 
                 foreach (var testerID in outputPerHourList)
                 {
+
                     if (testerID.Value.Count > 0) 
                     {
-                        allMin.Add(Math.Round(testerID.Value.Min(),0).ToString());
-                        allMax.Add(Math.Round(testerID.Value.Max(),0).ToString());
-                        allAvg.Add(Math.Round(testerID.Value.Average(),0).ToString());
+                        dataGridViewModelInfo.Rows[0].Cells[testerID.Key].Value = Math.Round(testerID.Value.Min(), 0).ToString();
+                        dataGridViewModelInfo.Rows[1].Cells[testerID.Key].Value = Math.Round(testerID.Value.Max(), 0).ToString();
+                        dataGridViewModelInfo.Rows[2].Cells[testerID.Key].Value = Math.Round(testerID.Value.Average(), 0).ToString();
+                        dataGridViewModelInfo.Rows[3].Cells[testerID.Key].Value = numberOfTestedLeds[testerID.Key];
+                        dataGridViewModelInfo.Rows[4].Cells[testerID.Key].Value = numberOfTestCycles[testerID.Key];
                     }
                 }
-                dataGridViewModelInfo.Rows.Add(allMin.ToArray());
-                dataGridViewModelInfo.Rows.Add(allMax.ToArray());
-                dataGridViewModelInfo.Rows.Add(allAvg.ToArray());
-                dataGridViewModelInfo.Rows.Add("Tested modules", numberOfTestedLeds);
-                dataGridViewModelInfo.Rows.Add("Number of tests", numberOfTestCycles);
-                foreach (var item in uniqueModels)
+
+
+
+                dataGridViewModelInfo.Rows.Add();
+                foreach (var testerIDEntry in uniqueModels)
                 {
-                    dataGridViewModelInfo.Rows.Add("Model", item);
+                    foreach (var modelHash in testerIDEntry.Value)
+                    {
+                        int emptyCellIndex = getFirstEmptyCell(dataGridViewModelInfo, dataGridViewModelInfo.Columns[testerIDEntry.Key].Index);
+                        if (emptyCellIndex == dataGridViewModelInfo.Rows.Count) dataGridViewModelInfo.Rows.Add();
+                        
+                        dataGridViewModelInfo.Rows[emptyCellIndex].Cells[testerIDEntry.Key].Value = modelHash;
+                    }
+
                 }
             }
 
@@ -174,6 +199,17 @@ namespace PomocDoRaprtow.Tabs
             }
 
             Charting.CycleTimeHistogram(chartModel, lotCyclesOccurence);
+        }
+
+        private int getFirstEmptyCell(DataGridView grid, int col)
+        {
+            for (int i=0;i<grid.Rows.Count;i++)
+            {
+                if (grid.Rows[i].Cells[col].Value == null) return i;
+                if (grid.Rows[i].Cells[col].Value.ToString() == "") return i;
+            }
+
+            return grid.Rows.Count;
         }
 
         private Dictionary<String, List<DateTime>> PrepareTesterData(Model model)

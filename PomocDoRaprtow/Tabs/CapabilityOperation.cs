@@ -17,27 +17,27 @@ namespace PomocDoRaprtow.Tabs
         private readonly Form1 form1;
         private readonly TreeView treeViewTestCapa;
         private readonly Chart chartCapaTest;
-        private readonly RichTextBox richTextBoxCapaTest;
         private readonly Chart chartSplitting;
         private readonly TreeView treeViewSplitting;
         private readonly TreeView treeViewCapaBoxing;
         private readonly Chart chartCapaBoxing;
         private readonly RadioButton radioModel;
+        private readonly ListView listViewTestYield;
 
-        public CapabilityOperation(Form1 form1, TreeView treeViewTestCapa, RichTextBox richTextBoxCapaTest,
+        public CapabilityOperation(Form1 form1, TreeView treeViewTestCapa ,
             Chart chartCapaTest, 
             Chart chartSplitting,  TreeView treeViewSplitting, TreeView treeViewCapaBoxing, 
-             Chart chartCapaBoxing, RadioButton radioModel)
+             Chart chartCapaBoxing, RadioButton radioModel, ListView listViewTestYield)
         {
             this.form1 = form1;
             this.treeViewTestCapa = treeViewTestCapa;
             this.chartCapaTest = chartCapaTest;
-            this.richTextBoxCapaTest = richTextBoxCapaTest;
             this.chartSplitting = chartSplitting;
             this.treeViewSplitting = treeViewSplitting;
             this.treeViewCapaBoxing = treeViewCapaBoxing;
             this.chartCapaBoxing = chartCapaBoxing;
             this.radioModel = radioModel;
+            this.listViewTestYield = listViewTestYield;
         }
 
         private string FormatTreeViewNodeName(String mainName, int occurences)
@@ -51,6 +51,8 @@ namespace PomocDoRaprtow.Tabs
             targetTreeView.Nodes.Clear();
             foreach (var weekTree in occurenceCalculations.Tree.WeekNoToTree.Values)
             {
+                if (weekTree.Occurences == 0) continue;
+
                 var weekTreeViewNode =
                     new TreeNode(FormatTreeViewNodeName(weekTree.Week.ToString(), weekTree.Occurences));
                 targetTreeView.Nodes.Add(weekTreeViewNode);
@@ -75,24 +77,13 @@ namespace PomocDoRaprtow.Tabs
                                 var prodIdTreeViewNode = shiftTreeViewNode.Nodes.Add(FormatTreeViewNodeName(prodId, productionDetailsForThisProdId.Sum(pd => pd.ProducedAmount)));
                                 //tag?
 
+                                prodIdTreeViewNode.Tag = BuildOccurenceModelFromProductionDetails(productionDetailsForThisProdId.ToList());
+
                                 var productionDetailsGroupped = productionDetailsForThisProdId.GroupBy(pd => pd.ProducedIn.Model.ModelName);
 
                                 foreach (var modelNameToDetails in productionDetailsGroupped)
                                 {
-                                    var prodDetails = modelNameToDetails.ToList();
-                                    var lot = prodDetails.First().ProducedIn;
-                                    OccurenceModel modelTree = new OccurenceModel();
-                                    modelTree.Model = lot.Model.ModelName;
-
-                                    var lots = prodDetails.Select(pd => pd.ProducedIn).Distinct();
-
-                                    foreach(var l in lots)
-                                    {
-                                        var prodDetailsForThisL = prodDetails.Where(pd => pd.ProducedIn == l).ToList();
-                                        modelTree.ProductionDetails.Add(l, prodDetailsForThisL);
-                                    }
-
-                                    modelTree.Occurences = prodDetails.Sum(pd => pd.ProducedAmount);
+                                    var modelTree = BuildOccurenceModelFromProductionDetails(modelNameToDetails.ToList());
 
                                     var modelTreeViewNode = prodIdTreeViewNode.Nodes.Add(FormatTreeViewNodeName(modelTree.Model, modelTree.Occurences));
                                     modelTreeViewNode.Tag = modelTree;
@@ -112,6 +103,25 @@ namespace PomocDoRaprtow.Tabs
                 }
             }
             targetTreeView.EndUpdate();
+        }
+
+        private OccurenceModel BuildOccurenceModelFromProductionDetails(List<ProductionDetail> prodDetails)
+        {
+            var lot = prodDetails.First().ProducedIn;
+            OccurenceModel modelTree = new OccurenceModel();
+            modelTree.Model = lot.Model.ModelName;
+
+            var lots = prodDetails.Select(pd => pd.ProducedIn).Distinct();
+
+            foreach (var l in lots)
+            {
+                var prodDetailsForThisL = prodDetails.Where(pd => pd.ProducedIn == l).ToList();
+                modelTree.ProductionDetails.Add(l, prodDetailsForThisL);
+            }
+
+            modelTree.Occurences = prodDetails.Sum(pd => pd.ProducedAmount);
+
+            return modelTree;
         }
 
         public void DrawCapability()
@@ -265,8 +275,8 @@ namespace PomocDoRaprtow.Tabs
         {
             var occurencesCalculations = new OccurenceCalculations(lots, form1.LotToTesterProductionDetails);
             RebuildOccurenceTreeView(treeViewTestCapa, occurencesCalculations, true);
+            listViewTestYield.Items.Clear();
 
-            richTextBoxCapaTest.Text = "";
             int occurencesSum = 0;
             var countOccurences = new SortedDictionary<int, int>();
 
@@ -283,11 +293,24 @@ namespace PomocDoRaprtow.Tabs
             {
                 occurencesSum += kvp.Value;
             }
-            richTextBoxCapaTest.AppendText("Test Yield" + "\r");
+
             foreach (KeyValuePair<int, int> kvp in countOccurences)
             {
                 if (kvp.Value < 10) break;
-                richTextBoxCapaTest.AppendText($"{kvp.Key} test: {kvp.Value} - {MathUtilities.CalculatePercentage(occurencesSum, kvp.Value)}" + "\r");
+
+                string[] itmArr = new string[3];
+                itmArr[0]= kvp.Key.ToString();
+                itmArr[1] = kvp.Value.ToString();
+                itmArr[2] = MathUtilities.CalculatePercentage(occurencesSum, kvp.Value).ToString();
+
+                var itm = new ListViewItem(itmArr);
+                listViewTestYield.Items.Add(itm);
+            }
+
+            foreach (ColumnHeader col in listViewTestYield.Columns)
+            {
+                col.TextAlign = HorizontalAlignment.Center;
+                col.Width = -2;
             }
         }
 

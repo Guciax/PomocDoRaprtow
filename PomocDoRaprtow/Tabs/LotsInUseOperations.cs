@@ -36,7 +36,7 @@ namespace PomocDoRaprtow.Tabs
             foreach (var lot in LedStorage.Lots.Values)
             {
 
-
+                if ((lot.PrintDate - DateTime.Now).TotalDays > 30) continue;
                 if (BoxingUtilities.IsFullyPalletised(lot))
                     continue;
 

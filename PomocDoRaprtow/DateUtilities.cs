@@ -55,18 +55,40 @@ namespace PomocDoRaprtow
 
         public static DateTime ParseExact(string date)
         {
-            try
+            if (date.Length == 19)
             {
-                if (date.Contains("-"))
-                    return DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
-                else
-                    return DateTime.ParseExact(date, "MM/dd/yyyy HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+                string separator = "";
+                string dateFormat = "";
+
+
+
+                int check = 0;
+                try
+                {
+                    if (!int.TryParse(date[2].ToString(), out check))
+                    {
+                        separator = date[2].ToString();
+                        if (separator == ".") dateFormat = "dd" + separator + "MM" + separator + "yyyy HH:mm:ss";
+                        if (separator == "/") dateFormat = "MM" + separator + "dd" + separator + "yyyy HH:mm:ss";
+                        return DateTime.ParseExact(date, dateFormat, System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+                    }
+                    else
+                    {
+                        separator = date[4].ToString();
+                        return DateTime.ParseExact(date, "yyyy" + separator + "MM" + separator + "dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
+                    }
+                }
+                catch (Exception)
+                {
+                    Debug.WriteLine("Parse Exact Date error: " + date+ " "+dateFormat);
+                    return new DateTime(1900, 1, 1);
+                }
             }
-            catch(Exception)
+            if (date.Length == 23)
             {
-                Debug.WriteLine("Date error: "+date);
-                return new DateTime(1900, 1, 1);
+                return DateTime.ParseExact(date, "yyyy-MM-dd HH:mm:ss.fff", System.Globalization.CultureInfo.CurrentCulture, System.Globalization.DateTimeStyles.None);
             }
+            return new DateTime(1900, 1, 1);
         }
 
         public static DateTime ParseExactWithFraction(String date)
