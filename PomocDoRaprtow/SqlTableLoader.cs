@@ -25,21 +25,21 @@ namespace PomocDoRaprtow
             this.richConsole = richConsole;
         }
 
-        public static void launchDbLoadSequence(RichTextBox console, string date)
+        public static void launchDbLoadSequence(RichTextBox console, int daysAgo)
         {
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
-                LoadLotTable(date, console);
+                LoadLotTable(daysAgo, console);
                 new Thread(() =>
                 {
-                    LoadTesterWorkCard(30, console);
+                    LoadTesterWorkCard(daysAgo, console);
                     new Thread(() =>
                     {
-                        LoadWasteTable(date, console);
+                        LoadWasteTable(daysAgo, console);
                         new Thread(() =>
                         {
-                            LoadBoxingTable(date, console);
+                            LoadBoxingTable(daysAgo, console);
                             
                         }).Start();
                     }).Start();
@@ -57,20 +57,21 @@ namespace PomocDoRaprtow
         }
 
 
-        public static void LoadLotTable(string date, RichTextBox console)
+        public static void LoadLotTable(int daysAgo, RichTextBox console)
         {
             writeToConsole(console, "Synchronizing with dbo.tb_Zlecenia_produkcyjne...");
-                
 
-                DataTable result = new DataTable();
+            daysAgo = daysAgo + 7;
+            string stratDate = DateTime.Now.AddDays(-daysAgo).ToString("yyyy-MM-dd HH:mm:ss");
+            DataTable result = new DataTable();
 
                 SqlConnection conn = new SqlConnection();
-                conn.ConnectionString = @"Data Source=MSTDB\SQLEXPRESS;Initial Catalog=Sparing2;Integrated Security=True";
+                conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
 
                 SqlCommand command = new SqlCommand();
                 command.Connection = conn;
-                command.CommandText =
-                    @"SELECT Nr_Planu_Produkcji, Nr_Zlecenia_Produkcyjnego, NC12_wyrobu, Ilosc_wyrobu_zlecona, RankA, RankB, MRM, STATUS, Ilosc_wyr_dobrego, Ilosc_wyr_do_poprawy, Ilosc_wyr_na_zlom, DataCzasWydruku FROM dbo.tb_Zlecenia_produkcyjne ;";
+            command.CommandText =
+                @"SELECT Nr_Planu_Produkcji, Nr_Zlecenia_Produkcyjnego, NC12_wyrobu, Data_Poczatku_Zlecenia,Ilosc_wyrobu_zlecona, RankA, RankB, MRM, STATUS, Ilosc_wyr_dobrego, Ilosc_wyr_do_poprawy, Ilosc_wyr_na_zlom, DataCzasWydruku FROM dbo.tb_Zlecenia_produkcyjne ; ";
 
                 SqlDataAdapter adapter = new SqlDataAdapter(command);
                 adapter.Fill(result);
@@ -80,7 +81,7 @@ namespace PomocDoRaprtow
             writeToConsole(console, "Done. \n");
     }
 
-        public static void LoadTesterWorkCard(int fromMonth, RichTextBox console)
+        public static void LoadTesterWorkCard(int daysAgo, RichTextBox console)
         {
             writeToConsole(console, "Synchronizing with dbo.tb_tester_measurements...");
 
@@ -88,16 +89,16 @@ namespace PomocDoRaprtow
 
             DataTable result = new DataTable();
             DateTime dateSince = DateTime.Now;
-            string dateCriteriaVer1 = "'%2017-10%'";//"'%" + dateSince.Year.ToString() + "-" + fromMonth.ToString() + "%'";
-            string dateCriteriaVer2 = "'%10____2017%'"; //"'%" + fromMonth.ToString() + "____" + dateSince.Year.ToString() + "%'";
+            string stratDate = DateTime.Now.AddDays(-daysAgo).ToString("yyyy-MM-dd HH:mm:ss");
+
 
             SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = @"Data Source=MSTDB\SQLEXPRESS;Initial Catalog=Sparing2;Integrated Security=True";
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
             command.CommandText =
-                @"SELECT serial_no, inspection_time, tester_id, wip_entity_name, result, ng_type FROM dbo.tb_tester_measurements WHERE ISNUMERIC(wip_entity_name)= 1 AND (inspection_time LIKE " + dateCriteriaVer1 + " OR inspection_time LIKE " + dateCriteriaVer2 + ") ; ";
+                @"SELECT serial_no, inspection_time, tester_id, wip_entity_name, result, ng_type FROM dbo.tb_tester_measurements WHERE ISNUMERIC(wip_entity_name)= 1 AND (inspection_time > '"+stratDate+"' ) ; ";
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);
@@ -105,6 +106,7 @@ namespace PomocDoRaprtow
             SaveDataTableToCsv(result, @"DB\tb_tester_measurements.csv", console);
 
             writeToConsole(console, "Done. \n");
+
 
         }
 
@@ -133,19 +135,19 @@ namespace PomocDoRaprtow
             File.AppendAllText(filename, sb.ToString());
         }
 
-        public static void LoadWasteTable(string date, RichTextBox console)
+        public static void LoadWasteTable(int daysAgo, RichTextBox console)
         {
             writeToConsole(console, "Synchronizing with dbo.tb_Zlecenia_produkcyjne_Karta_Pracy...");
-
-                DataTable result = new DataTable();
+            string stratDate = DateTime.Now.AddDays(-daysAgo).ToString("yyyy-MM-dd HH:mm:ss");
+            DataTable result = new DataTable();
 
             SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = @"Data Source=MSTDB\SQLEXPRESS;Initial Catalog=Sparing2;Integrated Security=True";
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
             command.CommandText =
-                @"SELECT Nr_Zlecenia_Produkcyjnego,BrakLutowia,BrakKomponentu,ZabrudzonaDioda,UszkodzonaDioda,UszkodzonePCB,PrzesuniecieDiody,ZanieczyszczenieZpieca,Inne,DataCzas FROM dbo.tb_Zlecenia_produkcyjne_Karta_Pracy WHERE DataCzas >= '20171001 00:00:00.000'";
+                @"SELECT Nr_Zlecenia_Produkcyjnego,BrakLutowia,BrakKomponentu,ZabrudzonaDioda,UszkodzonaDioda,UszkodzonePCB,PrzesuniecieDiody,ZanieczyszczenieZpieca,Inne,DataCzas FROM MES.dbo.tb_Zlecenia_produkcyjne_Karta_Pracy WHERE DataCzas > '"+ stratDate+"';";
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);
@@ -154,20 +156,20 @@ namespace PomocDoRaprtow
             writeToConsole(console, "Done. \n");
         }
 
-        public static void LoadBoxingTable(string date, RichTextBox console)
+        public static void LoadBoxingTable(int daysAgo, RichTextBox console)
         {
             writeToConsole(console, "Synchronizing with dbo.tb_WyrobLG_opakowanie...");
+            string stratDate = DateTime.Now.AddDays(-daysAgo).ToString("yyyy-MM-dd HH:mm:ss");
 
-
-                DataTable result = new DataTable();
+            DataTable result = new DataTable();
 
             SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = @"Data Source=MSTDB\SQLEXPRESS;Initial Catalog=Sparing2;Integrated Security=True";
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
 
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
             command.CommandText =
-                @"SELECT serial_no,Box_LOT_NO,Palet_LOT_NO,Boxing_Date,Palletising_Date FROM dbo.tb_WyrobLG_opakowanie WHERE Boxing_Date  >= '20171001 00:00:00.000'";
+                @"SELECT serial_no,Box_LOT_NO,Palet_LOT_NO,Boxing_Date,Palletising_Date FROM dbo.tb_WyrobLG_opakowanie WHERE Boxing_Date  > '"+ stratDate+"';";
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);

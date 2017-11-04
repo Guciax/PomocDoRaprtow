@@ -36,33 +36,27 @@ namespace PomocDoRaprtow
             capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, chartCapaTest,  chartSplitting,  treeViewSplitting, treeViewCapaBoxing, chartCapaBoxing,radioModel,listViewTestYield );
             modelOperations = new ModelOperations(this, chartModel, dataGridViewModelInfo, treeViewModelInfo, comboBoxModels, dateTimePickerBegin, dateTimePickerEnd);
             sqlTableLoader = new SqlTableLoader(this, richConsole);
-            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             tabMain.Enabled = false;
             CheckLastSynchroDate();
+            dateTimePickerBegin.Value = DateTime.Now.AddDays(-30);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
             wasteOperations.RedrawWasteTab();
             capabilityOperations.DrawCapability();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-
-            SqlTableLoader.launchDbLoadSequence(richConsole,"2017-10");
-
+            SqlTableLoader.launchDbLoadSequence(richConsole,30);
             //SqlTableLoader.LoadTesterWorkCard(5, richConsole);
-
             //SqlTableLoader.LoadWasteTable("2017-10", richConsole);
-            
             //SqlTableLoader.LoadBoxingTable("2017-10", richConsole);
-
             //SqlTableLoader.LoadLotTable("nic", richConsole);
         }
 
@@ -72,16 +66,55 @@ namespace PomocDoRaprtow
             string WastePath = @"DB\tb_Zlecenia_produkcyjne_Karta_Pracy.csv";
             string TesterPath = @"DB\tb_tester_measurements.csv";
             string BoxingPath = @"DB\tb_WyrobLG_opakowanie.csv";
+            string zleceniaProdukcyjne = "";
+            
+            if (File.Exists(LotPath))
+            {
+                zleceniaProdukcyjne = File.ReadLines(LotPath).First();
+                richConsole.AppendText("tb_Zlecenia_produkcyjne " + zleceniaProdukcyjne + "\n");
+            }
+            else
+            {
+                richConsole.AppendText("tb_Zlecenia_produkcyjne brak pliku \n");
+            }
+            string kartaPracy = "";
+            if (File.Exists(WastePath))
+            {
+                kartaPracy = File.ReadLines(WastePath).First();
+                richConsole.AppendText("tb_Zlecenia_produkcyjne_Karta_Pracy " + kartaPracy + "\n");
+            }
+            else
+            {
+                richConsole.AppendText("tb_Zlecenia_produkcyjne_Karta_Pracy brak pliku \n");
+            }
 
-            string zleceniaProdukcyjne = File.ReadLines(LotPath).First();
-            string kartaPracy = File.ReadLines(WastePath).First();
-            string testerMeasurements = File.ReadLines(TesterPath).First();
-            string wyrobLGOpakowanie = File.ReadLines(BoxingPath).First();
+            string testerMeasurements = "";
+            if (File.Exists(WastePath))
+            {
+                testerMeasurements = File.ReadLines(TesterPath).First();
+                richConsole.AppendText("tb_tester_measurements " + testerMeasurements + "\n");
+            }
+            else
+            {
+                richConsole.AppendText("tb_tester_measurements brak pliku \n");
+            }
 
-            richConsole.AppendText("tb_Zlecenia_produkcyjne " + zleceniaProdukcyjne + "\n");
-            richConsole.AppendText("tb_Zlecenia_produkcyjne_Karta_Pracy "+kartaPracy + "\n");
-            richConsole.AppendText("tb_tester_measurements "+testerMeasurements + "\n");
-            richConsole.AppendText("tb_WyrobLG_opakowanie "+wyrobLGOpakowanie + "\n");
+            string wyrobLGOpakowanie = "";
+            if (File.Exists(WastePath))
+            {
+                wyrobLGOpakowanie = File.ReadLines(BoxingPath).First();
+                richConsole.AppendText("tb_WyrobLG_opakowanie " + wyrobLGOpakowanie + "\n");
+            }
+            else
+            {
+                richConsole.AppendText("tb_WyrobLG_opakowanie brak pliku \n");
+            }
+            
+
+            
+            
+            
+            
 
         }
 
