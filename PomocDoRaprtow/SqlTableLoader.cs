@@ -18,15 +18,18 @@ namespace PomocDoRaprtow
     {
         private readonly Form1 form;
         private readonly RichTextBox richConsole;
+        private readonly Button buttonShowTables;
 
-        public SqlTableLoader(Form1 form, RichTextBox richConsole)
+        public SqlTableLoader(Form1 form, RichTextBox richConsole, Button buttonShowTables)
         {
             this.form = form;
             this.richConsole = richConsole;
+            this.buttonShowTables = buttonShowTables;
         }
 
-        public static void launchDbLoadSequence(RichTextBox console, int daysAgo)
+        public static void LaunchDbLoadSequence(RichTextBox console, int daysAgo, Button buttonToToggle)
         {
+            ToggleButton(buttonToToggle, false);
             new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
@@ -40,13 +43,22 @@ namespace PomocDoRaprtow
                         new Thread(() =>
                         {
                             LoadBoxingTable(daysAgo, console);
-                            
+                            writeToConsole(console, "----------------------------- Synchronization completed ----------------------------- \n");
+                            ToggleButton(buttonToToggle, true);
+
                         }).Start();
                     }).Start();
                 }).Start();
             }).Start();
         }
 
+        private static void ToggleButton(Button btn, bool state)
+        {
+            btn.Invoke((MethodInvoker)delegate
+            {
+                btn.Enabled = state;
+            });
+        }
       
         public static void writeToConsole(RichTextBox console, string text)
         {
@@ -56,6 +68,35 @@ namespace PomocDoRaprtow
             });
         }
 
+        public static DataTable LoadMeasurements(RichTextBox sourceRichBox)
+        {
+
+            string[] serials = sourceRichBox.Lines;
+
+            DataTable result = new DataTable();
+            DateTime dateSince = DateTime.Now;
+            
+            SqlConnection conn = new SqlConnection();
+            conn.ConnectionString = @"Data Source=MSTMS010;Initial Catalog=MES;User Id=mes;Password=mes;";
+
+            SqlCommand command = new SqlCommand();
+            command.Connection = conn;
+
+            string serialsToCommand = " WHERE serial_no = ";
+
+            for (int i=0;i< serials.Length;i++)
+            {
+                serialsToCommand += "'"+ serials[i]+"'";
+                if (i < serials.Length - 1) serialsToCommand += " OR serial_no = ";
+            }
+            command.CommandText =
+                @"SELECT serial_no, inspection_time, tester_id, wip_entity_name, result, ng_type,lm,lm_w,sdcm,cri,cct,v,i,w,x,y,r9,bin,lx,retest,module_num,lm1_gain,x1_offset,y1_offset,vf1_offset,cri1_offset,cct1_offset,lm1_master,x1_master,y1_master,vf1_master,cri1_master,cct1_master,hi_pot,light_on,optical,result_int FROM dbo.tb_tester_measurements "+ serialsToCommand+"; ";
+
+            SqlDataAdapter adapter = new SqlDataAdapter(command);
+            adapter.Fill(result);
+            return result;
+
+        }
 
         public static void LoadLotTable(int daysAgo, RichTextBox console)
         {
@@ -147,7 +188,7 @@ namespace PomocDoRaprtow
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
             command.CommandText =
-                @"SELECT Nr_Zlecenia_Produkcyjnego,BrakLutowia,BrakKomponentu,ZabrudzonaDioda,UszkodzonaDioda,UszkodzonePCB,PrzesuniecieDiody,ZanieczyszczenieZpieca,Inne,DataCzas FROM MES.dbo.tb_Zlecenia_produkcyjne_Karta_Pracy WHERE DataCzas > '"+ stratDate+"';";
+                @"SELECT Nr_Zlecenia_Produkcyjnego,BrakLutowia,BrakKomponentu,ZabrudzonaDioda,UszkodzonaDioda,UszkodzonePCB,PrzesuniecieDiody,ZanieczyszczenieZpieca,Inne,DataCzas FROM MES.dbo.tb_Zlecenia_produkcyjne_Karta_Pracy;";// WHERE DataCzas > '" + stratDate + "';";
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);
@@ -159,7 +200,7 @@ namespace PomocDoRaprtow
         public static void LoadBoxingTable(int daysAgo, RichTextBox console)
         {
             writeToConsole(console, "Synchronizing with dbo.tb_WyrobLG_opakowanie...");
-            string stratDate = DateTime.Now.AddDays(-daysAgo).ToString("yyyy-MM-dd HH:mm:ss");
+            string stratDate = DateTime.Now.AddDays(-daysAgo).ToString("yyyy-MM-dd");
 
             DataTable result = new DataTable();
 
@@ -169,7 +210,7 @@ namespace PomocDoRaprtow
             SqlCommand command = new SqlCommand();
             command.Connection = conn;
             command.CommandText =
-                @"SELECT serial_no,Box_LOT_NO,Palet_LOT_NO,Boxing_Date,Palletising_Date FROM dbo.tb_WyrobLG_opakowanie WHERE Boxing_Date  > '"+ stratDate+"';";
+                @"SELECT serial_no,Box_LOT_NO,Palet_LOT_NO,Boxing_Date,Palletising_Date FROM dbo.tb_WyrobLG_opakowanie;"; //WHERE Boxing_Date  > '"+ stratDate+"';";
 
             SqlDataAdapter adapter = new SqlDataAdapter(command);
             adapter.Fill(result);

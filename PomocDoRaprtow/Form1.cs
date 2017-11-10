@@ -35,7 +35,7 @@ namespace PomocDoRaprtow
             lotInUseOperations = new LotsInUseOperations(this, treeViewLotsinUse);
             capabilityOperations = new CapabilityOperation(this, treeViewTestCapa, chartCapaTest,  chartSplitting,  treeViewSplitting, treeViewCapaBoxing, chartCapaBoxing,radioModel,listViewTestYield );
             modelOperations = new ModelOperations(this, chartModel, dataGridViewModelInfo, treeViewModelInfo, comboBoxModels, dateTimePickerBegin, dateTimePickerEnd);
-            sqlTableLoader = new SqlTableLoader(this, richConsole);
+            sqlTableLoader = new SqlTableLoader(this, richConsole, buttonShowTables);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -53,7 +53,7 @@ namespace PomocDoRaprtow
 
         private void button4_Click(object sender, EventArgs e)
         {
-            SqlTableLoader.launchDbLoadSequence(richConsole,30);
+            SqlTableLoader.LaunchDbLoadSequence(richConsole,30, buttonShowTables);
             //SqlTableLoader.LoadTesterWorkCard(5, richConsole);
             //SqlTableLoader.LoadWasteTable("2017-10", richConsole);
             //SqlTableLoader.LoadBoxingTable("2017-10", richConsole);
@@ -109,12 +109,13 @@ namespace PomocDoRaprtow
             {
                 richConsole.AppendText("tb_WyrobLG_opakowanie brak pliku \n");
             }
-            
 
-            
-            
-            
-            
+            richConsole.AppendText("--------------------------------------------------------------------------------------- \n");
+
+
+
+
+
 
         }
 
@@ -152,6 +153,7 @@ namespace PomocDoRaprtow
                 CsvLoadinDone = true;
 
                 SqlTableLoader.writeToConsole(richConsole, "Done. \n");
+                SqlTableLoader.writeToConsole(richConsole, "--------------------------------------------------------------------------------------- \n");
             }).Start();
             pictureBox1.Visible = true;
             pictureBox1.Image = PomocDoRaprtow.Properties.Resources.spinner2;
@@ -591,7 +593,7 @@ namespace PomocDoRaprtow
         {
             if (e.Button== MouseButtons.Right)
             {
-                allNodes = "week" + "\t" + "day" + "\t" + "shift" + "\t" + "model" + "\t" + "testerID" + "\t" + "qty" + "\n";
+                allNodes = "week" + "\t" + "day" + "\t" + "shift" + "\t" + "LineID" + "\t" + "Model" + "\t" + "qty" + "\n";
                 foreach (TreeNode node in treeViewTestCapa.Nodes)
                 {
                     PrintNodesRecursive(node);
@@ -611,6 +613,49 @@ namespace PomocDoRaprtow
         private void treeViewCapaBoxing_AfterSelect(object sender, TreeViewEventArgs e)
         {
             showSelectedNodeDetails(e.Node, listView3);
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            dataGridView1.DataSource= SqlTableLoader.LoadMeasurements(richTextBox1);
+        }
+
+        private void treeViewCapaBoxing_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                allNodes = "week" + "\t" + "day" + "\t" + "shift" + "\t" + "LineID" + "\t" + "Model" + "\t" + "qty" + "\n";
+                foreach (TreeNode node in treeViewCapaBoxing.Nodes)
+                {
+                    PrintNodesRecursive(node);
+                }
+
+                Clipboard.Clear();    //Clear if any old value is there in Clipboard        
+                Clipboard.SetText(allNodes); //Copy text to Clipboard
+
+            }
+        }
+        private int GetDeepestChildNodeLevel(TreeNode node)
+        {
+            var subLevel = node.Nodes.Cast<TreeNode>().Select<TreeNode, int>(subNode => GetDeepestChildNodeLevel(subNode));
+            return subLevel.Count<int>() == 0 ? 1 : subLevel.Max() + 1;
+        }
+
+        private void treeViewSplitting_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right & treeViewSplitting.Nodes.Count > 0)
+            {
+                
+                allNodes = "week" + "\t" + "day" + "\t" + "shift" + "\t" + "LineID" + "\t" + "Model" + "\t" + "qty" + "\n";
+                foreach (TreeNode node in treeViewSplitting.Nodes)
+                {
+                    PrintNodesRecursive(node);
+                }
+
+                Clipboard.Clear();    //Clear if any old value is there in Clipboard        
+                Clipboard.SetText(allNodes); //Copy text to Clipboard
+
+            }
         }
     }
 }

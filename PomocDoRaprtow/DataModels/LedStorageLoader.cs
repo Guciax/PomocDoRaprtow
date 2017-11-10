@@ -240,13 +240,21 @@ namespace PomocDoRaprtow
                     case "5": testerName = "SMT 6";
                         break;
                 }
+
+                
                 
 
                     var ledId = splitLine[indexSerialNr];
+                if (ledId.Contains("M"))
+                {
+                    
+                }
+
                 if (!serialsInLot.ContainsKey(lotId))
                 {
                     serialsInLot.Add(lotId, new HashSet<string>());
                 }
+
                 serialsInLot[lotId].Add(ledId);
 
                 Lot lot;

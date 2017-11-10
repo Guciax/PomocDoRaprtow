@@ -29,30 +29,31 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea19 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend19 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series19 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea20 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend20 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series20 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea21 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend21 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series21 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea22 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend22 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series22 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea23 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend23 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series23 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea24 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend24 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series24 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea10 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea11 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend11 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea12 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend12 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
+            this.buttonShowTables = new System.Windows.Forms.Button();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tab_Start = new System.Windows.Forms.TabPage();
+            this.richConsole = new System.Windows.Forms.RichTextBox();
             this.tab_Capacity = new System.Windows.Forms.TabPage();
             this.listView3 = new System.Windows.Forms.ListView();
             this.columnHeader14 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -135,7 +136,10 @@
             this.button10 = new System.Windows.Forms.Button();
             this.timerThreadCsv = new System.Windows.Forms.Timer(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.richConsole = new System.Windows.Forms.RichTextBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.tabMain.SuspendLayout();
             this.tab_Start.SuspendLayout();
@@ -155,21 +159,23 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewModelInfo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartModel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // chart1
             // 
-            chartArea19.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea19);
-            legend19.Name = "Legend1";
-            this.chart1.Legends.Add(legend19);
+            chartArea7.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea7);
+            legend7.Name = "Legend1";
+            this.chart1.Legends.Add(legend7);
             this.chart1.Location = new System.Drawing.Point(352, 134);
-            this.chart1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chart1.Margin = new System.Windows.Forms.Padding(2);
             this.chart1.Name = "chart1";
-            series19.ChartArea = "ChartArea1";
-            series19.Legend = "Legend1";
-            series19.Name = "Series1";
-            this.chart1.Series.Add(series19);
+            series7.ChartArea = "ChartArea1";
+            series7.Legend = "Legend1";
+            series7.Name = "Series1";
+            this.chart1.Series.Add(series7);
             this.chart1.Size = new System.Drawing.Size(448, 372);
             this.chart1.TabIndex = 3;
             this.chart1.Text = "chart1";
@@ -178,7 +184,7 @@
             // 
             this.button3.Enabled = false;
             this.button3.Location = new System.Drawing.Point(551, 8);
-            this.button3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(55, 44);
             this.button3.TabIndex = 6;
@@ -189,7 +195,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(3, 2);
-            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(97, 24);
             this.button4.TabIndex = 7;
@@ -197,16 +203,16 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
-            // button5
+            // buttonShowTables
             // 
-            this.button5.Location = new System.Drawing.Point(3, 29);
-            this.button5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(97, 26);
-            this.button5.TabIndex = 8;
-            this.button5.Text = "SHOW TABLES";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.buttonShowTables.Location = new System.Drawing.Point(3, 29);
+            this.buttonShowTables.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonShowTables.Name = "buttonShowTables";
+            this.buttonShowTables.Size = new System.Drawing.Size(97, 26);
+            this.buttonShowTables.TabIndex = 8;
+            this.buttonShowTables.Text = "SHOW TABLES";
+            this.buttonShowTables.UseVisualStyleBackColor = true;
+            this.buttonShowTables.Click += new System.EventHandler(this.button5_Click);
             // 
             // tabMain
             // 
@@ -216,9 +222,10 @@
             this.tabMain.Controls.Add(this.tabPage1);
             this.tabMain.Controls.Add(this.tabPageLotInfo);
             this.tabMain.Controls.Add(this.tabPageModelInfo);
+            this.tabMain.Controls.Add(this.tabPage2);
             this.tabMain.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tabMain.Location = new System.Drawing.Point(0, 56);
-            this.tabMain.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabMain.Margin = new System.Windows.Forms.Padding(2);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
             this.tabMain.Size = new System.Drawing.Size(1143, 600);
@@ -229,13 +236,23 @@
             // 
             this.tab_Start.Controls.Add(this.richConsole);
             this.tab_Start.Location = new System.Drawing.Point(4, 22);
-            this.tab_Start.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Start.Margin = new System.Windows.Forms.Padding(2);
             this.tab_Start.Name = "tab_Start";
-            this.tab_Start.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Start.Padding = new System.Windows.Forms.Padding(2);
             this.tab_Start.Size = new System.Drawing.Size(1135, 574);
             this.tab_Start.TabIndex = 2;
             this.tab_Start.Text = "Start";
             this.tab_Start.UseVisualStyleBackColor = true;
+            // 
+            // richConsole
+            // 
+            this.richConsole.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.richConsole.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.richConsole.Location = new System.Drawing.Point(3, 7);
+            this.richConsole.Name = "richConsole";
+            this.richConsole.Size = new System.Drawing.Size(498, 564);
+            this.richConsole.TabIndex = 0;
+            this.richConsole.Text = "";
             // 
             // tab_Capacity
             // 
@@ -256,9 +273,9 @@
             this.tab_Capacity.Controls.Add(this.label2);
             this.tab_Capacity.Controls.Add(this.chartSplitting);
             this.tab_Capacity.Location = new System.Drawing.Point(4, 22);
-            this.tab_Capacity.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Capacity.Margin = new System.Windows.Forms.Padding(2);
             this.tab_Capacity.Name = "tab_Capacity";
-            this.tab_Capacity.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Capacity.Padding = new System.Windows.Forms.Padding(2);
             this.tab_Capacity.Size = new System.Drawing.Size(1135, 574);
             this.tab_Capacity.TabIndex = 0;
             this.tab_Capacity.Text = "Capacity";
@@ -273,7 +290,7 @@
             this.columnHeader18,
             this.columnHeader21});
             this.listView3.Location = new System.Drawing.Point(812, 1028);
-            this.listView3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView3.Margin = new System.Windows.Forms.Padding(2);
             this.listView3.Name = "listView3";
             this.listView3.Size = new System.Drawing.Size(306, 373);
             this.listView3.TabIndex = 35;
@@ -319,7 +336,7 @@
             this.columnHeader13,
             this.columnHeader20});
             this.listView2.Location = new System.Drawing.Point(812, 623);
-            this.listView2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView2.Margin = new System.Windows.Forms.Padding(2);
             this.listView2.Name = "listView2";
             this.listView2.Size = new System.Drawing.Size(306, 373);
             this.listView2.TabIndex = 34;
@@ -362,7 +379,7 @@
             this.columnHeader7,
             this.columnHeader8});
             this.listViewTestYield.Location = new System.Drawing.Point(597, 183);
-            this.listViewTestYield.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listViewTestYield.Margin = new System.Windows.Forms.Padding(2);
             this.listViewTestYield.Name = "listViewTestYield";
             this.listViewTestYield.Size = new System.Drawing.Size(212, 88);
             this.listViewTestYield.TabIndex = 33;
@@ -394,7 +411,7 @@
             this.columnHeader5,
             this.columnHeader19});
             this.listView1.Location = new System.Drawing.Point(812, 183);
-            this.listView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listView1.Margin = new System.Windows.Forms.Padding(2);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(306, 373);
             this.listView1.TabIndex = 32;
@@ -433,11 +450,12 @@
             // treeViewCapaBoxing
             // 
             this.treeViewCapaBoxing.Location = new System.Drawing.Point(597, 1028);
-            this.treeViewCapaBoxing.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeViewCapaBoxing.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewCapaBoxing.Name = "treeViewCapaBoxing";
             this.treeViewCapaBoxing.Size = new System.Drawing.Size(212, 373);
             this.treeViewCapaBoxing.TabIndex = 29;
             this.treeViewCapaBoxing.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewCapaBoxing_AfterSelect);
+            this.treeViewCapaBoxing.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeViewCapaBoxing_MouseClick);
             // 
             // label5
             // 
@@ -451,17 +469,17 @@
             // 
             // chartCapaBoxing
             // 
-            chartArea20.Name = "ChartArea1";
-            this.chartCapaBoxing.ChartAreas.Add(chartArea20);
-            legend20.Name = "Legend1";
-            this.chartCapaBoxing.Legends.Add(legend20);
+            chartArea8.Name = "ChartArea1";
+            this.chartCapaBoxing.ChartAreas.Add(chartArea8);
+            legend8.Name = "Legend1";
+            this.chartCapaBoxing.Legends.Add(legend8);
             this.chartCapaBoxing.Location = new System.Drawing.Point(9, 1028);
-            this.chartCapaBoxing.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chartCapaBoxing.Margin = new System.Windows.Forms.Padding(2);
             this.chartCapaBoxing.Name = "chartCapaBoxing";
-            series20.ChartArea = "ChartArea1";
-            series20.Legend = "Legend1";
-            series20.Name = "Series1";
-            this.chartCapaBoxing.Series.Add(series20);
+            series8.ChartArea = "ChartArea1";
+            series8.Legend = "Legend1";
+            series8.Name = "Series1";
+            this.chartCapaBoxing.Series.Add(series8);
             this.chartCapaBoxing.Size = new System.Drawing.Size(584, 368);
             this.chartCapaBoxing.TabIndex = 27;
             this.chartCapaBoxing.Text = "chart2";
@@ -469,11 +487,12 @@
             // treeViewSplitting
             // 
             this.treeViewSplitting.Location = new System.Drawing.Point(597, 623);
-            this.treeViewSplitting.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeViewSplitting.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewSplitting.Name = "treeViewSplitting";
             this.treeViewSplitting.Size = new System.Drawing.Size(212, 373);
             this.treeViewSplitting.TabIndex = 25;
             this.treeViewSplitting.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewSplitting_AfterSelect);
+            this.treeViewSplitting.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeViewSplitting_MouseClick);
             // 
             // label4
             // 
@@ -488,7 +507,7 @@
             // treeViewTestCapa
             // 
             this.treeViewTestCapa.Location = new System.Drawing.Point(597, 274);
-            this.treeViewTestCapa.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeViewTestCapa.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewTestCapa.Name = "treeViewTestCapa";
             this.treeViewTestCapa.Size = new System.Drawing.Size(212, 282);
             this.treeViewTestCapa.TabIndex = 22;
@@ -497,17 +516,17 @@
             // 
             // chartCapaTest
             // 
-            chartArea21.Name = "ChartArea1";
-            this.chartCapaTest.ChartAreas.Add(chartArea21);
-            legend21.Name = "Legend1";
-            this.chartCapaTest.Legends.Add(legend21);
+            chartArea9.Name = "ChartArea1";
+            this.chartCapaTest.ChartAreas.Add(chartArea9);
+            legend9.Name = "Legend1";
+            this.chartCapaTest.Legends.Add(legend9);
             this.chartCapaTest.Location = new System.Drawing.Point(9, 183);
-            this.chartCapaTest.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chartCapaTest.Margin = new System.Windows.Forms.Padding(2);
             this.chartCapaTest.Name = "chartCapaTest";
-            series21.ChartArea = "ChartArea1";
-            series21.Legend = "Legend1";
-            series21.Name = "Series1";
-            this.chartCapaTest.Series.Add(series21);
+            series9.ChartArea = "ChartArea1";
+            series9.Legend = "Legend1";
+            series9.Name = "Series1";
+            this.chartCapaTest.Series.Add(series9);
             this.chartCapaTest.Size = new System.Drawing.Size(584, 368);
             this.chartCapaTest.TabIndex = 20;
             this.chartCapaTest.Text = "chartCapaTest";
@@ -534,17 +553,17 @@
             // 
             // chartSplitting
             // 
-            chartArea22.Name = "ChartArea1";
-            this.chartSplitting.ChartAreas.Add(chartArea22);
-            legend22.Name = "Legend1";
-            this.chartSplitting.Legends.Add(legend22);
+            chartArea10.Name = "ChartArea1";
+            this.chartSplitting.ChartAreas.Add(chartArea10);
+            legend10.Name = "Legend1";
+            this.chartSplitting.Legends.Add(legend10);
             this.chartSplitting.Location = new System.Drawing.Point(9, 631);
-            this.chartSplitting.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chartSplitting.Margin = new System.Windows.Forms.Padding(2);
             this.chartSplitting.Name = "chartSplitting";
-            series22.ChartArea = "ChartArea1";
-            series22.Legend = "Legend1";
-            series22.Name = "Series1";
-            this.chartSplitting.Series.Add(series22);
+            series10.ChartArea = "ChartArea1";
+            series10.Legend = "Legend1";
+            series10.Name = "Series1";
+            this.chartSplitting.Series.Add(series10);
             this.chartSplitting.Size = new System.Drawing.Size(584, 368);
             this.chartSplitting.TabIndex = 7;
             this.chartSplitting.Text = "chart2";
@@ -557,9 +576,9 @@
             this.tab_Waste.Controls.Add(this.dataGridViewWaste);
             this.tab_Waste.Controls.Add(this.chart_odpad);
             this.tab_Waste.Location = new System.Drawing.Point(4, 22);
-            this.tab_Waste.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Waste.Margin = new System.Windows.Forms.Padding(2);
             this.tab_Waste.Name = "tab_Waste";
-            this.tab_Waste.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tab_Waste.Padding = new System.Windows.Forms.Padding(2);
             this.tab_Waste.Size = new System.Drawing.Size(1135, 574);
             this.tab_Waste.TabIndex = 1;
             this.tab_Waste.Text = "NG";
@@ -572,7 +591,7 @@
             this.columnHeader23,
             this.columnHeader24});
             this.listViewScrap.Location = new System.Drawing.Point(903, 58);
-            this.listViewScrap.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listViewScrap.Margin = new System.Windows.Forms.Padding(2);
             this.listViewScrap.Name = "listViewScrap";
             this.listViewScrap.Size = new System.Drawing.Size(229, 362);
             this.listViewScrap.TabIndex = 33;
@@ -631,7 +650,7 @@
             // treeViewWaste
             // 
             this.treeViewWaste.Location = new System.Drawing.Point(700, 58);
-            this.treeViewWaste.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeViewWaste.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewWaste.Name = "treeViewWaste";
             this.treeViewWaste.Size = new System.Drawing.Size(200, 362);
             this.treeViewWaste.TabIndex = 8;
@@ -643,7 +662,7 @@
             this.dataGridViewWaste.AllowUserToDeleteRows = false;
             this.dataGridViewWaste.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewWaste.Location = new System.Drawing.Point(485, 14);
-            this.dataGridViewWaste.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridViewWaste.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridViewWaste.Name = "dataGridViewWaste";
             this.dataGridViewWaste.RowHeadersVisible = false;
             this.dataGridViewWaste.RowTemplate.Height = 24;
@@ -652,17 +671,17 @@
             // 
             // chart_odpad
             // 
-            chartArea23.Name = "ChartArea1";
-            this.chart_odpad.ChartAreas.Add(chartArea23);
-            legend23.Name = "Legend1";
-            this.chart_odpad.Legends.Add(legend23);
+            chartArea11.Name = "ChartArea1";
+            this.chart_odpad.ChartAreas.Add(chartArea11);
+            legend11.Name = "Legend1";
+            this.chart_odpad.Legends.Add(legend11);
             this.chart_odpad.Location = new System.Drawing.Point(4, 47);
-            this.chart_odpad.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chart_odpad.Margin = new System.Windows.Forms.Padding(2);
             this.chart_odpad.Name = "chart_odpad";
-            series23.ChartArea = "ChartArea1";
-            series23.Legend = "Legend1";
-            series23.Name = "Series1";
-            this.chart_odpad.Series.Add(series23);
+            series11.ChartArea = "ChartArea1";
+            series11.Legend = "Legend1";
+            series11.Name = "Series1";
+            this.chart_odpad.Series.Add(series11);
             this.chart_odpad.Size = new System.Drawing.Size(484, 370);
             this.chart_odpad.TabIndex = 6;
             this.chart_odpad.Text = "chart2";
@@ -673,9 +692,9 @@
             this.tabPage1.Controls.Add(this.buttonLotsinUse);
             this.tabPage1.Controls.Add(this.treeViewLotsinUse);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
             this.tabPage1.Size = new System.Drawing.Size(1135, 574);
             this.tabPage1.TabIndex = 3;
             this.tabPage1.Text = "LOT\'s in use";
@@ -687,7 +706,7 @@
             this.dataGridViewLotsInUse.AllowUserToDeleteRows = false;
             this.dataGridViewLotsInUse.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLotsInUse.Location = new System.Drawing.Point(280, 66);
-            this.dataGridViewLotsInUse.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridViewLotsInUse.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridViewLotsInUse.Name = "dataGridViewLotsInUse";
             this.dataGridViewLotsInUse.RowTemplate.Height = 24;
             this.dataGridViewLotsInUse.Size = new System.Drawing.Size(530, 504);
@@ -696,7 +715,7 @@
             // buttonLotsinUse
             // 
             this.buttonLotsinUse.Location = new System.Drawing.Point(34, 39);
-            this.buttonLotsinUse.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonLotsinUse.Margin = new System.Windows.Forms.Padding(2);
             this.buttonLotsinUse.Name = "buttonLotsinUse";
             this.buttonLotsinUse.Size = new System.Drawing.Size(70, 24);
             this.buttonLotsinUse.TabIndex = 3;
@@ -707,7 +726,7 @@
             // treeViewLotsinUse
             // 
             this.treeViewLotsinUse.Location = new System.Drawing.Point(34, 66);
-            this.treeViewLotsinUse.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeViewLotsinUse.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewLotsinUse.Name = "treeViewLotsinUse";
             this.treeViewLotsinUse.Size = new System.Drawing.Size(242, 504);
             this.treeViewLotsinUse.TabIndex = 1;
@@ -720,9 +739,9 @@
             this.tabPageLotInfo.Controls.Add(this.treeViewLotInfo);
             this.tabPageLotInfo.Controls.Add(this.button6);
             this.tabPageLotInfo.Location = new System.Drawing.Point(4, 22);
-            this.tabPageLotInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageLotInfo.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageLotInfo.Name = "tabPageLotInfo";
-            this.tabPageLotInfo.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageLotInfo.Padding = new System.Windows.Forms.Padding(2);
             this.tabPageLotInfo.Size = new System.Drawing.Size(1135, 574);
             this.tabPageLotInfo.TabIndex = 4;
             this.tabPageLotInfo.Text = "LOT Info";
@@ -734,7 +753,7 @@
             this.dataGridViewLotInfo.AllowUserToDeleteRows = false;
             this.dataGridViewLotInfo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLotInfo.Location = new System.Drawing.Point(208, 27);
-            this.dataGridViewLotInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridViewLotInfo.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridViewLotInfo.Name = "dataGridViewLotInfo";
             this.dataGridViewLotInfo.RowTemplate.Height = 24;
             this.dataGridViewLotInfo.Size = new System.Drawing.Size(434, 543);
@@ -743,7 +762,7 @@
             // textBoxFilterLotInfo
             // 
             this.textBoxFilterLotInfo.Location = new System.Drawing.Point(8, 27);
-            this.textBoxFilterLotInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBoxFilterLotInfo.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxFilterLotInfo.Name = "textBoxFilterLotInfo";
             this.textBoxFilterLotInfo.Size = new System.Drawing.Size(197, 20);
             this.textBoxFilterLotInfo.TabIndex = 2;
@@ -752,7 +771,7 @@
             // treeViewLotInfo
             // 
             this.treeViewLotInfo.Location = new System.Drawing.Point(8, 50);
-            this.treeViewLotInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeViewLotInfo.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewLotInfo.Name = "treeViewLotInfo";
             this.treeViewLotInfo.Size = new System.Drawing.Size(197, 521);
             this.treeViewLotInfo.TabIndex = 1;
@@ -761,7 +780,7 @@
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(8, 5);
-            this.button6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button6.Margin = new System.Windows.Forms.Padding(2);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(87, 19);
             this.button6.TabIndex = 0;
@@ -780,7 +799,7 @@
             this.tabPageModelInfo.Controls.Add(this.comboBoxModels);
             this.tabPageModelInfo.Controls.Add(this.label7);
             this.tabPageModelInfo.Location = new System.Drawing.Point(4, 22);
-            this.tabPageModelInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPageModelInfo.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageModelInfo.Name = "tabPageModelInfo";
             this.tabPageModelInfo.Size = new System.Drawing.Size(1135, 574);
             this.tabPageModelInfo.TabIndex = 5;
@@ -823,7 +842,7 @@
             // treeViewModelInfo
             // 
             this.treeViewModelInfo.Location = new System.Drawing.Point(314, 58);
-            this.treeViewModelInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.treeViewModelInfo.Margin = new System.Windows.Forms.Padding(2);
             this.treeViewModelInfo.Name = "treeViewModelInfo";
             this.treeViewModelInfo.Size = new System.Drawing.Size(236, 256);
             this.treeViewModelInfo.TabIndex = 3;
@@ -832,6 +851,7 @@
             // 
             this.dataGridViewModelInfo.AllowUserToAddRows = false;
             this.dataGridViewModelInfo.AllowUserToDeleteRows = false;
+            this.dataGridViewModelInfo.AllowUserToResizeRows = false;
             this.dataGridViewModelInfo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewModelInfo.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
@@ -841,9 +861,10 @@
             this.Column8,
             this.Column9});
             this.dataGridViewModelInfo.Location = new System.Drawing.Point(6, 58);
-            this.dataGridViewModelInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridViewModelInfo.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridViewModelInfo.Name = "dataGridViewModelInfo";
             this.dataGridViewModelInfo.ReadOnly = true;
+            this.dataGridViewModelInfo.RowHeadersVisible = false;
             this.dataGridViewModelInfo.RowTemplate.Height = 24;
             this.dataGridViewModelInfo.Size = new System.Drawing.Size(304, 255);
             this.dataGridViewModelInfo.TabIndex = 2;
@@ -886,28 +907,28 @@
             // 
             // chartModel
             // 
-            chartArea24.AxisX.LabelStyle.Interval = 0D;
-            chartArea24.AxisX.LineColor = System.Drawing.Color.Silver;
-            chartArea24.AxisX.MajorGrid.Interval = 1D;
-            chartArea24.AxisX.MajorGrid.LineColor = System.Drawing.Color.Gray;
-            chartArea24.AxisY.LineColor = System.Drawing.Color.Silver;
-            chartArea24.AxisY.MajorGrid.LineColor = System.Drawing.Color.Gray;
-            chartArea24.Name = "ChartArea1";
-            this.chartModel.ChartAreas.Add(chartArea24);
-            legend24.BackImageTransparentColor = System.Drawing.Color.White;
-            legend24.DockedToChartArea = "ChartArea1";
-            legend24.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
-            legend24.LegendStyle = System.Windows.Forms.DataVisualization.Charting.LegendStyle.Row;
-            legend24.Name = "Legend1";
-            this.chartModel.Legends.Add(legend24);
+            chartArea12.AxisX.LabelStyle.Interval = 0D;
+            chartArea12.AxisX.LineColor = System.Drawing.Color.Silver;
+            chartArea12.AxisX.MajorGrid.Interval = 1D;
+            chartArea12.AxisX.MajorGrid.LineColor = System.Drawing.Color.Gray;
+            chartArea12.AxisY.LineColor = System.Drawing.Color.Silver;
+            chartArea12.AxisY.MajorGrid.LineColor = System.Drawing.Color.Gray;
+            chartArea12.Name = "ChartArea1";
+            this.chartModel.ChartAreas.Add(chartArea12);
+            legend12.BackImageTransparentColor = System.Drawing.Color.White;
+            legend12.DockedToChartArea = "ChartArea1";
+            legend12.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Top;
+            legend12.LegendStyle = System.Windows.Forms.DataVisualization.Charting.LegendStyle.Row;
+            legend12.Name = "Legend1";
+            this.chartModel.Legends.Add(legend12);
             this.chartModel.Location = new System.Drawing.Point(538, 42);
-            this.chartModel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chartModel.Margin = new System.Windows.Forms.Padding(2);
             this.chartModel.Name = "chartModel";
-            series24.ChartArea = "ChartArea1";
-            series24.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series24.Legend = "Legend1";
-            series24.Name = "Series1";
-            this.chartModel.Series.Add(series24);
+            series12.ChartArea = "ChartArea1";
+            series12.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series12.Legend = "Legend1";
+            series12.Name = "Series1";
+            this.chartModel.Series.Add(series12);
             this.chartModel.Size = new System.Drawing.Size(484, 290);
             this.chartModel.TabIndex = 1;
             this.chartModel.Text = "chart2";
@@ -916,7 +937,7 @@
             // 
             this.comboBoxModels.FormattingEnabled = true;
             this.comboBoxModels.Location = new System.Drawing.Point(68, 35);
-            this.comboBoxModels.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxModels.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxModels.Name = "comboBoxModels";
             this.comboBoxModels.Size = new System.Drawing.Size(69, 21);
             this.comboBoxModels.TabIndex = 0;
@@ -944,9 +965,9 @@
             "3",
             "4"});
             this.CapaModelcheckedListBox.Location = new System.Drawing.Point(610, 8);
-            this.CapaModelcheckedListBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.CapaModelcheckedListBox.Margin = new System.Windows.Forms.Padding(2);
             this.CapaModelcheckedListBox.Name = "CapaModelcheckedListBox";
-            this.CapaModelcheckedListBox.Size = new System.Drawing.Size(179, 34);
+            this.CapaModelcheckedListBox.Size = new System.Drawing.Size(179, 49);
             this.CapaModelcheckedListBox.TabIndex = 21;
             this.CapaModelcheckedListBox.SelectedValueChanged += new System.EventHandler(this.CapaModelcheckedListBox_SelectedValueChanged);
             this.CapaModelcheckedListBox.MouseEnter += new System.EventHandler(this.checkedListBox1_MouseEnter);
@@ -955,7 +976,7 @@
             // dateTimePickerBegin
             // 
             this.dateTimePickerBegin.Location = new System.Drawing.Point(322, 8);
-            this.dateTimePickerBegin.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dateTimePickerBegin.Margin = new System.Windows.Forms.Padding(2);
             this.dateTimePickerBegin.Name = "dateTimePickerBegin";
             this.dateTimePickerBegin.Size = new System.Drawing.Size(225, 20);
             this.dateTimePickerBegin.TabIndex = 9;
@@ -964,7 +985,7 @@
             // dateTimePickerEnd
             // 
             this.dateTimePickerEnd.Location = new System.Drawing.Point(322, 32);
-            this.dateTimePickerEnd.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dateTimePickerEnd.Margin = new System.Windows.Forms.Padding(2);
             this.dateTimePickerEnd.Name = "dateTimePickerEnd";
             this.dateTimePickerEnd.Size = new System.Drawing.Size(225, 20);
             this.dateTimePickerEnd.TabIndex = 10;
@@ -973,7 +994,7 @@
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button1.Location = new System.Drawing.Point(827, 8);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(32, 16);
             this.button1.TabIndex = 22;
@@ -987,7 +1008,7 @@
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button2.Location = new System.Drawing.Point(827, 23);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(32, 16);
             this.button2.TabIndex = 23;
@@ -1001,7 +1022,7 @@
             // 
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button7.Location = new System.Drawing.Point(791, 8);
-            this.button7.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button7.Margin = new System.Windows.Forms.Padding(2);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(38, 16);
             this.button7.TabIndex = 24;
@@ -1015,7 +1036,7 @@
             // 
             this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button8.Location = new System.Drawing.Point(791, 23);
-            this.button8.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button8.Margin = new System.Windows.Forms.Padding(2);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(38, 16);
             this.button8.TabIndex = 25;
@@ -1029,7 +1050,7 @@
             // 
             this.button9.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button9.Location = new System.Drawing.Point(791, 37);
-            this.button9.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button9.Margin = new System.Windows.Forms.Padding(2);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(38, 16);
             this.button9.TabIndex = 26;
@@ -1043,7 +1064,7 @@
             // 
             this.button10.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button10.Location = new System.Drawing.Point(791, 52);
-            this.button10.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button10.Margin = new System.Windows.Forms.Padding(2);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(38, 16);
             this.button10.TabIndex = 27;
@@ -1060,22 +1081,51 @@
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(104, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(78, 80);
             this.pictureBox1.TabIndex = 28;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Visible = false;
             // 
-            // richConsole
+            // tabPage2
             // 
-            this.richConsole.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.richConsole.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.richConsole.Location = new System.Drawing.Point(3, 7);
-            this.richConsole.Name = "richConsole";
-            this.richConsole.Size = new System.Drawing.Size(498, 564);
-            this.richConsole.TabIndex = 0;
-            this.richConsole.Text = "";
+            this.tabPage2.Controls.Add(this.dataGridView1);
+            this.tabPage2.Controls.Add(this.button5);
+            this.tabPage2.Controls.Add(this.richTextBox1);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1135, 574);
+            this.tabPage2.TabIndex = 6;
+            this.tabPage2.Text = "Measurements";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(8, 7);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(954, 164);
+            this.richTextBox1.TabIndex = 0;
+            this.richTextBox1.Text = "";
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(8, 177);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 1;
+            this.button5.Text = "Get data";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click_1);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(9, 207);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(953, 359);
+            this.dataGridView1.TabIndex = 2;
             // 
             // Form1
             // 
@@ -1091,7 +1141,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.CapaModelcheckedListBox);
             this.Controls.Add(this.tabMain);
-            this.Controls.Add(this.button5);
+            this.Controls.Add(this.buttonShowTables);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.chart1);
@@ -1099,7 +1149,7 @@
             this.Controls.Add(this.dateTimePickerEnd);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -1126,6 +1176,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewModelInfo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartModel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1134,7 +1186,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button buttonShowTables;
         private System.Windows.Forms.TabControl tabMain;
         private System.Windows.Forms.TabPage tab_Capacity;
         private System.Windows.Forms.TabPage tab_Waste;
@@ -1220,6 +1272,10 @@
         private System.Windows.Forms.ColumnHeader columnHeader23;
         private System.Windows.Forms.ColumnHeader columnHeader24;
         private System.Windows.Forms.RichTextBox richConsole;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 
